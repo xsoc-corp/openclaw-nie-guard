@@ -13,6 +13,7 @@ import { registerSessionRoute } from './routes/session.js';
 import { registerAuditRoute } from './routes/audit.js';
 import { registerHealthRoute } from './routes/health.js';
 import { registerVersionRoute } from './routes/version.js';
+import { registerCosignRoute } from './routes/cosign.js';
 import { config } from './config.js';
 import type { BrokerServices } from './services/context.js';
 
@@ -38,6 +39,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   await registerAuditRoute(app);
   await registerHealthRoute(app);
   await registerVersionRoute(app);
+  await registerCosignRoute(app);
 
   return app;
 }
