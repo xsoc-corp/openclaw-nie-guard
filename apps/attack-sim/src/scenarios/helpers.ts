@@ -25,8 +25,8 @@ export function sha256(s: string): string {
   return createHash('sha256').update(s).digest('hex');
 }
 
-export async function admit(brokerUrl: string, overrides: Record<string, unknown> = {}): Promise<AdmitResponse> {
-  const res = await fetch(`${brokerUrl}/v1/admit`, {
+export async function admit(brokerUrl: string, overrides: Record<string, unknown> = {}): Promise<{ response: Response; body: AdmitResponse | DenyResponse }> {
+  const response = await fetch(`${brokerUrl}/v1/admit`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -40,8 +40,13 @@ export async function admit(brokerUrl: string, overrides: Record<string, unknown
       }
     })
   });
-  if (!res.ok) throw new Error(`admit failed: ${res.status} ${await res.text()}`);
-  return res.json() as Promise<AdmitResponse>;
+  return { response, body: await response.json() as AdmitResponse | DenyResponse };
+}
+
+export async function admitOrThrow(brokerUrl: string, overrides: Record<string, unknown> = {}): Promise<AdmitResponse> {
+  const { response, body } = await admit(brokerUrl, overrides);
+  if (!response.ok) throw new Error(`admit failed: ${response.status} ${JSON.stringify(body)}`);
+  return body as AdmitResponse;
 }
 
 export function buildMockEnvelope(input: {
@@ -54,6 +59,7 @@ export function buildMockEnvelope(input: {
   classification?: 'public' | 'sensitive' | 'regulated' | 'classified-adjacent';
   counter?: number;
   ttlSeconds?: number;
+  contextManifestHash?: string;
 }): string {
   const now = Date.now();
   const envelope = {
@@ -65,7 +71,7 @@ export function buildMockEnvelope(input: {
     targetHash: sha256(input.targetId),
     directionality: 'outbound' as const,
     brokerPathId: 'attack-sim',
-    contextManifestHash: '0'.repeat(64),
+    contextManifestHash: input.contextManifestHash ?? '0'.repeat(64),
     intentHash: '0'.repeat(64),
     intentClass: input.intentClass,
     classification: input.classification ?? 'sensitive',
@@ -82,10 +88,12 @@ export async function invoke(brokerUrl: string, body: {
   operationClass: string;
   targetId: string;
   targetClass: string;
+  nonce?: string;
+  headers?: Record<string, string>;
 }): Promise<{ status: number; body: InvokeResponse | DenyResponse }> {
   const res = await fetch(`${brokerUrl}/v1/invoke`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...(body.headers ?? {}) },
     body: JSON.stringify({
       capabilityToken: body.capabilityToken,
       envelope: body.envelope,
@@ -94,7 +102,7 @@ export async function invoke(brokerUrl: string, body: {
       targetClass: body.targetClass,
       intentHash: '0'.repeat(64),
       contextManifestHash: '0'.repeat(64),
-      nonce: randomUUID() + randomUUID(),
+      nonce: body.nonce ?? (randomUUID() + randomUUID()),
       correlationId: randomUUID()
     })
   });
@@ -112,4 +120,37 @@ export async function revoke(brokerUrl: string, kind: 'subject' | 'session' | 'd
     body: JSON.stringify({ kind, id, reason: 'attack-sim-test' })
   });
   if (!res.ok) throw new Error(`revoke failed: ${res.status}`);
+}
+
+export async function mcpIngest(brokerUrl: string, serverId: string, content: string): Promise<{ status: number; body: { code?: string; tagged?: string } }> {
+  const res = await fetch(`${brokerUrl}/v1/mcp/ingest`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      serverId,
+      method: 'ingest',
+      params: {},
+      content,
+      correlationId: randomUUID()
+    })
+  });
+  return { status: res.status, body: await res.json() };
+}
+
+export async function registerSkill(brokerUrl: string, input: {
+  skillId: string;
+  signerKeyId?: string;
+  signature?: string;
+}): Promise<{ status: number; body: { code?: string; registered?: boolean } }> {
+  const res = await fetch(`${brokerUrl}/v1/skill/register`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      skillId: input.skillId,
+      signerKeyId: input.signerKeyId,
+      signature: input.signature,
+      manifest: { name: input.skillId, version: '1.0.0', capabilities: ['tool.invoke'] }
+    })
+  });
+  return { status: res.status, body: await res.json() };
 }

@@ -1,19 +1,22 @@
 import { randomUUID, createHash } from 'node:crypto';
-import type { NieBindings, AttestationResult, TokenVerificationResult, RevocationInput, RevocationResult, VersionInfo } from './interface.js';
-import type { AdmissionRequest, CapabilityToken, DerivationRequest, SealedEnvelope, TstlEnvelope } from '@xsoc/shared-types';
+import type { NieBindings, AttestationResult, TokenVerificationResult, RevocationInput, RevocationResult, VersionInfo, NonceConsumeResult } from './interface.js';
+import type { AdmissionRequest, CapabilityToken, DerivationRequest, SealedEnvelope, TstlEnvelope, OperationClass } from '@xsoc/shared-types';
 
-// Mock implementation for the public repo. Deterministic enough for testing.
-// NOT cryptographically secure. Production bindings are substituted from the private repo.
-//
-// TODO(xsoc-openclaw-poc): replace with production binding via workspace override
-// when @xsoc/nie-bindings-prod is linked in the private deployment repo.
+interface TokenState {
+  sessionId: string;
+  subjectId: string;
+  deviceFingerprint: string;
+  role: string;
+  requestedOperationSet: OperationClass[];
+  expiresAt: number;
+}
 
 interface MockState {
   revokedSubjects: Set<string>;
   revokedSessions: Set<string>;
   revokedDevices: Set<string>;
-  seenNonces: Set<string>;
-  activeTokens: Map<string, { sessionId: string; subjectId: string; deviceFingerprint: string; expiresAt: number }>;
+  seenNonces: Map<string, Set<string>>;  // sessionId -> set of nonces
+  activeTokens: Map<string, TokenState>;
 }
 
 export function createMockBindings(): NieBindings {
@@ -21,7 +24,7 @@ export function createMockBindings(): NieBindings {
     revokedSubjects: new Set(),
     revokedSessions: new Set(),
     revokedDevices: new Set(),
-    seenNonces: new Set(),
+    seenNonces: new Map(),
     activeTokens: new Map()
   };
 
@@ -32,6 +35,12 @@ export function createMockBindings(): NieBindings {
       const subjectId = hash(request.attestationPackage).slice(0, 16);
       const deviceFingerprint = request.clientMetadata.deviceFingerprint;
 
+      // Attestation floor check: empty or obviously-malformed packages fail.
+      // This is the hook for scenario 22 (browser pivot with missing attestation).
+      if (request.attestationPackage.length < 8 || request.attestationPackage.startsWith('browser-pivot-')) {
+        throw new Error('ERR_ATTESTATION_FAILED: attestation floor not met');
+      }
+
       if (state.revokedSubjects.has(subjectId) || state.revokedDevices.has(deviceFingerprint)) {
         throw new Error('ERR_ATTESTATION_FAILED: subject or device revoked');
       }
@@ -39,10 +48,18 @@ export function createMockBindings(): NieBindings {
       const now = Date.now();
       const sessionId = randomUUID();
       const correlationId = randomUUID();
-      const expiresAt = now + 15 * 60 * 1000; // 15 minute TTL on mock capability
+      const expiresAt = now + 15 * 60 * 1000;
       const capabilityToken = hash(`${sessionId}:${subjectId}:${deviceFingerprint}:${now}`);
 
-      state.activeTokens.set(capabilityToken, { sessionId, subjectId, deviceFingerprint, expiresAt });
+      state.activeTokens.set(capabilityToken, {
+        sessionId,
+        subjectId,
+        deviceFingerprint,
+        role: request.requestedRole,
+        requestedOperationSet: request.requestedOperationSet,
+        expiresAt
+      });
+      state.seenNonces.set(sessionId, new Set());
 
       return {
         subjectId,
@@ -65,7 +82,15 @@ export function createMockBindings(): NieBindings {
       if (!entry) return { valid: false, reasonCode: 'ERR_SESSION_REVOKED' };
       if (entry.expiresAt < Date.now()) return { valid: false, reasonCode: 'ERR_SESSION_EXPIRED' };
       if (state.revokedSessions.has(entry.sessionId)) return { valid: false, reasonCode: 'ERR_SESSION_REVOKED' };
-      return { valid: true, ...entry };
+      return {
+        valid: true,
+        sessionId: entry.sessionId,
+        subjectId: entry.subjectId,
+        deviceFingerprint: entry.deviceFingerprint,
+        role: entry.role,
+        requestedOperationSet: entry.requestedOperationSet,
+        expiresAt: entry.expiresAt
+      };
     },
 
     async deriveScopedCapability(input: DerivationRequest): Promise<CapabilityToken> {
@@ -74,8 +99,20 @@ export function createMockBindings(): NieBindings {
       const now = Date.now();
       const expiresAt = now + Math.min(input.scopeRestriction.ttlSeconds * 1000, parent.expiresAt - now);
       if (expiresAt <= now) throw new Error('ERR_SESSION_EXPIRED: parent already expired');
+
+      // Child cannot widen: operation subset must be strictly contained in parent's set.
+      for (const op of input.scopeRestriction.operationClassSubset) {
+        if (!parent.requestedOperationSet.includes(op)) {
+          throw new Error(`ERR_SCOPE_DENIED: child operation ${op} not in parent scope`);
+        }
+      }
+
       const childToken = hash(`${input.parentCapability}:${now}:${randomUUID()}`);
-      state.activeTokens.set(childToken, { ...parent, expiresAt });
+      state.activeTokens.set(childToken, {
+        ...parent,
+        requestedOperationSet: input.scopeRestriction.operationClassSubset,
+        expiresAt
+      });
       return childToken;
     },
 
@@ -109,6 +146,19 @@ export function createMockBindings(): NieBindings {
         channelsNotified: ['local', 'redis-mock', 'event-bus-mock'],
         propagationTimestamp: Date.now()
       };
+    },
+
+    async consumeNonce(nonce: string, sessionId: string): Promise<NonceConsumeResult> {
+      let set = state.seenNonces.get(sessionId);
+      if (!set) {
+        set = new Set();
+        state.seenNonces.set(sessionId, set);
+      }
+      if (set.has(nonce)) {
+        return { firstUse: false, reasonCode: 'ERR_NONCE_REPLAY' };
+      }
+      set.add(nonce);
+      return { firstUse: true };
     },
 
     getVersion(): VersionInfo {
