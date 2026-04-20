@@ -1,10 +1,16 @@
 # Threat Model
 
-**Version:** 0.1.0 (Phase 0 draft)
+**Version:** 0.1.0 (Phase 0 draft, updated Phase 1d)
 **Scope:** OPENCLAW-NIE-GUARD broker, adapter, and associated plane primitives.
 
-This is the initial threat model produced in Phase 0. It is a living document and
-will be updated as implementation proceeds.
+This is the initial threat model produced in Phase 0 and subsequently updated to
+reflect alignment with the Franklin et al. (2026) AI Agent Traps taxonomy. It is
+a living document and will be updated as implementation proceeds.
+
+**Taxonomy alignment:** Each threat path below is mapped to one or more categories
+in Franklin, M., Tomašev, N., Jacobs, J., Leibo, J. Z., and Osindero, S. (2026),
+*AI Agent Traps*, SSRN 6372438, Google DeepMind. The full mapping from XSOC-NIE-GUARD
+controls to Franklin categories is in `docs/franklin-taxonomy-mapping.md`.
 
 ## 1. Assets
 
@@ -56,6 +62,8 @@ will be updated as implementation proceeds.
 ## 4. Threat Paths
 
 ### T-01 Prompt injection via messaging channel (Telegram, Slack, Discord, WhatsApp)
+
+**Franklin et al. category:** Content Injection (web-standard obfuscation, dynamic cloaking) and Behavioural Control (embedded jailbreak sequences)
 
 **Public reference:** Coverage of OpenClaw structural exposure across messaging integrations
 in early 2026 (Prime Rogue, Adversa, Startup Fortune). CVE-2026-33579 pairing escalation
@@ -151,6 +159,8 @@ gateway does not need to be internet-facing to be compromised.
 
 ### T-06 Honest-but-curious model vendor
 
+**Franklin et al. category:** Behavioural Control (data exfiltration traps, noting the honest-but-curious variant is not directly taxonomised by Franklin but composes with their data exfiltration analysis)
+
 **Attack shape:**
 
 1. Model vendor (or their insider) reads prompt content from logs, monitoring, or runtime
@@ -207,6 +217,8 @@ gateway does not need to be internet-facing to be compromised.
 
 ### T-10 Agent intent drift (prompt injection exploiting legitimate capability)
 
+**Franklin et al. category:** Semantic Manipulation (biased phrasing, framing) and Behavioural Control (embedded jailbreak sequences)
+
 **Attack shape:**
 
 1. Agent has legitimate capability for tool.invoke
@@ -218,7 +230,23 @@ gateway does not need to be internet-facing to be compromised.
 - A2 Agent Intent Envelope: intent_class bound into TSTL; adapter enforces class alignment
   with operation class per OPERATION_TO_INTENT map
 
-## 5. Out of Scope (for v1 POC)
+## 5. Threat Paths Adjacent to Franklin et al. That Are Out of Scope or Partially Addressed
+
+Three Franklin et al. categories deserve explicit naming as scope boundaries rather than as active threat paths we claim to defend against structurally.
+
+### T-11 Persona hyperstition (Franklin Semantic Manipulation)
+
+Self-reinforcing narratives about a model's personality that feed back into its behavior via retrieval and retraining. Per Shanahan and Singler (2024) and Anthropic's documentation of the Claude spiritual bliss attractor state, this is a real phenomenon. It operates at the model's training-data level and is not addressable by a runtime mediation layer. XSOC-NIE-GUARD limits the blast radius of a persona-drifted agent through intent binding and dual-control but cannot prevent the drift itself.
+
+### T-12 Systemic multi-agent failure modes (Franklin Systemic Traps)
+
+Congestion traps, interdependence cascades, tacit collusion, compositional fragment traps, and Sybil attacks across operator boundaries. These require ecosystem-level coordination infrastructure (shared identity, cross-operator Providence anchoring, aggregation-level semantic analysis) that is outside the scope of this release. We acknowledge this explicitly in the Zenodo paper's Limitations section.
+
+### T-13 Steganographic payloads in multi-modal content (Franklin Content Injection)
+
+Adversarial perturbations encoded into legitimate images or audio that a multi-modal model processes. Our A4 content hash catches binary replacement but does not detect perturbation-based attacks within a single legitimate file. Scheduled as a VectorShield extension.
+
+## 6. Out of Scope (for v1 POC)
 
 - Hardware compromise below attestation floor (covered by hardware supplier assumptions)
 - Denial of service against the broker (mitigated with rate limiting but not the POC focus)
@@ -226,7 +254,7 @@ gateway does not need to be internet-facing to be compromised.
 - Quantum-capable adversaries against non-PQ components (NIE PQ path available; deployment
   flag)
 
-## 6. Residual Risks
+## 7. Residual Risks
 
 - Relaxed profile permits the lethal trifecta. Operators running relaxed in production
   assume the risk.

@@ -372,10 +372,56 @@ implications for external review.)
 
 ## 13. Related Work
 
-(Draft: agent security literature from 2023 onward; applied FHE in
-production systems; prior cryptographic mediation architectures for
-RPC and microservice contexts; honest comparison with public vendor
-claims that violate information-theoretic bounds on FHE overhead.)
+Franklin, Tomašev, Jacobs, Leibo, and Osindero (2026) at Google DeepMind provide
+the first comprehensive taxonomy of the AI agent attack surface under the rubric
+of Agent Traps, classifying six categories of environmental adversarial content
+that target different stages of an agent's operational cycle: Content Injection,
+Semantic Manipulation, Cognitive State, Behavioural Control, Systemic, and
+Human-in-the-Loop. XSOC-NIE-GUARD implements structural controls against four
+of those six categories by construction: content injection is contained by MCP
+boundary mediation and context provenance anchoring; semantic manipulation
+targeting reasoning is contained by agent intent envelope binding; cognitive
+state traps on memory and retrieval are contained by VectorShield integration
+and Providence audit anchoring; and behavioural control traps including the
+data exfiltration and sub-agent spawning vectors are contained by our fully
+homomorphic encryption context gate and capability derivation tree
+respectively. We acknowledge that systemic traps in the multi-agent dynamics
+category and human overseer fatigue patterns remain largely outside the scope
+of per-agent cryptographic mediation and require complementary ecosystem-level
+coordination which we leave as future work. We believe the two works are
+complementary: Franklin et al. name the attack surface, and XSOC-NIE-GUARD
+provides a deployable architecture that implements structural defenses against
+the categories where cryptographic mediation is the correct shape of response.
+A full mapping from XSOC-NIE-GUARD controls to Franklin categories appears in
+Appendix D.
+
+Greshake et al. (2023) introduced the concept of indirect prompt injection in
+LLM-integrated applications. XSOC-NIE-GUARD's agent intent envelope and context
+provenance chain are direct architectural responses to the indirect-injection
+vector Greshake et al. catalog.
+
+Shapira et al. (2025) report data exfiltration success rates exceeding 80
+percent across five web-use agents via task-aligned prompt injection. Our FHE
+Context Gate Mode A addresses this vector by construction: the model endpoint
+never sees cleartext sensitive context, so the exfiltration primitive does not
+exist in the execution model for Mode A operations.
+
+Triedman, Jha, and Shmatikov (2025) demonstrate 58 to 90 percent success rates
+for adversarial content hijacking control flow in multi-agent orchestrator
+systems. Our Capability Derivation Tree enforces strict scope narrowing on all
+child capabilities and cascades revocation from parent to children in
+sub-millisecond time, providing a direct structural answer to this threat class.
+
+Zou et al. (2025) document retrieval-augmented generation knowledge poisoning
+via injected documents. Our VectorShield integration and FHE Mode A operation
+over encrypted RAG corpora address this threat by eliminating the cleartext
+retrieval corpus at the endpoint and by validated-overhead performance of
+negative 0.39 percent over the unmediated retrieval pipeline.
+
+Further related work covers applied FHE in production systems, prior
+cryptographic mediation architectures for RPC and microservice contexts, and
+honest comparison with public vendor claims that violate information-theoretic
+bounds on FHE overhead.
 
 ---
 
@@ -437,3 +483,29 @@ validated performance or correctness claims. The paper does not describe
 key schedule, derivation path, cipher construction, round structure,
 scheme parameterization, wave modulation, frequency selection, or internal
 state machines of any XSOC primitive.
+
+## Appendix D: Franklin et al. Taxonomy Coverage Table
+
+The Franklin et al. (2026) taxonomy enumerates six categories of agent traps.
+This appendix provides a category-by-category coverage assessment. The full
+mapping including all vectors within each category is maintained in the
+repository at `docs/franklin-taxonomy-mapping.md`.
+
+| Franklin Category | Representative Vectors | XSOC-NIE-GUARD Coverage | Status |
+|---|---|---|---|
+| Content Injection | Web-standard obfuscation, dynamic cloaking, syntactic masking | A3 MCP mediator, A4 CPC | Strong |
+| Content Injection (multi-modal) | Steganographic payloads in images or audio | A4 content hash on binary; perturbation detection not present | Partial |
+| Semantic Manipulation | Biased phrasing, framing, oversight evasion | A2 Intent Envelope, A6 Dual-Control, A9 BEM | Strong |
+| Semantic Manipulation | Persona hyperstition | Out of scope, training-time concern | Not covered |
+| Cognitive State | RAG knowledge poisoning, latent memory poisoning | VectorShield, FHE Mode A, Providence | Strong |
+| Cognitive State | Contextual learning traps | Signed policy bundles, A3 sanitization | Medium |
+| Behavioural Control | Embedded jailbreak sequences | A2 Intent Envelope, A3 sanitizer | Strong |
+| Behavioural Control | Data exfiltration | A1 FHE Mode A, target hash binding, A8 CDT | Strong |
+| Behavioural Control | Sub-agent spawning | A8 Capability Derivation Tree | Strong |
+| Systemic | Congestion, cascades, collusion, compositional fragments, Sybil across operators | Ecosystem coordination required | Not covered (future work) |
+| Human-in-the-Loop | Approval fatigue, agent-mediated social engineering | A6 Dual-Control, Providence visibility; UI design required | Partial |
+
+The Related Work section of this paper (Section 13) contextualises this
+coverage relative to the Franklin et al. taxonomy and Limitations (Section 12)
+names the systemic and persona hyperstition categories as out of scope for a
+per-agent cryptographic mediation architecture.
