@@ -1,0 +1,17 @@
+# Global code owners for the XSOC public reference repo.
+# Any change requires review by an XSOC cryptographic owner.
+
+*                           @xsoc-corp/crypto-owners
+
+# The disclosure boundary infrastructure requires additional review.
+/scripts/disclosure-lint.mjs        @xsoc-corp/crypto-owners @xsoc-corp/release-owners
+/scripts/verify-public-boundary.mjs @xsoc-corp/crypto-owners @xsoc-corp/release-owners
+/docs/disclosure-policy.md          @xsoc-corp/crypto-owners @xsoc-corp/release-owners
+
+# Policy engine changes need policy owner review.
+/packages/policy-engine/            @xsoc-corp/policy-owners
+
+# Envelope and audit are load-bearing, require crypto owner.
+/packages/tstl-envelope/            @xsoc-corp/crypto-owners
+/packages/providence-log/           @xsoc-corp/crypto-owners
+/packages/fhe-gate/                 @xsoc-corp/crypto-owners

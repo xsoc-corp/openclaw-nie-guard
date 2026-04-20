@@ -1,0 +1,24 @@
+name: Disclosure Lint
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# This workflow enforces the public/private disclosure boundary.
+# It MUST pass before any merge to main. Failure indicates potential
+# leakage of XSOC trade secret primitives into the public repo.
+
+jobs:
+  disclosure-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Forbidden terms lint
+        run: node scripts/disclosure-lint.mjs
+      - name: Private import boundary verification
+        run: node scripts/verify-public-boundary.mjs

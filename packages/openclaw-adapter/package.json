@@ -1,0 +1,21 @@
+{
+  "name": "@xsoc/openclaw-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Adapter layer between broker and OpenClaw. Accepts only mediated input; strips all client-supplied auth.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  }
+}

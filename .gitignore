@@ -1,0 +1,44 @@
+# Node
+node_modules/
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Private repo contents (belong in xsoc-corp private repo, never here)
+private/nie-bindings-prod/
+private/fhe-gate-prod/
+
+# Providence local chain (runtime artifact)
+data/providence/
+data/redis/
+
+# Test artifacts
+test-results/
+playwright-report/

@@ -1,0 +1,23 @@
+{
+  "name": "@xsoc/policy-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deny-by-default policy engine for OPENCLAW-NIE-GUARD. Evaluates role-to-operation-to-profile matrix from signed policy bundles.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*",
+    "@xsoc/nie-bindings": "workspace:*",
+    "zod": "^3.23.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  }
+}

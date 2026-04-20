@@ -1,0 +1,21 @@
+{
+  "name": "@xsoc/nie-bindings",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stable TypeScript interface to NIE primitives. Public repo ships the mock implementation. Production binding is substituted in the private deployment repo.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  }
+}

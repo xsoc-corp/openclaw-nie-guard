@@ -1,0 +1,19 @@
+{
+  "name": "@xsoc/openclaw-mock",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mock OpenClaw transport implementation for local development. Implements OpenClawTransport.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*",
+    "@xsoc/openclaw-adapter": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

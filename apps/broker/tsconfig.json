@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "references": [
+    { "path": "../../packages/shared-types" },
+    { "path": "../../packages/nie-bindings" },
+    { "path": "../../packages/policy-engine" },
+    { "path": "../../packages/tstl-envelope" },
+    { "path": "../../packages/providence-log" },
+    { "path": "../../packages/fhe-gate" },
+    { "path": "../../packages/openclaw-adapter" },
+    { "path": "../../packages/mcp-mediator" }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": "0.1.0",
+  "bundleId": "00000000-0000-4000-8000-000000000001",
+  "effectiveFrom": 1713600000000,
+  "signerKeyId": "mock-key-1",
+  "signature": "MOCK_SIGNATURE_PUBLIC_REPO_ONLY",
+  "payload": {
+    "roles": {
+      "viewer": {
+        "description": "Read-only operator resources.",
+        "allowedOperations": ["operator.read"],
+        "defaultProfile": "standard",
+        "requiresDualControl": []
+      },
+      "operator": {
+        "description": "Read, write, approved tool invocation.",
+        "allowedOperations": ["operator.read", "operator.write", "tool.invoke", "file.read", "file.write"],
+        "defaultProfile": "standard",
+        "requiresDualControl": []
+      },
+      "admin": {
+        "description": "Administrative control. Dual-control enforced.",
+        "allowedOperations": ["admin.control", "exec.run"],
+        "defaultProfile": "strict",
+        "requiresDualControl": ["admin.control", "exec.run"]
+      }
+    },
+    "mcpServers": [
+      { "serverId": "telegram-bot", "trustLevel": "sanitized", "sanitizationProfile": "external-channel" },
+      { "serverId": "slack-connector", "trustLevel": "sanitized", "sanitizationProfile": "external-channel" },
+      { "serverId": "email-ingest", "trustLevel": "sanitized", "sanitizationProfile": "external-channel" }
+    ],
+    "skills": []
+  }
+}

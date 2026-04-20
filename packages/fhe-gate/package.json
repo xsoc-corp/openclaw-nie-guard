@@ -1,0 +1,21 @@
+{
+  "name": "@xsoc/fhe-gate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FHE Context Gate. Three-mode processing of sensitive context routed through XSOC FHE SDK. Public repo ships mock; production binding substitutes via workspace override.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  }
+}

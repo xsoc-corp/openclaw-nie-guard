@@ -1,0 +1,14 @@
+[package]
+name = "nie-core-public-stub"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+authors = ["XSOC Corp"]
+description = "Public stub. The real nie-core workspace (nie-crypto, nie-tpm, nie-token, nie-providence, nie-rbac, nie-enrollment, nie-revocation, nie-wasm, nie-ffi, nie-embedded) is referenced by path from the private deployment repo."
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[lib]
+path = "src/lib.rs"

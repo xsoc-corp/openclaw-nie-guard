@@ -1,0 +1,23 @@
+{
+  "name": "@xsoc/attack-sim",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deterministic attack simulation harness. Drives all 23 scenarios against the broker and asserts expected deny paths and Providence event types.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "tsx": "^4.7.3",
+    "vitest": "^1.5.0",
+    "@types/node": "^20.12.7"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@xsoc/broker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fastify broker service. Single front door to OpenClaw. Enforces admission, continuity, revocation, and audit.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*",
+    "@xsoc/nie-bindings": "workspace:*",
+    "@xsoc/policy-engine": "workspace:*",
+    "@xsoc/tstl-envelope": "workspace:*",
+    "@xsoc/providence-log": "workspace:*",
+    "@xsoc/fhe-gate": "workspace:*",
+    "@xsoc/openclaw-adapter": "workspace:*",
+    "@xsoc/mcp-mediator": "workspace:*",
+    "fastify": "^4.27.0",
+    "@fastify/sensible": "^5.5.0",
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/websocket": "^10.0.1",
+    "ioredis": "^5.4.1",
+    "zod": "^3.23.4",
+    "pino": "^9.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "tsx": "^4.7.3",
+    "vitest": "^1.5.0",
+    "@types/node": "^20.12.7"
+  }
+}

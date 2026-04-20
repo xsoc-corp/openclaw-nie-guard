@@ -1,0 +1,21 @@
+{
+  "name": "@xsoc/demo-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Demo client driving happy-path flows against the broker.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xsoc/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "tsx": "^4.7.3",
+    "@types/node": "^20.12.7"
+  }
+}

@@ -1,0 +1,43 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: xsoc-nie-guard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: ["redis-server", "--appendonly", "yes"]
+
+  broker:
+    build:
+      context: .
+      dockerfile: infra/docker/broker.Dockerfile
+    container_name: xsoc-nie-guard-broker
+    ports:
+      - "8443:8443"
+    environment:
+      BROKER_PORT: 8443
+      REDIS_URL: redis://redis:6379
+      NIE_BINDINGS_MODE: mock
+      FHE_GATE_MODE: mock
+      OPENCLAW_MODE: mock
+      OPENCLAW_URL: http://openclaw-mock:18789
+      PROVIDENCE_DATA_DIR: /app/data/providence
+      LOG_LEVEL: info
+    depends_on:
+      - redis
+      - openclaw-mock
+    volumes:
+      - ./data/providence:/app/data/providence
+
+  openclaw-mock:
+    build:
+      context: .
+      dockerfile: infra/docker/openclaw-mock.Dockerfile
+    container_name: xsoc-nie-guard-openclaw-mock
+    ports:
+      - "18789:18789"
+
+networks:
+  default:
+    name: xsoc-nie-guard-net
