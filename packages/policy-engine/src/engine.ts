@@ -61,7 +61,7 @@ export class PolicyEngine {
     return DEFAULT_ROLE_MATRIX[roleName];
   }
 
-  private deny(code: string, reason: string, input: PolicyEvaluationInput): PolicyDecision {
+  private deny(code: string, reason: string, _input: PolicyEvaluationInput): PolicyDecision {
     return {
       allowed: false,
       profile: 'strict',
