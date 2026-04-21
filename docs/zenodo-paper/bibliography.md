@@ -192,6 +192,12 @@ invented). ACM SIGOPS Operating Systems Review 22(4):36-38, 1988.
 **[41]** Blech, R. XSOC-QSIG (DSKAG-IT-SIG). Zenodo preprint,
 DOI 10.5281/zenodo.19639166, 2025.
 
+**[42]** XSOC Corp. XSOC FHE SDK v3.0.0.0 Technical White Paper:
+Enterprise-Grade Fully Homomorphic Encryption with Integrated Key Management
+and Policy Enforcement. Academic, Enterprise and Government Edition.
+DISTRIBUTION STATEMENT A, approved for public release, distribution unlimited.
+XSOC Corp, January 2026.
+
 ---
 
 ## Bibliography notes

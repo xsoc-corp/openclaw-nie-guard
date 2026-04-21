@@ -39,7 +39,7 @@ require you to review the paper in detail.
 
 The paper I intend to submit is titled XSOC-NIE-GUARD: A Cryptographic Mediation
 Architecture for AI Agent Systems, with Application to the OpenClaw Security
-Crisis. It is already posted on Zenodo with DOI 10.5281/zenodo.XXXXXXXX as a
+Crisis. It is already posted on Zenodo with DOI 10.5281/zenodo.19685360 as a
 preprint. The companion reference implementation is at
 github.com/xsoc-corp/openclaw-nie-guard under Apache 2.0. The paper describes a
 five-plane mediation architecture that addresses the structural failures
@@ -91,7 +91,7 @@ the paper.
 
 The paper I am preparing to submit is titled XSOC-NIE-GUARD: A Cryptographic
 Mediation Architecture for AI Agent Systems, with Application to the OpenClaw
-Security Crisis. The preprint is on Zenodo at DOI 10.5281/zenodo.XXXXXXXX and
+Security Crisis. The preprint is on Zenodo at DOI 10.5281/zenodo.19685360 and
 the reference implementation is at github.com/xsoc-corp/openclaw-nie-guard
 under Apache 2.0. The paper argues that the current AI agent security crisis
 documented across the OpenClaw record is structural rather than defect level,

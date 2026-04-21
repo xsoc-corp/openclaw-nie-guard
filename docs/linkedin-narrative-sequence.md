@@ -28,7 +28,7 @@ Palo Alto mapped OpenClaw to every category in the OWASP Top 10 for Agentic
 Applications. We believe a patch for any one of those categories does not change
 the posture. A mediation layer does.
 
-DOI: 10.5281/zenodo.XXXXXXXX
+DOI: 10.5281/zenodo.19685360
 Companion reference implementation under Apache 2.0 at github.com/xsoc-corp/openclaw-nie-guard
 
 Tagging peers working in this space: Roberto Avanzi, Diego Aranha. Thoughts welcome.
