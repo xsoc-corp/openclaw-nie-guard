@@ -5,7 +5,7 @@ describe('NIE mock bindings', () => {
   it('attests and issues a capability', async () => {
     const bindings = createMockBindings();
     const result = await bindings.attest({
-      attestationPackage: 'pkg-abc',
+      attestationPackage: 'pkg-mock-ok',
       requestedRole: 'operator',
       requestedOperationSet: ['tool.invoke'],
       clientMetadata: { deviceFingerprint: 'dev-1' }
@@ -17,7 +17,7 @@ describe('NIE mock bindings', () => {
   it('verifies an issued token as valid', async () => {
     const bindings = createMockBindings();
     const result = await bindings.attest({
-      attestationPackage: 'pkg-abc',
+      attestationPackage: 'pkg-mock-ok',
       requestedRole: 'operator',
       requestedOperationSet: ['tool.invoke'],
       clientMetadata: { deviceFingerprint: 'dev-1' }
@@ -29,7 +29,7 @@ describe('NIE mock bindings', () => {
   it('revokes a session and invalidates its token', async () => {
     const bindings = createMockBindings();
     const attestation = await bindings.attest({
-      attestationPackage: 'pkg-abc',
+      attestationPackage: 'pkg-mock-ok',
       requestedRole: 'operator',
       requestedOperationSet: ['tool.invoke'],
       clientMetadata: { deviceFingerprint: 'dev-1' }
@@ -42,7 +42,7 @@ describe('NIE mock bindings', () => {
   it('cdt: child capability is strictly narrower than parent', async () => {
     const bindings = createMockBindings();
     const parent = await bindings.attest({
-      attestationPackage: 'pkg-abc',
+      attestationPackage: 'pkg-mock-ok',
       requestedRole: 'operator',
       requestedOperationSet: ['tool.invoke', 'file.read'],
       clientMetadata: { deviceFingerprint: 'dev-1' }

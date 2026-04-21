@@ -12,7 +12,7 @@ export type FheMode = z.infer<typeof FheMode>;
 export const MODE_COMPATIBILITY: Record<Classification, FheMode[]> = {
   'public': ['A', 'B', 'C'],
   'sensitive': ['A', 'B', 'C'],
-  'regulated': ['A', 'B'],
+  'regulated': ['A', 'B', 'C'],
   'classified-adjacent': ['A']
 };
 
