@@ -51,8 +51,12 @@ controls to Franklin categories is in `docs/franklin-taxonomy-mapping.md`.
 
 ## 3. Assumptions
 
-- NIE cryptographic primitives are sound (interface-level assumption; externally
-  validated by University of Luxembourg, Cal Poly SLO, GMU SENTINEL)
+- NIE cryptographic primitives are sound (interface-level assumption; the
+  broader XSOC cryptographic stack has been externally validated through
+  Perrin and Biryukov audits of the legacy cryptosystem at the University
+  of Luxembourg in 2020 and 2024 with mandatory findings incorporated,
+  Cal Poly San Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate,
+  and GMU SENTINEL FP5223 forthcoming June 2026)
 - Device attestation is trustworthy up to the stated attestation floor
 - Ceremony-rooted signing keys are held in HSM or equivalent
 - Redis is available for revocation propagation (fallback to in-process cache

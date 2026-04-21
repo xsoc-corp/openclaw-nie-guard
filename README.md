@@ -121,8 +121,11 @@ Apache 2.0. See LICENSE.
 XSOC Corp designs and builds cryptographic infrastructure for high-trust environments,
 including post-quantum key agreement, policy-bound encryption, homomorphic evaluation,
 software-defined diode transport, and continuity-bound audit. Independent validations
-include the University of Luxembourg (Biryukov and Perrin), Cal Poly San Luis Obispo
-Dieharder, and GMU SENTINEL FP5223.
+of the broader XSOC cryptographic stack include Perrin and Biryukov audits of the legacy
+cryptosystem at the University of Luxembourg in 2020 and 2024 (with mandatory findings
+incorporated into the current canonical build), Cal Poly San Luis Obispo Dieharder
+v3.31.1 at 99.4 percent aggregate across 98 tests, and GMU SENTINEL laboratory audit
+FP5223 (full report publication scheduled June 2026).
 
 - Website: https://xsoccorp.com
 - OWASP AI Exchange: contributor

@@ -92,9 +92,10 @@ control mechanism.
 
 For US federal buyers, attestation floor selection supports IL4 and IL5
 posture. Independent validations of the underlying components come from the
-University of Luxembourg under Biryukov and Perrin, Cal Poly San Luis Obispo
-Dieharder at 98.4 percent across 440 plus runs, and George Mason University
-SENTINEL FP5223.
+University of Luxembourg audits by Perrin and Biryukov (2020 and 2024, on the
+legacy cryptosystem predating DSKAG, with mandatory findings incorporated),
+Cal Poly San Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate across
+98 tests, and George Mason University SENTINEL FP5223 (full report June 2026).
 
 Full compliance map in the paper appendix. Happy to talk with teams evaluating
 agent frameworks in regulated contexts.

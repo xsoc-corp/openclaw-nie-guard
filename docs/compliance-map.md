@@ -42,7 +42,12 @@ map to classification taxonomy, Providence chain, and dual-control mechanism.
 ## FedRAMP and DoD IL considerations
 
 Attestation floor selection (TPM, Secure Enclave, StrongBox, HSM) supports IL4/IL5
-posture. SP-VERSA, X-ARC, DSKAG black-box cryptographic primitives are independently
-validated (Cal Poly San Luis Obispo Dieharder 98.4%, University of Luxembourg analysis,
-GMU SENTINEL FP5223). FHE Mode A and Mode B eliminate cleartext exposure entirely
-for the highest-classification operations.
+posture. XSOC black-box cryptographic primitives referenced by this architecture
+have been externally validated through Perrin and Biryukov audits of the legacy
+XSOC cryptosystem at the University of Luxembourg (2020 and 2024, predating DSKAG,
+with mandatory findings incorporated into the canonical build), Cal Poly San Luis
+Obispo Dieharder v3.31.1 statistical validation of the entropy subsystem (99.4
+percent aggregate across 98 tests), and the George Mason University SENTINEL
+laboratory audit FP5223 (full report publication scheduled June 2026). FHE Mode A
+and Mode B eliminate cleartext exposure entirely for the highest-classification
+operations.

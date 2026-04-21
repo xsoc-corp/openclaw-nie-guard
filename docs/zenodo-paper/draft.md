@@ -34,9 +34,14 @@ Agentic Applications, ISO 42001, and European Union AI Act posture. Production
 cryptographic primitives including our deterministic symmetric key agreement,
 post-storage volatile cipher, and CKKS-based homomorphic evaluation SDK are
 described at the interface level and by stated security properties, with
-construction details remaining proprietary and externally validated by
-independent parties including the University of Luxembourg, California
-Polytechnic State University at San Luis Obispo, and George Mason University.
+construction details remaining proprietary. The broader XSOC cryptographic
+stack has been externally evaluated through confidential audits of the legacy
+cryptosystem by the University of Luxembourg (Perrin and Biryukov, 2020 and
+2024, with mandatory findings incorporated into the current canonical build),
+through Dieharder v3.31.1 statistical validation at California Polytechnic
+State University, San Luis Obispo (99.4 percent aggregate across 98 tests),
+and through the George Mason University SENTINEL laboratory audit FP5223
+(full report publication scheduled June 2026).
 
 ---
 
@@ -252,9 +257,13 @@ agreement primitive at interface level with public security properties,
 short-TTL scoped capabilities, and the Capability Derivation Tree for
 sub-agent flows. Construction of the key derivation primitive is black box;
 see `docs/nie-integration.md` for the public interface. External
-validations by University of Luxembourg Biryukov and Perrin, Cal Poly San
-Luis Obispo Dieharder, and George Mason University SENTINEL FP5223 are
-cited for confidence in the underlying primitive without revealing
+validations of the broader XSOC cryptographic stack, Perrin and Biryukov
+audits of the legacy cryptosystem at the University of Luxembourg in 2020
+and 2024, Cal Poly San Luis Obispo Dieharder v3.31.1 statistical validation
+of the entropy subsystem at 99.4 percent aggregate across 98 tests, and
+George Mason University SENTINEL laboratory audit FP5223 with full report
+publication scheduled for June 2026, are cited for confidence in the
+underlying primitive without revealing
 construction.)
 
 ---
@@ -461,12 +470,15 @@ referenced only by interface and stated security properties.
 
 ## Appendix B: Citation and Attribution Rules (internal editorial)
 
-- Cal Poly San Luis Obispo Dieharder validation (never Pomona)
+- Cal Poly San Luis Obispo Dieharder validation (never Pomona); use 99.4
+  percent aggregate across 98 tests, not 98.4 percent or 440 runs
 - EternaX $144.4T figure attributed to Dariia Porechna, Dr. Chen Feng,
   and Paarth Birla when referenced
-- GMU SENTINEL FP5223 cited with finding numbers
-- University of Luxembourg analysis by Biryukov and Perrin cited for
-  the amended construction result
+- GMU SENTINEL FP5223 cited as forthcoming report with June 2026 publication
+- University of Luxembourg audits by Perrin and Biryukov cited as
+  confidential audits of the legacy cryptosystem in 2020 and 2024,
+  predating DSKAG, with mandatory findings incorporated into the canonical
+  build; never as peer review of DSKAG or the canonical build
 - Simon Willison lethal trifecta framing attributed
 - OpenClaw public coverage cited with source and date; no speculation
   on internal OpenClaw design beyond what public CVE and advisory

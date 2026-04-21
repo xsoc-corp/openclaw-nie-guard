@@ -130,7 +130,7 @@ Each bound to a live customer conversation:
 
 ### 2.6 Public narrative
 
-This is the first commercial FHE deployment in an AI agent flow. No other vendor in the AI security space has put FHE into production in this context. The surrounding credibility wall includes Cal Poly San Luis Obispo Dieharder (98.4% pass, 440+ tests), University of Luxembourg Biryukov/Perrin (no attacks on amended version), and GMU SENTINEL FP5223. Competitive disambiguation from FHE-washing (DataKrypto's FIPS cert is SafeLogic rebranding of standard algorithms, not FHE; their zero-overhead claim is mathematically impossible) is direct and defensible.
+This is the first commercial FHE deployment in an AI agent flow. No other vendor in the AI security space has put FHE into production in this context. The surrounding credibility wall includes Cal Poly San Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate across 98 tests, Perrin and Biryukov audits of the legacy XSOC cryptosystem at the University of Luxembourg in 2020 and 2024 (predating DSKAG, with mandatory findings incorporated into the canonical build), and GMU SENTINEL FP5223 (full report June 2026). Competitive disambiguation from FHE-washing (DataKrypto's FIPS cert is SafeLogic rebranding of standard algorithms, not FHE; their zero-overhead claim is mathematically impossible) is direct and defensible.
 
 Publication vehicles:
 

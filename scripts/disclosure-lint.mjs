@@ -25,7 +25,17 @@ const FORBIDDEN_TERMS = [
   'xrng-internal',
   'nexuskey-binding-internal',
   'tstl-seal-construction',
-  'sdd-construction-detail'
+  'sdd-construction-detail',
+  'nlfsr-polynomial',
+  'nlfsr-taps',
+  'nlfsr-feedback-polynomial',
+  'mwc-constants',
+  'mwc-multiplier',
+  'sbox-mutation-schedule',
+  's-box-mutation-schedule',
+  'warm-up-cycle-count',
+  'pguid-integration-schema',
+  'pguid-binding-schema'
 ];
 
 // Paths excluded from the lint (private boundary itself, generated output, tests that document forbidden terms).

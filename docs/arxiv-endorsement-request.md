@@ -48,9 +48,13 @@ plaintext credential storage, ClawHub supply chain, Willison lethal trifecta).
 The construction is composed of standard primitives at the interface level;
 internal cryptographic construction details for XSOC-proprietary components are
 black box and are described by public name and stated security properties only.
-Independent validations on the underlying components are in the bibliography
-(University of Luxembourg Biryukov and Perrin analysis, Cal Poly San Luis Obispo
-Dieharder statistical testing, George Mason University SENTINEL FP5223).
+Independent validations on the underlying XSOC cryptographic stack are in the
+bibliography: Perrin and Biryukov audits of the legacy cryptosystem at the
+University of Luxembourg in 2020 and 2024, with mandatory findings incorporated
+into the current canonical build; Cal Poly San Luis Obispo Dieharder v3.31.1
+statistical testing of the entropy subsystem at 99.4 percent aggregate across
+98 tests; and George Mason University SENTINEL laboratory audit FP5223, with
+full report publication scheduled for June 2026.
 
 If you would prefer I send the preprint PDF for a closer read before you decide,
 I am happy to do that.
