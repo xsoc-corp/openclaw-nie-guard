@@ -12,6 +12,16 @@ Phase 1. Scaffold with typed interfaces, mock bindings, disclosure lint, CI, and
 threat model. Implementation of business logic is tracked by `TODO(xsoc-openclaw-poc)`
 markers and proceeds through Phases 3 through 9 per `docs/build-plan.md`.
 
+## Quickstart (reviewers, 3-5 minutes)
+
+```bash
+git clone https://github.com/xsoc-corp/openclaw-nie-guard.git
+cd openclaw-nie-guard
+./scripts/quickstart.sh
+```
+
+The quickstart script installs dependencies, builds the workspace, runs the test suite, starts the broker with mock bindings, executes the full 25-scenario attack simulation harness, and displays the resulting Providence audit chain. Requires Node 20+, pnpm 9+, and optionally Docker for Redis and the mock OpenClaw transport.
+
 ## Quick start (local dev)
 
 ```bash
