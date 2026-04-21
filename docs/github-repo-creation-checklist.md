@@ -24,11 +24,11 @@ xsoc-corp
 Rationale: matches `CODEOWNERS`, matches package `repository.url` in package.json,
 matches prior XSOC public repo pattern (xsoc-qsig-cga-release).
 
-**Description (350 char limit on GitHub):**
+**Description (341 char, fits GitHub's 350 limit):**
 ```
-Cryptographic trust mediation layer for AI agent frameworks. Public reference architecture under Apache 2.0. Composes device-attested admission, short-TTL scoped capabilities, runtime continuity envelopes, context provenance anchoring, agent intent binding, FHE context gate, MCP boundary mediation, signed policy bundles, and tamper-evident audit chain.
+Cryptographic trust mediation layer for AI agent frameworks. Apache 2.0 reference architecture composing device-attested admission, short-TTL scoped capabilities, runtime continuity envelopes, context provenance anchoring, agent intent binding, FHE context gate, MCP boundary mediation, signed policy bundles, and tamper-evident audit chain.
 ```
-Character count: 347. Fits.
+Character count: 341. Fits.
 
 **Alternative short description if you prefer leaner:**
 ```
