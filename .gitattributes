@@ -1,5 +1,23 @@
+# Auto-detect text files and normalize them to LF in the repo
 * text=auto eol=lf
+
+# Explicit overrides: shell scripts and Node scripts MUST stay LF
 *.sh text eol=lf
-*.rs text eol=lf
-*.toml text eol=lf
+*.mjs text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
 *.md text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.tar.gz binary
