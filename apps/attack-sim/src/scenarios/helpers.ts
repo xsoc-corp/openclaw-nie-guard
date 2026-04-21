@@ -134,7 +134,7 @@ export async function mcpIngest(brokerUrl: string, serverId: string, content: st
       correlationId: randomUUID()
     })
   });
-  return { status: res.status, body: await res.json() };
+  return { status: res.status, body: await res.json() as { code?: string; tagged?: string } };
 }
 
 export async function registerSkill(brokerUrl: string, input: {
@@ -152,5 +152,5 @@ export async function registerSkill(brokerUrl: string, input: {
       manifest: { name: input.skillId, version: '1.0.0', capabilities: ['tool.invoke'] }
     })
   });
-  return { status: res.status, body: await res.json() };
+  return { status: res.status, body: await res.json() as { code?: string; registered?: boolean } };
 }
