@@ -21,6 +21,7 @@
     "@xsoc/fhe-gate": "workspace:*",
     "@xsoc/openclaw-adapter": "workspace:*",
     "@xsoc/mcp-mediator": "workspace:*",
+    "@xsoc/openclaw-mock": "workspace:*",
     "fastify": "^4.27.0",
     "@fastify/sensible": "^5.5.0",
     "@fastify/rate-limit": "^9.1.0",
