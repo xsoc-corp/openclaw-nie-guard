@@ -52,7 +52,7 @@ Classification to mode compatibility:
 |---|---|
 | public | A, B, C |
 | sensitive | A, B, C |
-| regulated | A, B |
+| regulated | A, B, C (Mode C requires dual-control receipt) |
 | classified-adjacent | A only |
 
 ## Context Provenance Chain
