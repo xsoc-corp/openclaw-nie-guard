@@ -4,7 +4,7 @@ import rateLimit from '@fastify/rate-limit';
 import { loadBindings } from '@xsoc/nie-bindings';
 import { PolicyEngine } from '@xsoc/policy-engine';
 import { ProvidenceLog } from '@xsoc/providence-log';
-import { createMockFheGate } from '@xsoc/fhe-gate';
+import { loadFheGate } from '@xsoc/fhe-gate';
 import { McpMediator } from '@xsoc/mcp-mediator';
 import { OpenClawAdapter } from '@xsoc/openclaw-adapter';
 import { MockOpenClawTransport } from '@xsoc/openclaw-mock';
@@ -31,7 +31,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   const bindings = await loadBindings();
   const policy = new PolicyEngine();
   const providence = new ProvidenceLog(config.providenceChainFile);
-  const fheGate = createMockFheGate();
+  const fheGate = await loadFheGate();
   const mcpMediator = new McpMediator();
 
   // Seed MCP trust table for dev. Production loads from signed policy bundle.
