@@ -15,9 +15,15 @@ export function sanitizeResponse(raw: string): SanitizationResult {
   const found: string[] = [];
   let sanitized = raw;
   for (const { name, pattern } of INJECTION_PATTERNS) {
-    if (pattern.test(sanitized)) {
+    // A module-scope RegExp with the g flag carries mutable lastIndex state across
+    // calls. Using .test() on it would advance that state and cause later calls to
+    // start mid-string and miss matches. Replace unconditionally against a fresh
+    // regex instead, and detect a hit by whether the string actually changed.
+    const scoped = new RegExp(pattern.source, pattern.flags);
+    const replaced = sanitized.replace(scoped, '[REDACTED_INJECTION_PATTERN]');
+    if (replaced !== sanitized) {
       found.push(name);
-      sanitized = sanitized.replace(pattern, '[REDACTED_INJECTION_PATTERN]');
+      sanitized = replaced;
     }
   }
   return { sanitized, taintFound: found.length > 0, taintPatterns: found };

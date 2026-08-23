@@ -1,4 +1,4 @@
-// 23 attack scenarios. Each is deterministic, self-contained, and issues real HTTP calls
+// 27 attack scenarios: 19 implemented, 8 skeleton. Each is deterministic, self-contained, and issues real HTTP calls
 // against a running broker. Scenarios that require capabilities not yet wired in the broker
 // (streaming, BEM, shadow policy, policy bundle signatures) are marked as skeleton.
 

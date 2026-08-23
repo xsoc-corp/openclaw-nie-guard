@@ -1,7 +1,8 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { appendFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import type { ProvidenceEvent, ProvidenceEventType } from '@xsoc/shared-types';
+import type { ProvidenceEvent, ProvidenceEventType, SignedAnchor } from '@xsoc/shared-types';
+import type { ProvidenceSigner } from './signer.js';
 
 const GENESIS_HASH = '0'.repeat(64);
 
@@ -20,6 +21,7 @@ export interface LogAppendInput {
 
 export class ProvidenceLog {
   private headHash: string = GENESIS_HASH;
+  private eventCount = 0;
   private readonly chainPath: string;
 
   constructor(chainPath: string) {
@@ -47,6 +49,7 @@ export class ProvidenceLog {
     event.eventHash = hashEvent(event);
     this.persist(event);
     this.headHash = event.eventHash;
+    this.eventCount++;
     return event;
   }
 
@@ -54,9 +57,21 @@ export class ProvidenceLog {
     return this.headHash;
   }
 
-  // TODO(xsoc-openclaw-poc): external anchor output (e.g., to a tamper-evident external store).
-  exportAnchor(): { headHash: string; timestamp: number } {
-    return { headHash: this.headHash, timestamp: Date.now() };
+  // Produces a signed anchor over the current chain head. The hash chain gives
+  // tamper evidence between anchors; the signature gives non-repudiation of the
+  // chain state at this point. Canonical form is signed, not the JSON object, so
+  // key ordering cannot change what was signed.
+  async exportAnchor(signer: ProvidenceSigner): Promise<SignedAnchor> {
+    const anchor = {
+      anchorId: randomUUID(),
+      headHash: this.headHash,
+      eventCount: this.eventCount,
+      timestamp: Date.now(),
+      algorithm: signer.algorithm,
+      keyId: signer.keyId
+    };
+    const signature = await signer.sign(canonicalAnchor(anchor));
+    return { ...anchor, signature };
   }
 
   private persist(event: ProvidenceEvent): void {
@@ -75,6 +90,9 @@ export class ProvidenceLog {
     if (!lastLine) return;
     try {
       const lastEvent: ProvidenceEvent = JSON.parse(lastLine);
+      // Restore the count too, or a restarted process would anchor claiming zero events
+      // and every anchor it produced would fail verifyAnchor's count check.
+      this.eventCount = lines.length;
       this.headHash = lastEvent.eventHash;
     } catch {
       // Corrupt tail; start fresh at genesis for new writes but preserve existing file for forensics.
@@ -87,4 +105,11 @@ export function hashEvent(event: ProvidenceEvent): string {
   const { eventHash: _ignored, ...rest } = event;
   const canonical = JSON.stringify(rest, Object.keys(rest).sort());
   return createHash('sha256').update(canonical).digest('hex');
+}
+
+
+// Canonical serialization for anchor signing. Keys sorted so the signed bytes are
+// independent of object construction order.
+export function canonicalAnchor(anchor: Omit<SignedAnchor, 'signature'>): string {
+  return JSON.stringify(anchor, Object.keys(anchor).sort());
 }

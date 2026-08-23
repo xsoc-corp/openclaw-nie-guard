@@ -47,3 +47,25 @@ export const ProvidenceEvent = z.object({
   metadata: z.record(z.string(), z.unknown()).optional()
 });
 export type ProvidenceEvent = z.infer<typeof ProvidenceEvent>;
+
+// Signature algorithm binding a Providence anchor. ML-DSA-65 (FIPS 204) is the
+// default for new deployments. XSOC-QSIG is selectable as an adjunct. The value
+// mock-unsigned indicates the non-cryptographic mock signer and carries no
+// unforgeability guarantee; it is visible in the anchor so a consumer can never
+// mistake a mock anchor for a signed one.
+export const AnchorSignatureAlgorithm = z.enum(['ML-DSA-65', 'XSOC-QSIG', 'mock-unsigned']);
+export type AnchorSignatureAlgorithm = z.infer<typeof AnchorSignatureAlgorithm>;
+
+// A signed anchor over the Providence chain head. The hash chain provides tamper
+// evidence between anchors. The signature provides non-repudiation of the chain
+// state at the anchor point.
+export const SignedAnchor = z.object({
+  anchorId: z.string().uuid(),
+  headHash: z.string().length(64),
+  eventCount: z.number().int().nonnegative(),
+  timestamp: z.number().int().positive(),
+  algorithm: AnchorSignatureAlgorithm,
+  keyId: z.string().min(1),
+  signature: z.string().min(1)
+});
+export type SignedAnchor = z.infer<typeof SignedAnchor>;
