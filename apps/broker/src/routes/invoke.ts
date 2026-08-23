@@ -4,6 +4,7 @@ import { validateEnvelope } from '@xsoc/tstl-envelope';
 import type { PolicyEvaluationInput } from '@xsoc/policy-engine';
 import type { MediatedOperation } from '@xsoc/openclaw-adapter';
 import { randomUUID, createHash } from 'node:crypto';
+import { withDeadline, DeadlineExceeded, DEADLINES } from '../lib/deadline.js';
 
 // Full /v1/invoke pipeline: token verify, nonce consume, envelope validate, intent alignment,
 // policy evaluate, dual-control gate, MCP classification check, adapter forward. Fail-closed
@@ -27,7 +28,17 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
     const body = parsed.data;
 
     // Layer 2: capability token verification. Returns the role and operation set for downstream checks.
-    const tokenResult = await bindings.verifyToken(body.capabilityToken);
+    let tokenResult;
+    try {
+      tokenResult = await withDeadline('token-verify', DEADLINES.tokenVerify, bindings.verifyToken(body.capabilityToken));
+    } catch (err) {
+      if (!(err instanceof DeadlineExceeded)) throw err;
+      providence.append({
+        eventType: 'deny', correlationId, reasonCode: 'ERR_UPSTREAM_TIMEOUT',
+        metadata: { stage: 'token-verify', budgetMs: err.budgetMs }
+      });
+      return reply.code(403).send({ code: 'ERR_UPSTREAM_TIMEOUT', message: 'Token verification did not complete within its deadline.', correlationId });
+    }
     if (!tokenResult.valid || !tokenResult.sessionId || !tokenResult.role) {
       providence.append({
         eventType: 'deny',
@@ -39,7 +50,17 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
     }
 
     // Layer 3: nonce single-use enforcement. Prevents envelope replay.
-    const nonceResult = await bindings.consumeNonce(body.nonce, tokenResult.sessionId);
+    let nonceResult;
+    try {
+      nonceResult = await withDeadline('nonce', DEADLINES.nonceConsume, bindings.consumeNonce(body.nonce, tokenResult.sessionId));
+    } catch (err) {
+      if (!(err instanceof DeadlineExceeded)) throw err;
+      providence.append({
+        eventType: 'deny', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
+        reasonCode: 'ERR_UPSTREAM_TIMEOUT', metadata: { stage: 'nonce', budgetMs: err.budgetMs }
+      });
+      return reply.code(403).send({ code: 'ERR_UPSTREAM_TIMEOUT', message: 'Nonce consumption did not complete within its deadline.', correlationId });
+    }
     if (!nonceResult.firstUse) {
       providence.append({
         eventType: 'replay_fail',
@@ -53,10 +74,21 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
     }
 
     // Layer 4: TSTL envelope validation.
-    const envelopeCheck = await validateEnvelope(body.envelope, bindings, {
-      targetId: body.targetId,
-      roleScope: body.operationClass
-    });
+    let envelopeCheck;
+    try {
+      envelopeCheck = await withDeadline('envelope', DEADLINES.envelopeValidate, validateEnvelope(body.envelope, bindings, {
+        targetId: body.targetId,
+        roleScope: body.operationClass
+      }));
+    } catch (err) {
+      if (!(err instanceof DeadlineExceeded)) throw err;
+      providence.append({
+        eventType: 'continuity_fail', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
+        deviceFingerprint: tokenResult.deviceFingerprint, operationClass: body.operationClass,
+        reasonCode: 'ERR_UPSTREAM_TIMEOUT', metadata: { stage: 'envelope', budgetMs: err.budgetMs }
+      });
+      return reply.code(403).send({ code: 'ERR_UPSTREAM_TIMEOUT', message: 'Envelope validation did not complete within its deadline.', correlationId });
+    }
     if (!envelopeCheck.valid || !envelopeCheck.envelope) {
       providence.append({
         eventType: envelopeCheck.reasonCode === 'ERR_TARGET_MISMATCH' ? 'target_mismatch' : 'continuity_fail',
@@ -158,7 +190,18 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       brokerSignature,
       correlationId
     };
-    const adapterResponse = await adapter.forward(mediated, decision.profile);
+    let adapterResponse;
+    try {
+      adapterResponse = await withDeadline('adapter', DEADLINES.adapterForward, adapter.forward(mediated, decision.profile));
+    } catch (err) {
+      if (!(err instanceof DeadlineExceeded)) throw err;
+      providence.append({
+        eventType: 'tool_block', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
+        operationClass: body.operationClass, reasonCode: 'ERR_UPSTREAM_TIMEOUT',
+        metadata: { stage: 'adapter', budgetMs: err.budgetMs }
+      });
+      return reply.code(403).send({ code: 'ERR_UPSTREAM_TIMEOUT', message: 'Adapter forward did not complete within its deadline.', correlationId });
+    }
 
     if (!adapterResponse.ok) {
       providence.append({

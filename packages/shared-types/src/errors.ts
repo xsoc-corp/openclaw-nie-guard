@@ -24,7 +24,11 @@ export const ErrorCodes = {
   DUAL_CONTROL_REQUIRED: 'ERR_DUAL_CONTROL_REQUIRED',
   DUAL_CONTROL_TIMEOUT: 'ERR_DUAL_CONTROL_TIMEOUT',
   MODE_C_UNAUTHORIZED: 'ERR_MODE_C_UNAUTHORIZED',
-  ENDPOINT_ATTESTATION_FAILED: 'ERR_ENDPOINT_ATTESTATION_FAILED'
+  ENDPOINT_ATTESTATION_FAILED: 'ERR_ENDPOINT_ATTESTATION_FAILED',
+  // A dependency the pipeline awaits did not answer within its deadline. Distinct
+  // from a policy deny so an operator reading Providence can tell "refused" from
+  // "dependency hung". Always denies; a timeout never falls through to allow.
+  UPSTREAM_TIMEOUT: 'ERR_UPSTREAM_TIMEOUT'
 } as const;
 
 export type ErrorCode = typeof ErrorCodes[keyof typeof ErrorCodes];
