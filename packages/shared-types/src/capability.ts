@@ -9,6 +9,11 @@ export type CapabilityToken = z.infer<typeof CapabilityToken>;
 // Admission request. Client submits device attestation, requested role, and requested operation set.
 export const AdmissionRequest = z.object({
   attestationPackage: z.string().min(1),
+  // Present on first contact from a not-yet-enrolled device; the admin issues this
+  // out of band (console or /nie/v1/admin/invite), the same model the human Nexus
+  // Connect portal uses. Omitted on every call after enrollment, which reauths using
+  // the device's already-registered identity instead.
+  inviteCode: z.string().min(1).optional(),
   requestedRole: z.string().min(1),
   requestedOperationSet: z.array(OperationClass).min(1),
   clientMetadata: z.object({
