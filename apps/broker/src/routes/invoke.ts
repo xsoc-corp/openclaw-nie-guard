@@ -142,7 +142,11 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       operationClass: body.operationClass,
       targetClass: body.targetClass,
       classification: envelope.classification,
-      intentClass: envelope.intentClass
+      intentClass: envelope.intentClass,
+      // Taint carried by this session, joined at /v1/context/register from the
+      // declared origins of every element it took in. The policy engine denies
+      // export and escalate intents under a tainted label.
+      sessionLabel: app.services.sessionLabels.get(tokenResult.sessionId)
     };
     const decision = policy.evaluate(policyInput);
     if (!decision.allowed) {

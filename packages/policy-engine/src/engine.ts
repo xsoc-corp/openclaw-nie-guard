@@ -1,5 +1,5 @@
 import type { PolicyBundle, FheMode } from '@xsoc/shared-types';
-import { MODE_COMPATIBILITY, OPERATION_TO_INTENT } from '@xsoc/shared-types';
+import { MODE_COMPATIBILITY, OPERATION_TO_INTENT, isTainted } from '@xsoc/shared-types';
 import type { PolicyDecision, PolicyEvaluationInput } from './types.js';
 import { DEFAULT_ROLE_MATRIX, type RoleDefinition } from './default-roles.js';
 
@@ -25,6 +25,32 @@ export class PolicyEngine {
     const allowedIntentClasses = OPERATION_TO_INTENT[input.operationClass];
     if (!allowedIntentClasses || !allowedIntentClasses.includes(input.intentClass)) {
       return this.deny('ERR_INTENT_DRIFT', `Intent ${input.intentClass} not permitted for ${input.operationClass}.`, input);
+    }
+
+    // Taint gate. A session that has taken in attacker-controllable material may
+    // not carry it outward or use it to raise its own authority.
+    //
+    // This is the control that bounds Cryptographic Context Injection. That
+    // attack launders untrusted content through the agent's own runtime, so the
+    // instruction that reaches this point looks first-party and the agent making
+    // it is honest and deceived rather than hostile. Content inspection loses by
+    // construction, since the payload is ciphertext on the way in and can be
+    // re-encrypted on the way out. What does not lose is the observation that
+    // this session took in untrusted material and is now asking to move data out.
+    //
+    // Scoped to export and escalate deliberately. Denying every operation in a
+    // tainted session would make any session that fetched a page useless
+    // afterward, which produces a control operators disable. Read and analyze
+    // continue to work; the two intent classes that move data outward or raise
+    // authority do not.
+    if (input.sessionLabel && isTainted(input.sessionLabel)) {
+      if (input.intentClass === 'export' || input.intentClass === 'escalate') {
+        return this.deny(
+          'ERR_SCOPE_DENIED',
+          `Intent ${input.intentClass} is not permitted in a session carrying untrusted context (origins: ${input.sessionLabel.origins.join(', ')}).`,
+          input
+        );
+      }
     }
 
     const allowedFheModes = MODE_COMPATIBILITY[input.classification];
