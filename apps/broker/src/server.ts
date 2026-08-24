@@ -21,6 +21,7 @@ import { registerMcpRoute } from './routes/mcp.js';
 import { registerSkillRoute } from './routes/skill.js';
 import { config } from './config.js';
 import type { BrokerServices } from './services/context.js';
+import { SessionLabelStore } from './services/labels.js';
 
 export async function buildServer(): Promise<FastifyInstance> {
   const app = Fastify({ logger: { level: config.logLevel } });
@@ -48,7 +49,8 @@ export async function buildServer(): Promise<FastifyInstance> {
 
   const services: BrokerServices = {
     bindings, policy, providence, fheGate, mcpMediator, adapter,
-    registeredManifests: new Set()
+    registeredManifests: new Set(),
+    sessionLabels: new SessionLabelStore()
   };
   app.decorate('services', services);
 

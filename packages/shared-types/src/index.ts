@@ -9,3 +9,4 @@ export * from './providence.js';
 export * from './classification.js';
 export * from './intent.js';
 export * from './operation.js';
+export * from './lineage.js';
