@@ -42,3 +42,6 @@ data/redis/
 # Test artifacts
 test-results/
 playwright-report/
+
+# Providence chain written at runtime. Local artifact, never committed.
+apps/broker/data/

@@ -1,9 +1,9 @@
-// 27 attack scenarios: 19 implemented, 8 skeleton. Each is deterministic, self-contained, and issues real HTTP calls
+// 29 attack scenarios: 20 implemented, 9 skeleton. Each is deterministic, self-contained, and issues real HTTP calls
 // against a running broker. Scenarios that require capabilities not yet wired in the broker
 // (streaming, BEM, shadow policy, policy bundle signatures) are marked as skeleton.
 
 import { randomUUID } from 'node:crypto';
-import { admitOrThrow, buildMockEnvelope, invoke, isDeny, revoke, mcpIngest, registerSkill } from './helpers.js';
+import { admitOrThrow, buildMockEnvelope, invoke, isDeny, revoke, mcpIngest, registerSkill, registerContext, sha256 } from './helpers.js';
 
 export interface ScenarioContext {
   brokerUrl: string;
@@ -384,6 +384,82 @@ function skeleton(id: string, description: string, extras: Partial<Scenario> = {
   };
 }
 
+// Cryptographic Context Injection (Adversa AI, August 2026).
+//
+// The attack moves attacker-controlled instructions across a transform that
+// erases their origin: an encrypted payload is fetched, the agent decrypts it in
+// its own runtime, and the plaintext then presents as first-party because taint
+// was an attribute of the input channel rather than a property carried by the
+// data. Content inspection loses by construction, on ingress because the payload
+// is ciphertext and on egress because the same technique re-encrypts.
+//
+// What this scenario asserts is the harness half: the payload passes content
+// inspection cleanly, the session is labelled by the origin of what it took in,
+// and an outbound operation is then refused with the ancestor named. It does not
+// assert that a model would have been convinced by the payload; that is Adversa's
+// demonstration and is not reproduced here.
+const s26: Scenario = {
+  id: '26',
+  description: 'Cryptographic Context Injection: opaque payload taints the session and blocks egress',
+  expectedEventType: 'scope_fail',
+  expectedErrorCode: 'ERR_SCOPE_DENIED',
+  implemented: true,
+  async run({ brokerUrl }) {
+    // A stand-in for the attacker's encrypted payload. Opaque to any classifier.
+    const ciphertext = Buffer.from(randomUUID() + randomUUID()).toString('base64');
+    const ancestorHash = sha256(ciphertext);
+
+    // No sanitizer assertion here. The mediator refuses unknown servers before
+    // sanitizing, so asserting that no injection pattern matched against an
+    // unknown server is vacuous: the sanitizer never runs. Pattern-matching
+    // coverage is scenario 08.
+
+    // Step 3, the control arm. A clean session performs the outbound operation.
+    const clean = await admitOrThrow(brokerUrl, { requestedRole: 'egress_agent' });
+    const cleanEnv = buildMockEnvelope({
+      deviceFingerprint: 'dev-cci-clean', sessionId: clean.sessionId, roleScope: 'export.data',
+      operationType: 'export.data', targetId: 'target-egress', intentClass: 'export'
+    });
+    const cleanResult = await invoke(brokerUrl, {
+      capabilityToken: clean.capabilityToken, envelope: cleanEnv,
+      operationClass: 'export.data', targetId: 'target-egress', targetClass: 'generic'
+    });
+    if (cleanResult.status !== 200 || isDeny(cleanResult.body)) {
+      console.error(`  s26 step3 FAILED: clean arm status=${cleanResult.status} body=${JSON.stringify(cleanResult.body)}`);
+      return false;
+    }
+    console.error('  s26 step3 ok: clean session exported');
+
+    // Step 1, then step 4. Same role, same operation, same resolved arguments.
+    // The single variable is that this session registered untrusted material.
+    const tainted = await admitOrThrow(brokerUrl, { requestedRole: 'egress_agent' });
+    const reg = await registerContext(brokerUrl, {
+      capabilityToken: tainted.capabilityToken,
+      elements: [{ provenance: 'external-channel', classification: 'sensitive', content: ciphertext }]
+    });
+    if (reg.status !== 200) {
+      console.error(`  s26 step1 FAILED: register status=${reg.status} body=${JSON.stringify(reg.body)}`);
+      return false;
+    }
+    if (reg.elements[0]?.contentHash !== ancestorHash) {
+      console.error('  s26 step1 FAILED: ancestor hash mismatch');
+      return false;
+    }
+    console.error('  s26 step1 ok: context registered and labelled');
+
+    const taintedEnv = buildMockEnvelope({
+      deviceFingerprint: 'dev-cci-tainted', sessionId: tainted.sessionId, roleScope: 'export.data',
+      operationType: 'export.data', targetId: 'target-egress', intentClass: 'export'
+    });
+    const taintedResult = await invoke(brokerUrl, {
+      capabilityToken: tainted.capabilityToken, envelope: taintedEnv,
+      operationClass: 'export.data', targetId: 'target-egress', targetClass: 'generic'
+    });
+
+    console.error(`  s26 step4: tainted arm status=${taintedResult.status} body=${JSON.stringify(taintedResult.body)}`);
+    return taintedResult.status === 403 && isDeny(taintedResult.body);
+  }
+};
 export const scenarios: Scenario[] = [
   s01, s02, s03, s04, s05, s06, s07, s08, s09,
   skeleton('10', 'Streaming response continuity failure on chunk 7 of 20', { expectedErrorCode: 'ERR_CONTINUITY_FAILED' }),
@@ -396,5 +472,6 @@ export const scenarios: Scenario[] = [
   skeleton('18', 'Policy bundle signature forgery', { expectedErrorCode: 'ERR_POLICY_BUNDLE_INVALID' }),
   skeleton('19', 'Lethal-trifecta drift in long session via BEM'),
   skeleton('20', 'Honest-but-curious model endpoint extracts Mode A context', { expectedErrorCode: 'ERR_ENDPOINT_ATTESTATION_FAILED' }),
-  s21, s21b, s22, s23, s23b
+  s21, s21b, s22, s23, s23b, s26,
+  skeleton('27', 'Scoped declassification of a tainted object does not relabel its ancestor', { expectedErrorCode: 'ERR_SCOPE_DENIED' })
 ];

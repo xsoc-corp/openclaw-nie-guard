@@ -146,7 +146,10 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       // Taint carried by this session, joined at /v1/context/register from the
       // declared origins of every element it took in. The policy engine denies
       // export and escalate intents under a tainted label.
-      sessionLabel: app.services.sessionLabels.get(tokenResult.sessionId)
+      sessionLabel: app.services.sessionLabels.get(tokenResult.sessionId),
+      // Content hashes of the untrusted material this session took in. Recorded
+      // on the taint predicate so a denial can say what the agent had read.
+      sessionAncestors: app.services.sessionLabels.ancestors(tokenResult.sessionId)
     };
     const decision = policy.evaluate(policyInput);
     if (!decision.allowed) {
@@ -158,7 +161,15 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         operationClass: body.operationClass,
         classification: envelope.classification,
         reasonCode: decision.denyReasonCode,
-        metadata: { stage: 'policy', reason: decision.denyReason }
+        metadata: {
+          stage: 'policy',
+          reason: decision.denyReason,
+          // Every predicate and its result, not only the one that failed first.
+          // A laundered instruction reaching for scope the agent does not hold
+          // denies at scope; without this the taint result never appears and the
+          // entry reads as routine misconfiguration.
+          predicates: decision.predicates
+        }
       });
       return reply.code(403).send({ code: decision.denyReasonCode, message: decision.denyReason, correlationId });
     }
@@ -236,7 +247,10 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       metadata: {
         profile: decision.profile,
         allowedFheModes: decision.allowedFheModes,
-        brokerSignature
+        brokerSignature,
+        // Recorded on allows too. A session that took in untrusted material and
+        // was permitted anyway is exactly what sequence detection needs to see.
+        predicates: decision.predicates
       }
     });
 

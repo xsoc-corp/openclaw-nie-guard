@@ -170,3 +170,85 @@ describe('PolicyEngine taint gate', () => {
     }
   });
 });
+
+describe('PolicyEngine decision record', () => {
+  it('records every predicate on an allowed decision', () => {
+    const d = new PolicyEngine().evaluate(input());
+    expect(d.allowed).toBe(true);
+    expect(d.predicates.map((p) => p.name)).toEqual(['role', 'scope', 'intent', 'taint', 'classification']);
+    expect(d.predicates.every((p) => p.passed)).toBe(true);
+  });
+
+  it('records the taint result even when the decision fails at scope first', () => {
+    // The point of evaluating all predicates. A laundered instruction reaching
+    // for scope the agent does not hold would, under short-circuit evaluation,
+    // deny at scope and never record that the session was carrying untrusted
+    // material. That reads as misconfiguration while an attack is in progress.
+    const d = new PolicyEngine().evaluate(
+      input({
+        role: 'viewer',
+        operationClass: 'exec.run',
+        intentClass: 'execute',
+        sessionLabel: { classification: 'sensitive', origins: ['user', 'external-channel'] },
+        sessionAncestors: ['a'.repeat(64)]
+      })
+    );
+
+    expect(d.allowed).toBe(false);
+    // Caller-facing code is still the first failure, so responses do not change.
+    expect(d.denyReasonCode).toBe('ERR_SCOPE_DENIED');
+
+    // But the record carries the taint result, and the ancestor that caused it.
+    const taint = d.predicates.find((p) => p.name === 'taint');
+    expect(taint).toBeDefined();
+    expect(taint?.ancestors).toEqual(['a'.repeat(64)]);
+  });
+
+  it('records a predicate whose prerequisite failed as failed, never as passed', () => {
+    // Scope cannot be evaluated without a role. Fail closed: recorded as failed
+    // with the prerequisite named, not omitted and not assumed to pass.
+    const d = new PolicyEngine().evaluate(input({ role: 'ghost' }));
+    const scope = d.predicates.find((p) => p.name === 'scope');
+    expect(scope?.passed).toBe(false);
+    expect(scope?.reason).toContain('role did not resolve');
+  });
+
+  it('carries ancestors on a taint denial', () => {
+    const e = new PolicyEngine();
+    e.loadBundle({
+      version: '1.0.0',
+      bundleId: '22222222-2222-4222-8222-222222222222',
+      effectiveFrom: 1,
+      signerKeyId: 'test-signer',
+      signature: 'test-signature',
+      payload: {
+        roles: {
+          exporter: {
+            description: 'Test role permitting export.',
+            allowedOperations: ['export.data'],
+            defaultProfile: 'standard',
+            requiresDualControl: []
+          }
+        },
+        mcpServers: [],
+        skills: []
+      }
+    });
+
+    const ancestor = 'b'.repeat(64);
+    const d = e.evaluate(
+      input({
+        role: 'exporter',
+        operationClass: 'export.data',
+        intentClass: 'export',
+        sessionLabel: { classification: 'sensitive', origins: ['external-channel'] },
+        sessionAncestors: [ancestor]
+      })
+    );
+
+    expect(d.allowed).toBe(false);
+    const taint = d.predicates.find((p) => p.name === 'taint');
+    expect(taint?.passed).toBe(false);
+    expect(taint?.ancestors).toEqual([ancestor]);
+  });
+});

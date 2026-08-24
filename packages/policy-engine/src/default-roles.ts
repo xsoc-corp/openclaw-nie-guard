@@ -40,6 +40,18 @@ export const DEFAULT_ROLE_MATRIX: Record<string, RoleDefinition> = {
     defaultProfile: 'strict',
     requiresDualControl: ['admin.control', 'exec.run']
   },
+  egress_agent: {
+    description:
+      'Agent permitted to make one outbound call. Present because a matrix that cannot express ' +
+      'an egress-capable agent does not model any deployment we ship, and because the taint gate ' +
+      'is only meaningful against a role that could otherwise carry data outward.',
+    allowedOperations: ['operator.read', 'file.read', 'export.data'],
+    // strict, not standard: export.data is in the adapter's STRICT_ONLY_CATEGORIES,
+    // and a role whose purpose is outbound egress should not sit at the permissive
+    // profile in any case.
+    defaultProfile: 'strict',
+    requiresDualControl: []
+  },
   node_admin: {
     description: 'Node administration. Pairing ops only via enrollment ceremony.',
     allowedOperations: ['node.invoke'],

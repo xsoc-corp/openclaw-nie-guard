@@ -26,6 +26,12 @@ export interface SessionLabelEntry {
   taintedAt?: number;
   /** Correlation id of the registration that raised it, for forensics. */
   taintedBy?: string;
+  /**
+   * Content hashes of every untrusted-origin element this session registered.
+   * Answers what the agent had read before it acted. Trusted-origin elements are
+   * not recorded here: they are not what a taint denial needs to explain.
+   */
+  untrustedAncestors: string[];
 }
 
 export class SessionLabelStore {
@@ -55,7 +61,8 @@ export class SessionLabelStore {
     this.labels.set(sessionId, {
       label: after,
       taintedAt: existing?.taintedAt ?? (becameTainted ? Date.now() : undefined),
-      taintedBy: existing?.taintedBy ?? (becameTainted ? correlationId : undefined)
+      taintedBy: existing?.taintedBy ?? (becameTainted ? correlationId : undefined),
+      untrustedAncestors: existing?.untrustedAncestors ?? []
     });
 
     return after;
@@ -69,14 +76,30 @@ export class SessionLabelStore {
    */
   joinElements(
     sessionId: string,
-    elements: readonly { provenance: Origin; classification: Classification }[],
+    elements: readonly { provenance: Origin; classification: Classification; contentHash?: string }[],
     correlationId?: string
   ): Label {
     let acc = this.get(sessionId);
+    const newAncestors: string[] = [];
     for (const e of elements) {
       acc = joinLabels(acc, { classification: e.classification, origins: [e.provenance] });
+      if (isUntrustedOrigin(e.provenance) && e.contentHash) {
+        newAncestors.push(e.contentHash);
+      }
     }
-    return this.join(sessionId, acc, correlationId);
+    const label = this.join(sessionId, acc, correlationId);
+    if (newAncestors.length > 0) {
+      const entry = this.labels.get(sessionId);
+      if (entry) {
+        entry.untrustedAncestors = [...new Set([...entry.untrustedAncestors, ...newAncestors])];
+      }
+    }
+    return label;
+  }
+
+  /** Content hashes of the untrusted material this session has taken in. */
+  ancestors(sessionId: string): string[] {
+    return this.labels.get(sessionId)?.untrustedAncestors ?? [];
   }
 
   /** True when the session carries any untrusted origin. */

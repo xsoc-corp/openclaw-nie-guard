@@ -137,6 +137,55 @@ export async function mcpIngest(brokerUrl: string, serverId: string, content: st
   return { status: res.status, body: await res.json() as { code?: string; tagged?: string } };
 }
 
+export interface RegisterContextResponse {
+  correlationId: string;
+  manifestHash: string;
+  elementCount: number;
+}
+
+export interface ContextElementInput {
+  elementId?: string;
+  provenance: 'user' | 'system' | 'rag' | 'tool-output' | 'mcp-response' | 'external-channel';
+  classification?: 'public' | 'sensitive' | 'regulated' | 'classified-adjacent';
+  /** Raw content. Hashed here so a scenario can assert against the same digest. */
+  content?: string;
+  /** Explicit hash, when a scenario needs to control it directly. */
+  contentHash?: string;
+}
+
+/**
+ * Registers context elements against a session. Returns the resolved elements
+ * alongside the response so a scenario can assert that a specific ancestor was
+ * recorded by content hash rather than re-deriving it.
+ */
+export async function registerContext(
+  brokerUrl: string,
+  input: { capabilityToken: string; elements: ContextElementInput[] }
+): Promise<{
+  status: number;
+  body: RegisterContextResponse | DenyResponse;
+  elements: { elementId: string; provenance: string; classification: string; contentHash: string }[];
+}> {
+  const elements = input.elements.map((e) => ({
+    elementId: e.elementId ?? randomUUID(),
+    provenance: e.provenance,
+    classification: e.classification ?? 'sensitive',
+    contentHash: e.contentHash ?? sha256(e.content ?? randomUUID())
+  }));
+
+  const res = await fetch(`${brokerUrl}/v1/context/register`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ capabilityToken: input.capabilityToken, elements })
+  });
+
+  return {
+    status: res.status,
+    body: (await res.json()) as RegisterContextResponse | DenyResponse,
+    elements
+  };
+}
+
 export async function registerSkill(brokerUrl: string, input: {
   skillId: string;
   signerKeyId?: string;
