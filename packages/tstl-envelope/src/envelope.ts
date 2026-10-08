@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { TstlEnvelope, type SealedEnvelope } from '@xsoc/shared-types';
+import { ErrorCodes, TstlEnvelope, type SealedEnvelope } from '@xsoc/shared-types';
 import type { NieBindings } from '@xsoc/nie-bindings';
 
 export interface EnvelopeBuildInput {
@@ -78,9 +78,24 @@ export async function validateEnvelope(
     }
 
     return { valid: true, envelope };
-  } catch {
+  } catch (err) {
+    // The bindings report an envelope that authenticated but has expired as
+    // ERR_SESSION_EXPIRED, and that one code passes through. Every other refusal,
+    // an authentication or comparison failure among them, stays ERR_CONTINUITY_FAILED,
+    // so nothing here distinguishes why an envelope did not authenticate.
+    if (isSessionExpired(err)) {
+      return { valid: false, reasonCode: ErrorCodes.SESSION_EXPIRED };
+    }
     return { valid: false, reasonCode: 'ERR_CONTINUITY_FAILED' };
   }
+}
+
+/** A bindings error carrying ERR_SESSION_EXPIRED, as its code or its leading code. */
+function isSessionExpired(err: unknown): boolean {
+  if (typeof err !== 'object' || err === null) return false;
+  const { code, message } = err as { code?: unknown; message?: unknown };
+  if (code !== undefined) return code === ErrorCodes.SESSION_EXPIRED;
+  return typeof message === 'string' && message.startsWith(`${ErrorCodes.SESSION_EXPIRED}:`);
 }
 
 export function incrementCounter(envelope: TstlEnvelope): TstlEnvelope {

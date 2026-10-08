@@ -75,4 +75,34 @@ describe('TSTL envelope', () => {
     expect(result.valid).toBe(false);
     expect(result.reasonCode).toBe('ERR_CONTINUITY_FAILED');
   });
+
+  it('passes ERR_SESSION_EXPIRED from the bindings through', async () => {
+    const sealed = await buildEnvelope(makeInput(), bindings);
+    for (const err of [
+      Object.assign(new Error('ERR_SESSION_EXPIRED: envelope expired'), { code: 'ERR_SESSION_EXPIRED' }),
+      new Error('ERR_SESSION_EXPIRED: envelope expired')
+    ]) {
+      const expiring = { ...bindings, validateContinuityEnvelope: async () => { throw err; } };
+      const result = await validateEnvelope(sealed, expiring, {});
+      expect(result.valid).toBe(false);
+      expect(result.reasonCode).toBe('ERR_SESSION_EXPIRED');
+    }
+  });
+
+  it('collapses every other bindings refusal to ERR_CONTINUITY_FAILED', async () => {
+    const sealed = await buildEnvelope(makeInput(), bindings);
+    for (const err of [
+      Object.assign(new Error('ERR_CONTINUITY_FAILED: no'), { code: 'ERR_CONTINUITY_FAILED' }),
+      Object.assign(new Error('ERR_SESSION_REVOKED: no'), { code: 'ERR_SESSION_REVOKED' }),
+      // A code property wins over the message, so a message cannot claim expiry.
+      Object.assign(new Error('ERR_SESSION_EXPIRED: no'), { code: 'ERR_CONTINUITY_FAILED' }),
+      new Error('envelope ERR_SESSION_EXPIRED somewhere in the text'),
+      'ERR_SESSION_EXPIRED'
+    ]) {
+      const refusing = { ...bindings, validateContinuityEnvelope: async () => { throw err; } };
+      const result = await validateEnvelope(sealed, refusing, {});
+      expect(result.valid).toBe(false);
+      expect(result.reasonCode).toBe('ERR_CONTINUITY_FAILED');
+    }
+  });
 });
