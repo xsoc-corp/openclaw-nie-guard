@@ -6,7 +6,7 @@ import type { EnvelopeBuildInput } from '../src/envelope.js';
 function makeInput(overrides: Partial<EnvelopeBuildInput> = {}): EnvelopeBuildInput {
   return {
     deviceFingerprint: 'dev-fp-1',
-    sessionId: '00000000-0000-4000-8000-000000000001',
+    sessionId: '1'.repeat(64),
     sessionNonceLineage: ['nonce-0'],
     roleScope: 'tool.invoke',
     operationType: 'tool.invoke',

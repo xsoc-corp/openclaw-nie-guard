@@ -34,7 +34,8 @@ export const ProvidenceEvent = z.object({
   eventId: z.string().uuid(),
   eventType: ProvidenceEventType,
   correlationId: z.string().uuid(),
-  sessionId: z.string().uuid().optional(),
+  // The NIE session handle: 64 lowercase hex (32 bytes).
+  sessionId: z.string().regex(/^[0-9a-f]{64}$/).optional(),
   subjectId: z.string().optional(),
   deviceFingerprint: z.string().optional(),
   operationClass: z.string().optional(),

@@ -1,4 +1,4 @@
-import { randomUUID, createHash } from 'node:crypto';
+import { randomUUID, randomBytes, createHash } from 'node:crypto';
 import type { NieBindings, AttestationResult, TokenVerificationResult, RevocationInput, RevocationResult, VersionInfo, NonceConsumeResult } from './interface.js';
 import type { AdmissionRequest, CapabilityToken, DerivationRequest, SealedEnvelope, TstlEnvelope, OperationClass } from '@xsoc/shared-types';
 
@@ -46,7 +46,8 @@ export function createMockBindings(): NieBindings {
       }
 
       const now = Date.now();
-      const sessionId = randomUUID();
+      // Same form as an NIE session handle: 32 random bytes, 64 lowercase hex.
+      const sessionId = randomBytes(32).toString('hex');
       const correlationId = randomUUID();
       const expiresAt = now + 15 * 60 * 1000;
       const capabilityToken = hash(`${sessionId}:${subjectId}:${deviceFingerprint}:${now}`);

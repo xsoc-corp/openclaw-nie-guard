@@ -26,7 +26,8 @@ export const AdmissionRequest = z.object({
 export type AdmissionRequest = z.infer<typeof AdmissionRequest>;
 
 export const AdmissionResponse = z.object({
-  sessionId: z.string().uuid(),
+  // The NIE session handle: 64 lowercase hex (32 bytes).
+  sessionId: z.string().regex(/^[0-9a-f]{64}$/),
   capabilityToken: CapabilityToken,
   profile: PolicyProfile,
   issuedAt: z.number().int().positive(),

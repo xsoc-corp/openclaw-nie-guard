@@ -14,6 +14,17 @@ describe('NIE mock bindings', () => {
     expect(result.admission.capabilityToken).toBeTruthy();
   });
 
+  it('issues a session id in the NIE session handle form (64 lowercase hex)', async () => {
+    const bindings = createMockBindings();
+    const result = await bindings.attest({
+      attestationPackage: 'pkg-mock-ok',
+      requestedRole: 'operator',
+      requestedOperationSet: ['tool.invoke'],
+      clientMetadata: { deviceFingerprint: 'dev-1' }
+    });
+    expect(result.admission.sessionId).toMatch(/^[0-9a-f]{64}$/);
+  });
+
   it('verifies an issued token as valid', async () => {
     const bindings = createMockBindings();
     const result = await bindings.attest({
