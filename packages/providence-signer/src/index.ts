@@ -23,6 +23,12 @@ export const ED25519_SEED_ENV = 'PROVIDENCE_ED25519_SEED_B64';
  */
 export const ALLOWED_ANCHOR_ALGORITHMS = ['Ed25519'] as const;
 
+/**
+ * The build this signer belongs to. The production package says production,
+ * under which the broker requires PROVIDENCE_CHAIN_ID.
+ */
+export const BUILD_PROFILE: 'public' | 'production' = 'public';
+
 // DER prefix of a PKCS#8 Ed25519 private key; the 32-byte seed follows it.
 const PKCS8_ED25519_PREFIX = Buffer.from('302e020100300506032b657004220420', 'hex');
 
@@ -64,6 +70,12 @@ export function signerFromSeed(seed: Buffer): ProvidenceSigner {
     der.fill(0);
     seed.fill(0);
   }
+}
+
+/** A signer under a fresh key, for a process that must not read the deployment's. */
+export async function ephemeralSigner(): Promise<ProvidenceSigner> {
+  const { privateKey, publicKey } = generateKeyPairSync('ed25519');
+  return new Ed25519Signer(privateKey, publicKey);
 }
 
 /**

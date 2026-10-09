@@ -11,6 +11,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { jcs } from '@xsoc/providence-log';
 import { ProvidenceRecord } from '@xsoc/shared-types';
+import { ephemeralSigner } from '@xsoc/providence-signer';
 
 const dataDir = mkdtempSync(join(tmpdir(), 'broker-envelope-'));
 let app: FastifyInstance;
@@ -21,7 +22,7 @@ beforeAll(async () => {
   process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-envelope-test';
   process.env.LOG_LEVEL = 'silent';
   const { buildServer } = await import('../src/server.js');
-  app = await buildServer();
+  app = await buildServer({ signer: await ephemeralSigner() });
 });
 
 afterAll(async () => {

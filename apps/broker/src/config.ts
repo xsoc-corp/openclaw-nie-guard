@@ -10,6 +10,7 @@ export const config = {
   // aida-guard/<deployment-id>. The production build requires it; this build
   // defaults to a local deployment id.
   providenceChainId: process.env.PROVIDENCE_CHAIN_ID ?? 'aida-guard/local',
+  providenceChainIdConfigured: (process.env.PROVIDENCE_CHAIN_ID ?? '') !== '',
   // 1 to 3600 seconds, 300 when unset; anything else stops startup.
   providenceAnchorInterval: process.env.PROVIDENCE_ANCHOR_INTERVAL_SECONDS,
   policyBundlePath: process.env.POLICY_BUNDLE_PATH ?? './infra/policy/default-bundle.json',

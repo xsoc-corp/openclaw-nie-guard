@@ -4,7 +4,8 @@ import rateLimit from '@fastify/rate-limit';
 import { loadBindings } from '@xsoc/nie-bindings';
 import { PolicyEngine } from '@xsoc/policy-engine';
 import { ProvidenceLog, AnchorScheduler, anchorIntervalSeconds, signerSelfTest } from '@xsoc/providence-log';
-import { createProvidenceSigner, ALLOWED_ANCHOR_ALGORITHMS } from '@xsoc/providence-signer';
+import { createProvidenceSigner, ALLOWED_ANCHOR_ALGORITHMS, BUILD_PROFILE } from '@xsoc/providence-signer';
+import type { ProvidenceSigner } from '@xsoc/providence-log';
 import { loadFheGate } from '@xsoc/fhe-gate';
 import { McpMediator } from '@xsoc/mcp-mediator';
 import { OpenClawAdapter } from '@xsoc/openclaw-adapter';
@@ -25,7 +26,17 @@ import type { BrokerServices } from './services/context.js';
 import { BrokerProvidence } from './services/providence.js';
 import { SessionLabelStore } from './services/labels.js';
 
-export async function buildServer(): Promise<FastifyInstance> {
+export interface BuildServerOptions {
+  /**
+   * The anchor signer. Defaults to the deployment's, from
+   * @xsoc/providence-signer. Whatever is supplied passes the same self-test and
+   * the same build rule on algorithms, so a build accepts no signer it would not
+   * create itself.
+   */
+  signer?: ProvidenceSigner;
+}
+
+export async function buildServer(opts: BuildServerOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: { level: config.logLevel } });
 
   await app.register(sensible);
@@ -38,7 +49,10 @@ export async function buildServer(): Promise<FastifyInstance> {
   // accept, stops startup. A chain whose last record disagrees with its head
   // starts the broker refusing every action it would record.
   const anchorInterval = anchorIntervalSeconds(config.providenceAnchorInterval);
-  const signer = await createProvidenceSigner();
+  if (BUILD_PROFILE === 'production' && !config.providenceChainIdConfigured) {
+    throw new Error('PROVIDENCE_CHAIN_ID is not set: the production build requires aida-guard/<deployment-id>');
+  }
+  const signer = opts.signer ?? (await createProvidenceSigner());
   await signerSelfTest(signer, ALLOWED_ANCHOR_ALGORITHMS);
   const providenceLog = new ProvidenceLog({
     dir: config.providenceDataDir,

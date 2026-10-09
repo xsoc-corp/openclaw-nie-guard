@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { anchorMessage, signerSelfTest } from '@xsoc/providence-log';
-import { createProvidenceSigner, signerFromSeed, ED25519_SEED_ENV } from '../src/index.js';
+import { createProvidenceSigner, signerFromSeed, ephemeralSigner, ED25519_SEED_ENV, ALLOWED_ANCHOR_ALGORITHMS, BUILD_PROFILE } from '../src/index.js';
 
 const vectors = JSON.parse(
   readFileSync(new URL('../../providence-log/test/vectors/guard-providence-v3.json', import.meta.url), 'utf8')
@@ -41,5 +41,14 @@ describe('Ed25519 Providence signer', () => {
     const signer = await createProvidenceSigner({});
     expect(signer.algorithm).toBe('Ed25519');
     await expect(signerSelfTest(signer, ['ML-DSA-65'])).rejects.toThrow(/not one of ML-DSA-65/);
+  });
+
+  it('is the public build: Ed25519, and a fresh-key signer passes the self-test', async () => {
+    expect(ALLOWED_ANCHOR_ALGORITHMS).toEqual(['Ed25519']);
+    expect(BUILD_PROFILE).toBe('public');
+    const a = await ephemeralSigner();
+    const b = await ephemeralSigner();
+    await signerSelfTest(a, ALLOWED_ANCHOR_ALGORITHMS);
+    expect(a.keyId).not.toBe(b.keyId);
   });
 });
