@@ -9,6 +9,9 @@ import { join } from 'node:path';
 import { anchorMessage, headCommitment, recordDigest } from '@xsoc/providence-log';
 import { ProvidenceRecord } from '@xsoc/shared-types';
 import { ephemeralSigner } from '@xsoc/providence-signer';
+// FHE is not under test here; the gate double keeps the broker from needing an
+// FHE service under the production workspace.
+import { createMockFheGate } from '@xsoc/fhe-gate';
 
 const dataDir = mkdtempSync(join(tmpdir(), 'broker-providence-'));
 
@@ -26,7 +29,7 @@ beforeAll(async () => {
 describe('broker Providence startup', () => {
   it('starts with a fresh-key signer, records, and anchors on the first record and at close', async () => {
     const signer = await ephemeralSigner();
-    const app = await buildServer({ signer });
+    const app = await buildServer({ signer, fheGate: createMockFheGate() });
     expect((await app.inject({ method: 'GET', url: '/health' })).statusCode).toBe(200);
 
     const r = await app.inject({ method: 'POST', url: '/v1/invoke', payload: {} });
@@ -59,7 +62,7 @@ describe('broker Providence startup', () => {
     const lines = readFileSync(p, 'utf8').trimEnd().split('\n');
     lines[lines.length - 1] = lines[lines.length - 1]!.replace('"stage":"shape"', '"stage":"shapf"');
     writeFileSync(p, lines.join('\n') + '\n');
-    const app = await buildServer({ signer: await ephemeralSigner() });
+    const app = await buildServer({ signer: await ephemeralSigner(), fheGate: createMockFheGate() });
     const health = await app.inject({ method: 'GET', url: '/health' });
     expect(health.statusCode).toBe(503);
     expect(health.json().status).toBe('providence-unavailable');

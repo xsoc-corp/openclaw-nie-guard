@@ -1,12 +1,12 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import sensible from '@fastify/sensible';
 import rateLimit from '@fastify/rate-limit';
-import { loadBindings } from '@xsoc/nie-bindings';
+import { loadBindings, type NieBindings } from '@xsoc/nie-bindings';
 import { PolicyEngine } from '@xsoc/policy-engine';
 import { ProvidenceLog, AnchorScheduler, anchorIntervalSeconds, signerSelfTest } from '@xsoc/providence-log';
 import { createProvidenceSigner, ALLOWED_ANCHOR_ALGORITHMS, BUILD_PROFILE } from '@xsoc/providence-signer';
 import type { ProvidenceSigner } from '@xsoc/providence-log';
-import { loadFheGate } from '@xsoc/fhe-gate';
+import { loadFheGate, type FheGate } from '@xsoc/fhe-gate';
 import { McpMediator } from '@xsoc/mcp-mediator';
 import { OpenClawAdapter } from '@xsoc/openclaw-adapter';
 import { MockOpenClawTransport } from '@xsoc/openclaw-mock';
@@ -21,7 +21,7 @@ import { registerCosignRoute } from './routes/cosign.js';
 import { registerContextRoute } from './routes/context.js';
 import { registerMcpRoute } from './routes/mcp.js';
 import { registerSkillRoute } from './routes/skill.js';
-import { config } from './config.js';
+import { config, providenceConfig } from './config.js';
 import type { BrokerServices } from './services/context.js';
 import { BrokerProvidence } from './services/providence.js';
 import { SessionLabelStore } from './services/labels.js';
@@ -34,6 +34,16 @@ export interface BuildServerOptions {
    * create itself.
    */
   signer?: ProvidenceSigner;
+  /**
+   * The FHE gate. Defaults to @xsoc/fhe-gate's. A test that is not about FHE
+   * may supply one so the broker builds without an FHE service.
+   */
+  fheGate?: FheGate;
+  /**
+   * The NIE bindings. Defaults to @xsoc/nie-bindings'. A test of the broker's
+   * own routes may supply them, so it runs the same under either workspace.
+   */
+  bindings?: NieBindings;
 }
 
 export async function buildServer(opts: BuildServerOptions = {}): Promise<FastifyInstance> {
@@ -42,22 +52,23 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
   await app.register(sensible);
   await app.register(rateLimit, { max: 100, timeWindow: '1 minute' });
 
-  const bindings = await loadBindings();
+  const bindings = opts.bindings ?? (await loadBindings());
   const policy = new PolicyEngine();
   // Providence. The signer is created and proved before anything is served: a
   // signer that fails its self-test, or whose algorithm this build does not
   // accept, stops startup. A chain whose last record disagrees with its head
   // starts the broker refusing every action it would record.
-  const anchorInterval = anchorIntervalSeconds(config.providenceAnchorInterval);
-  if (BUILD_PROFILE === 'production' && !config.providenceChainIdConfigured) {
+  const pc = providenceConfig();
+  const anchorInterval = anchorIntervalSeconds(pc.anchorInterval);
+  if (BUILD_PROFILE === 'production' && !pc.chainIdConfigured) {
     throw new Error('PROVIDENCE_CHAIN_ID is not set: the production build requires aida-guard/<deployment-id>');
   }
   const signer = opts.signer ?? (await createProvidenceSigner());
   await signerSelfTest(signer, ALLOWED_ANCHOR_ALGORITHMS);
   const providenceLog = new ProvidenceLog({
-    dir: config.providenceDataDir,
-    chainId: config.providenceChainId,
-    legacyChainFile: config.providenceChainFile
+    dir: pc.dataDir,
+    chainId: pc.chainId,
+    legacyChainFile: pc.legacyChainFile
   });
   if (providenceLog.refusal) {
     app.log.error({ reason: providenceLog.refusal }, 'Providence chain refuses appends; every recorded action will be denied');
@@ -72,7 +83,7 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
     'Providence signer ready'
   );
   const providence = new BrokerProvidence(providenceLog);
-  const fheGate = await loadFheGate();
+  const fheGate = opts.fheGate ?? (await loadFheGate());
   const mcpMediator = new McpMediator();
 
   // Seed MCP trust table for dev. Production loads from signed policy bundle.

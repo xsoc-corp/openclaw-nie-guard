@@ -12,6 +12,11 @@ import type { FastifyInstance } from 'fastify';
 import { jcs } from '@xsoc/providence-log';
 import { ProvidenceRecord } from '@xsoc/shared-types';
 import { ephemeralSigner } from '@xsoc/providence-signer';
+// FHE is not under test here; the gate double keeps the broker from needing an
+// FHE service under the production workspace.
+import { createMockFheGate } from '@xsoc/fhe-gate';
+// The route under test runs over the mock bindings in either workspace.
+import { createMockBindings } from '@xsoc/nie-bindings';
 
 const dataDir = mkdtempSync(join(tmpdir(), 'broker-envelope-'));
 let app: FastifyInstance;
@@ -22,7 +27,7 @@ beforeAll(async () => {
   process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-envelope-test';
   process.env.LOG_LEVEL = 'silent';
   const { buildServer } = await import('../src/server.js');
-  app = await buildServer({ signer: await ephemeralSigner() });
+  app = await buildServer({ signer: await ephemeralSigner(), fheGate: createMockFheGate(), bindings: createMockBindings() });
 });
 
 afterAll(async () => {
