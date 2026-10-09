@@ -1,0 +1,191 @@
+{
+  "spec": "docs/providence-record-v3.md",
+  "record_domain": "xsoc-aida-guard:providence-record:v3",
+  "head_domain": "xsoc-aida-guard:providence-head:v1",
+  "anchor_domain": "xsoc-aida-guard:providence-anchor:v1",
+  "kind": 2,
+  "genesis_prev_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "records": [
+    {
+      "domain": "xsoc-aida-guard:providence-record:v3",
+      "kind": 2,
+      "seq": 0,
+      "timestamp_ms": 1791489600000,
+      "event_type": "admit",
+      "correlation_id": "00000000-0000-4000-8000-000000000001",
+      "device_fingerprint": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+      "session_handle": "5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e",
+      "payload_digest": "",
+      "subject_id": "user-vector",
+      "operation_class": "",
+      "target_hash": "",
+      "classification": "",
+      "reason_code": "",
+      "payload": null,
+      "metadata": {
+        "legacy_chain_head": "abababababababababababababababababababababababababababababababab"
+      },
+      "prev_digest": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "domain": "xsoc-aida-guard:providence-record:v3",
+      "kind": 2,
+      "seq": 1,
+      "timestamp_ms": 1791489600123,
+      "event_type": "envelope_rejected",
+      "correlation_id": "00000000-0000-4000-8000-000000000002",
+      "device_fingerprint": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+      "session_handle": "5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e",
+      "payload_digest": "c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0",
+      "subject_id": "",
+      "operation_class": "tool.invoke",
+      "target_hash": "",
+      "classification": "",
+      "reason_code": "ERR_SESSION_EXPIRED",
+      "payload": null,
+      "metadata": {
+        "reason_class": "expired",
+        "stage": "envelope"
+      },
+      "prev_digest": "30ba0aaf4d364656f99652afd6c00a22b3c5dd4493dd8b6446de1046acae8078"
+    },
+    {
+      "domain": "xsoc-aida-guard:providence-record:v3",
+      "kind": 2,
+      "seq": 2,
+      "timestamp_ms": 1791489601000,
+      "event_type": "invoke",
+      "correlation_id": "00000000-0000-4000-8000-000000000003",
+      "device_fingerprint": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+      "session_handle": "5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e",
+      "payload_digest": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1",
+      "subject_id": "user-vector",
+      "operation_class": "file.read",
+      "target_hash": "7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a",
+      "classification": "sensitive",
+      "reason_code": "",
+      "payload": {
+        "decision_vector": [
+          {
+            "check": "AudienceMatch",
+            "result": "pass"
+          },
+          {
+            "check": "PathWithin",
+            "result": "pass"
+          }
+        ],
+        "argument_digest": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
+        "ancestor_hashes": [
+          "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+          "e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2"
+        ],
+        "matched_grant_index": 0
+      },
+      "metadata": {
+        "｡": "halfwidth",
+        "😀": "smile",
+        "b": [
+          1,
+          -2,
+          0,
+          true,
+          false,
+          null
+        ],
+        "a": {
+          "z": "quote\" backslash\\ tab\t nl\n cr\r bs\b ff\f nul\u0000 us\u001f",
+          "y": "café  "
+        },
+        "B": 9007199254740991
+      },
+      "prev_digest": "e7a53ece491ff415c411c998c504dbc94efe1b350803d04ef46b8347922997f2"
+    }
+  ],
+  "record_digests": [
+    "30ba0aaf4d364656f99652afd6c00a22b3c5dd4493dd8b6446de1046acae8078",
+    "e7a53ece491ff415c411c998c504dbc94efe1b350803d04ef46b8347922997f2",
+    "68cb8f662fd7de3499734e997e8dec35e0b90d96602d412e03091f2c424bc6ca"
+  ],
+  "record_lines": [
+    "{\"domain\":\"xsoc-aida-guard:providence-record:v3\",\"kind\":2,\"seq\":0,\"timestamp_ms\":1791489600000,\"event_type\":\"admit\",\"correlation_id\":\"00000000-0000-4000-8000-000000000001\",\"device_fingerprint\":\"d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1\",\"session_handle\":\"5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e\",\"payload_digest\":\"\",\"subject_id\":\"user-vector\",\"operation_class\":\"\",\"target_hash\":\"\",\"classification\":\"\",\"reason_code\":\"\",\"payload\":null,\"metadata\":{\"legacy_chain_head\":\"abababababababababababababababababababababababababababababababab\"},\"prev_digest\":\"0000000000000000000000000000000000000000000000000000000000000000\"}",
+    "{\"domain\":\"xsoc-aida-guard:providence-record:v3\",\"kind\":2,\"seq\":1,\"timestamp_ms\":1791489600123,\"event_type\":\"envelope_rejected\",\"correlation_id\":\"00000000-0000-4000-8000-000000000002\",\"device_fingerprint\":\"d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1\",\"session_handle\":\"5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e\",\"payload_digest\":\"c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0\",\"subject_id\":\"\",\"operation_class\":\"tool.invoke\",\"target_hash\":\"\",\"classification\":\"\",\"reason_code\":\"ERR_SESSION_EXPIRED\",\"payload\":null,\"metadata\":{\"reason_class\":\"expired\",\"stage\":\"envelope\"},\"prev_digest\":\"30ba0aaf4d364656f99652afd6c00a22b3c5dd4493dd8b6446de1046acae8078\"}",
+    "{\"domain\":\"xsoc-aida-guard:providence-record:v3\",\"kind\":2,\"seq\":2,\"timestamp_ms\":1791489601000,\"event_type\":\"invoke\",\"correlation_id\":\"00000000-0000-4000-8000-000000000003\",\"device_fingerprint\":\"d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1\",\"session_handle\":\"5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e\",\"payload_digest\":\"c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1\",\"subject_id\":\"user-vector\",\"operation_class\":\"file.read\",\"target_hash\":\"7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a\",\"classification\":\"sensitive\",\"reason_code\":\"\",\"payload\":{\"decision_vector\":[{\"check\":\"AudienceMatch\",\"result\":\"pass\"},{\"check\":\"PathWithin\",\"result\":\"pass\"}],\"argument_digest\":\"a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9\",\"ancestor_hashes\":[\"e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1\",\"e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2\"],\"matched_grant_index\":0},\"metadata\":{\"｡\":\"halfwidth\",\"😀\":\"smile\",\"b\":[1,-2,0,true,false,null],\"a\":{\"z\":\"quote\\\" backslash\\\\ tab\\t nl\\n cr\\r bs\\b ff\\f nul\\u0000 us\\u001f\",\"y\":\"café  \"},\"B\":9007199254740991},\"prev_digest\":\"e7a53ece491ff415c411c998c504dbc94efe1b350803d04ef46b8347922997f2\"}"
+  ],
+  "head": {
+    "chain_id": "aida-guard/vector-test",
+    "seq": 3,
+    "head_digest": "68cb8f662fd7de3499734e997e8dec35e0b90d96602d412e03091f2c424bc6ca"
+  },
+  "head_commitment": "f6eb7cce33382e51c5c331ca59c256f220d38e571ef6998f05745afc9ca29a2a",
+  "empty_head_commitment": "6e7d380acc99110740e4726d51e97535566c2079cde04812b5af4035f905e170",
+  "cross_domain": {
+    "note": "record 0's fields hashed under the PQC S3 record domain; must differ from record_digests[0]",
+    "digest_under_s3_domain": "1088c21e4c89780361d219c121e977037f061246b2db0c0f4c8fd6db47d37c26"
+  },
+  "anchor": {
+    "chain_id": "aida-guard/vector-test",
+    "head_seq": 3,
+    "head_digest": "68cb8f662fd7de3499734e997e8dec35e0b90d96602d412e03091f2c424bc6ca",
+    "commitment": "f6eb7cce33382e51c5c331ca59c256f220d38e571ef6998f05745afc9ca29a2a",
+    "timestamp_ms": 1791489602000,
+    "algorithm": "Ed25519",
+    "key_id": "ac4ea3aee46ee01e",
+    "public_key": "WWH8u8v6oguQe8wWVVjiYUyyqCXZgWsHiltprLLOpxE=",
+    "signature": "fs5SOtqydRz5SgfUNoqMoIPdVl0dzWQzAgzlsj+nTr/BLTFRAUGlC6Il7p6w7OzbnyyliFpEmI05P+hzi0bqAg=="
+  },
+  "anchor_message": "c398120de1cf695b19d4cd46b56411637f99601eca2d69a3253efa76a2e4d589",
+  "anchor_ed25519_seed": "7321f6dafdcc1c5e771dc1f582f4d2e37b051a31618d6b4f96a3785e53fb0616",
+  "checkpoint_genesis_nonce": "7707d94e8fc2ab0e4ab22e5d0d5f5067fd82437bd1bd024a150c0a6477da1471",
+  "jcs": [
+    {
+      "value": {
+        "｡": "halfwidth",
+        "😀": "smile",
+        "b": [
+          1,
+          -2,
+          0,
+          true,
+          false,
+          null
+        ],
+        "a": {
+          "z": "quote\" backslash\\ tab\t nl\n cr\r bs\b ff\f nul\u0000 us\u001f",
+          "y": "café  "
+        },
+        "B": 9007199254740991
+      },
+      "jcs": "{\"B\":9007199254740991,\"a\":{\"y\":\"café  \",\"z\":\"quote\\\" backslash\\\\ tab\\t nl\\n cr\\r bs\\b ff\\f nul\\u0000 us\\u001f\"},\"b\":[1,-2,0,true,false,null],\"😀\":\"smile\",\"｡\":\"halfwidth\"}"
+    },
+    {
+      "value": {
+        "decision_vector": [
+          {
+            "check": "AudienceMatch",
+            "result": "pass"
+          },
+          {
+            "check": "PathWithin",
+            "result": "pass"
+          }
+        ],
+        "argument_digest": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
+        "ancestor_hashes": [
+          "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+          "e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2"
+        ],
+        "matched_grant_index": 0
+      },
+      "jcs": "{\"ancestor_hashes\":[\"e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1\",\"e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2\"],\"argument_digest\":\"a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9\",\"decision_vector\":[{\"check\":\"AudienceMatch\",\"result\":\"pass\"},{\"check\":\"PathWithin\",\"result\":\"pass\"}],\"matched_grant_index\":0}"
+    },
+    {
+      "value": {},
+      "jcs": "{}"
+    },
+    {
+      "value": [],
+      "jcs": "[]"
+    }
+  ]
+}
