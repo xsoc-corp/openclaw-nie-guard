@@ -7,6 +7,7 @@ export const ProvidenceEventType = z.enum([
   'invoke',
   'revoke',
   'continuity_fail',
+  'envelope_rejected',
   'replay_fail',
   'scope_fail',
   'target_mismatch',
@@ -30,43 +31,86 @@ export const ProvidenceEventType = z.enum([
 ]);
 export type ProvidenceEventType = z.infer<typeof ProvidenceEventType>;
 
-export const ProvidenceEvent = z.object({
-  eventId: z.string().uuid(),
+const hex64 = z.string().regex(/^[0-9a-f]{64}$/);
+const hex64OrEmpty = z.union([hex64, z.literal('')]);
+const safeInt = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
+
+// The typed Guard payload of a Providence record (docs/providence-record-v3.md,
+// section 2). Only these four fields; a record carrying any other is refused.
+export const GuardPayload = z
+  .object({
+    decision_vector: z.array(z.object({ check: z.string(), result: z.string() }).strict()).optional(),
+    argument_digest: hex64.optional(),
+    ancestor_hashes: z.array(hex64).optional(),
+    matched_grant_index: safeInt.optional()
+  })
+  .strict();
+export type GuardPayload = z.infer<typeof GuardPayload>;
+
+// What a caller hands the Providence log. The log assigns the position, the
+// time and the link to the previous record.
+export const ProvidenceAppendInput = z.object({
   eventType: ProvidenceEventType,
-  correlationId: z.string().uuid(),
+  correlationId: z.string().optional(),
   // The NIE session handle: 64 lowercase hex (32 bytes).
-  sessionId: z.string().regex(/^[0-9a-f]{64}$/).optional(),
+  sessionId: hex64.optional(),
   subjectId: z.string().optional(),
-  deviceFingerprint: z.string().optional(),
+  deviceFingerprint: hex64.optional(),
+  // SHA-256 of what the decision was about. For a continuity envelope, the
+  // digest of its canonical readable copy, never of its sealed bytes.
+  payloadDigest: hex64.optional(),
   operationClass: z.string().optional(),
   targetHash: z.string().optional(),
   classification: z.string().optional(),
   reasonCode: z.string().optional(),
-  timestamp: z.number().int().positive(),
-  previousEventHash: z.string().length(64),
-  eventHash: z.string().length(64),
+  payload: GuardPayload.optional(),
   metadata: z.record(z.string(), z.unknown()).optional()
 });
-export type ProvidenceEvent = z.infer<typeof ProvidenceEvent>;
+export type ProvidenceAppendInput = z.infer<typeof ProvidenceAppendInput>;
+
+// One record of the AIDA-Guard Providence chain, encoding v3, exactly as it
+// sits on its line: these fields and no others, every one present.
+export const ProvidenceRecord = z
+  .object({
+    domain: z.literal('xsoc-aida-guard:providence-record:v3'),
+    kind: z.literal(2),
+    seq: safeInt,
+    timestamp_ms: safeInt,
+    event_type: ProvidenceEventType,
+    correlation_id: z.string(),
+    device_fingerprint: hex64OrEmpty,
+    // The NIE session handle, 64 lowercase hex, or empty.
+    session_handle: hex64OrEmpty,
+    payload_digest: hex64OrEmpty,
+    subject_id: z.string(),
+    operation_class: z.string(),
+    target_hash: z.string(),
+    classification: z.string(),
+    reason_code: z.string(),
+    payload: GuardPayload.nullable(),
+    metadata: z.record(z.string(), z.unknown()).nullable(),
+    prev_digest: hex64
+  })
+  .strict();
+export type ProvidenceRecord = z.infer<typeof ProvidenceRecord>;
 
 // Signature algorithm binding a Providence anchor. ML-DSA-65 (FIPS 204) is the
-// default for new deployments. XSOC-QSIG is selectable as an adjunct. The value
-// mock-unsigned indicates the non-cryptographic mock signer and carries no
-// unforgeability guarantee; it is visible in the anchor so a consumer can never
-// mistake a mock anchor for a signed one.
-export const AnchorSignatureAlgorithm = z.enum(['ML-DSA-65', 'XSOC-QSIG', 'mock-unsigned']);
+// production deployment's, through AWS-LC; Ed25519 is the public build's.
+export const AnchorSignatureAlgorithm = z.enum(['ML-DSA-65', 'Ed25519']);
 export type AnchorSignatureAlgorithm = z.infer<typeof AnchorSignatureAlgorithm>;
 
-// A signed anchor over the Providence chain head. The hash chain provides tamper
-// evidence between anchors. The signature provides non-repudiation of the chain
-// state at the anchor point.
-export const SignedAnchor = z.object({
-  anchorId: z.string().uuid(),
-  headHash: z.string().length(64),
-  eventCount: z.number().int().nonnegative(),
-  timestamp: z.number().int().positive(),
-  algorithm: AnchorSignatureAlgorithm,
-  keyId: z.string().min(1),
-  signature: z.string().min(1)
-});
-export type SignedAnchor = z.infer<typeof SignedAnchor>;
+// A signed anchor over a head commitment of the chain (section 5).
+export const ProvidenceAnchor = z
+  .object({
+    chain_id: z.string().regex(/^aida-guard\/.+$/),
+    head_seq: safeInt,
+    head_digest: hex64,
+    commitment: hex64,
+    timestamp_ms: safeInt,
+    algorithm: AnchorSignatureAlgorithm,
+    key_id: z.string().regex(/^[0-9a-f]{16}$/),
+    public_key: z.string().min(1),
+    signature: z.string().min(1)
+  })
+  .strict();
+export type ProvidenceAnchor = z.infer<typeof ProvidenceAnchor>;

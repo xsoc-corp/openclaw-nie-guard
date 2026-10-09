@@ -18,6 +18,7 @@
     "@xsoc/policy-engine": "workspace:*",
     "@xsoc/tstl-envelope": "workspace:*",
     "@xsoc/providence-log": "workspace:*",
+    "@xsoc/providence-signer": "workspace:*",
     "@xsoc/fhe-gate": "workspace:*",
     "@xsoc/openclaw-adapter": "workspace:*",
     "@xsoc/mcp-mediator": "workspace:*",

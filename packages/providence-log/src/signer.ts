@@ -1,54 +1,55 @@
-import { createHash, timingSafeEqual } from 'node:crypto';
 import type { AnchorSignatureAlgorithm } from '@xsoc/shared-types';
+import { keyIdOf } from './encoding.js';
 
-// Signing surface for Providence anchors. The production implementation is
-// substituted from the private deployment repo via pnpm workspace override, the
-// same seam used for @xsoc/nie-bindings and @xsoc/fhe-gate. This repository ships
-// a non-cryptographic mock only, per docs/disclosure-policy.md.
+// The surface a Providence anchor is signed through. @xsoc/providence-signer
+// provides it: an Ed25519 signer in this repository, replaced in the production
+// deployment by an ML-DSA-65 signer through the same workspace alias seam used
+// for @xsoc/nie-bindings and @xsoc/fhe-gate. There is no mock.
 export interface ProvidenceSigner {
   readonly algorithm: AnchorSignatureAlgorithm;
+  /** The raw public key anchors embed and a verifier pins. */
+  readonly publicKey: Uint8Array;
+  /** First 16 lowercase hex of SHA-256(publicKey). */
   readonly keyId: string;
-  sign(canonicalAnchor: string): Promise<string>;
-  verify(canonicalAnchor: string, signature: string): Promise<boolean>;
+  sign(message: Uint8Array): Promise<Uint8Array>;
+  verify(message: Uint8Array, signature: Uint8Array): Promise<boolean>;
 }
 
-// Constant-time hex comparison. Used so mock verification does not introduce a
-// timing side channel pattern that would be copied into a real implementation.
-function timingSafeEqualHex(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  const ab = Buffer.from(a, 'hex');
-  const bb = Buffer.from(b, 'hex');
-  if (ab.length !== bb.length) return false;
-  return timingSafeEqual(ab, bb);
-}
-
-// MOCK. NOT CRYPTOGRAPHIC. A deterministic digest with no key material and no
-// unforgeability property. Anyone can recompute it. It exists so the anchor path
-// is exercisable in this repository without production bindings. Its algorithm
-// identifier is mock-unsigned and that value is written into every anchor it
-// produces, so a mock anchor is always distinguishable from a signed one.
-export class MockProvidenceSigner implements ProvidenceSigner {
-  readonly algorithm: AnchorSignatureAlgorithm = 'mock-unsigned';
-  readonly keyId = 'mock-key';
-
-  async sign(canonicalAnchor: string): Promise<string> {
-    return createHash('sha256').update(`mock:${canonicalAnchor}`).digest('hex');
-  }
-
-  async verify(canonicalAnchor: string, signature: string): Promise<boolean> {
-    return timingSafeEqualHex(await this.sign(canonicalAnchor), signature);
+export class SignerSelfTestFailed extends Error {
+  constructor(reason: string) {
+    super(`Providence signer self-test failed: ${reason}`);
+    this.name = 'SignerSelfTestFailed';
   }
 }
 
-// Fail-closed deployment guard. Call during startup anywhere unsigned anchors are
-// unacceptable. Throws rather than warning: a deployment that reaches production
-// on the mock signer has no non-repudiation at all, and that must stop the process
-// rather than be logged and ignored.
-export function assertRealSigner(signer: ProvidenceSigner): void {
-  if (signer.algorithm === 'mock-unsigned') {
-    throw new Error(
-      'ProvidenceSigner is the non-cryptographic mock. Anchors would carry no real ' +
-      'signature. Supply a production signer via workspace override before serving.'
-    );
+const SELF_TEST_MESSAGE = Buffer.from('xsoc-aida-guard:providence-signer:self-test:v1', 'utf8');
+
+/**
+ * Run at startup, before any anchor is written: the key id must be the id of
+ * the public key, a signature over a fixed message must verify, and the same
+ * signature must not verify over a different message. Throws on any failure, so
+ * a process holding a signer that cannot sign does not start. The test lives
+ * here rather than in the signer, so a signer does not vouch for itself.
+ */
+export async function signerSelfTest(signer: ProvidenceSigner, allowed?: readonly AnchorSignatureAlgorithm[]): Promise<void> {
+  if (allowed && !allowed.includes(signer.algorithm)) {
+    throw new SignerSelfTestFailed(`algorithm ${signer.algorithm} is not one of ${allowed.join(', ')}`);
+  }
+  if (signer.keyId !== keyIdOf(signer.publicKey)) {
+    throw new SignerSelfTestFailed(`key id ${signer.keyId} is not the id of the public key`);
+  }
+  let signature: Uint8Array;
+  try {
+    signature = await signer.sign(SELF_TEST_MESSAGE);
+  } catch (err) {
+    throw new SignerSelfTestFailed(`sign threw: ${(err as Error).message}`);
+  }
+  if (!(await signer.verify(SELF_TEST_MESSAGE, signature))) {
+    throw new SignerSelfTestFailed('a fresh signature does not verify');
+  }
+  const altered = Buffer.from(SELF_TEST_MESSAGE);
+  altered[0] = (altered[0] ?? 0) ^ 0x01;
+  if (await signer.verify(altered, signature)) {
+    throw new SignerSelfTestFailed('a signature verifies over a different message');
   }
 }

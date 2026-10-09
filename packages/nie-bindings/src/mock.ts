@@ -19,6 +19,17 @@ interface MockState {
   activeTokens: Map<string, TokenState>;
 }
 
+// Sorted keys at every level, no whitespace: the canonical readable copy.
+function canonicalJson(v: unknown): string {
+  if (Array.isArray(v)) return `[${v.map(canonicalJson).join(',')}]`;
+  if (v !== null && typeof v === 'object') {
+    const o = v as Record<string, unknown>;
+    const keys = Object.keys(o).filter((k) => o[k] !== undefined).sort();
+    return `{${keys.map((k) => `${JSON.stringify(k)}:${canonicalJson(o[k])}`).join(',')}}`;
+  }
+  return JSON.stringify(v);
+}
+
 export function createMockBindings(): NieBindings {
   const state: MockState = {
     revokedSubjects: new Set(),
@@ -127,6 +138,15 @@ export function createMockBindings(): NieBindings {
         return JSON.parse(decoded) as TstlEnvelope;
       } catch {
         throw new Error('ERR_CONTINUITY_FAILED: envelope decode failure');
+      }
+    },
+
+    readableEnvelopeDigest(sealed: SealedEnvelope): string | undefined {
+      try {
+        const decoded = JSON.parse(Buffer.from(sealed, 'base64').toString('utf8')) as unknown;
+        return createHash('sha256').update(canonicalJson(decoded)).digest('hex');
+      } catch {
+        return undefined;
       }
     },
 

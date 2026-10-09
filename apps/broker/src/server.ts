@@ -3,7 +3,8 @@ import sensible from '@fastify/sensible';
 import rateLimit from '@fastify/rate-limit';
 import { loadBindings } from '@xsoc/nie-bindings';
 import { PolicyEngine } from '@xsoc/policy-engine';
-import { ProvidenceLog } from '@xsoc/providence-log';
+import { ProvidenceLog, AnchorScheduler, anchorIntervalSeconds, signerSelfTest } from '@xsoc/providence-log';
+import { createProvidenceSigner, ALLOWED_ANCHOR_ALGORITHMS } from '@xsoc/providence-signer';
 import { loadFheGate } from '@xsoc/fhe-gate';
 import { McpMediator } from '@xsoc/mcp-mediator';
 import { OpenClawAdapter } from '@xsoc/openclaw-adapter';
@@ -21,6 +22,7 @@ import { registerMcpRoute } from './routes/mcp.js';
 import { registerSkillRoute } from './routes/skill.js';
 import { config } from './config.js';
 import type { BrokerServices } from './services/context.js';
+import { BrokerProvidence } from './services/providence.js';
 import { SessionLabelStore } from './services/labels.js';
 
 export async function buildServer(): Promise<FastifyInstance> {
@@ -31,7 +33,31 @@ export async function buildServer(): Promise<FastifyInstance> {
 
   const bindings = await loadBindings();
   const policy = new PolicyEngine();
-  const providence = new ProvidenceLog(config.providenceChainFile);
+  // Providence. The signer is created and proved before anything is served: a
+  // signer that fails its self-test, or whose algorithm this build does not
+  // accept, stops startup. A chain whose last record disagrees with its head
+  // starts the broker refusing every action it would record.
+  const anchorInterval = anchorIntervalSeconds(config.providenceAnchorInterval);
+  const signer = await createProvidenceSigner();
+  await signerSelfTest(signer, ALLOWED_ANCHOR_ALGORITHMS);
+  const providenceLog = new ProvidenceLog({
+    dir: config.providenceDataDir,
+    chainId: config.providenceChainId,
+    legacyChainFile: config.providenceChainFile
+  });
+  if (providenceLog.refusal) {
+    app.log.error({ reason: providenceLog.refusal }, 'Providence chain refuses appends; every recorded action will be denied');
+  }
+  const anchors = new AnchorScheduler(providenceLog, signer, anchorInterval);
+  anchors.start();
+  app.addHook('onClose', async () => {
+    await anchors.stop();
+  });
+  app.log.info(
+    { chainId: providenceLog.chainId, algorithm: signer.algorithm, keyId: signer.keyId, anchorIntervalSeconds: anchorInterval },
+    'Providence signer ready'
+  );
+  const providence = new BrokerProvidence(providenceLog);
   const fheGate = await loadFheGate();
   const mcpMediator = new McpMediator();
 

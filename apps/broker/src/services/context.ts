@@ -1,6 +1,6 @@
 import type { NieBindings } from '@xsoc/nie-bindings';
 import type { PolicyEngine } from '@xsoc/policy-engine';
-import type { ProvidenceLog } from '@xsoc/providence-log';
+import type { BrokerProvidence } from './providence.js';
 import type { FheGate } from '@xsoc/fhe-gate';
 import type { McpMediator } from '@xsoc/mcp-mediator';
 import type { OpenClawAdapter } from '@xsoc/openclaw-adapter';
@@ -9,7 +9,7 @@ import type { SessionLabelStore } from './labels.js';
 export interface BrokerServices {
   bindings: NieBindings;
   policy: PolicyEngine;
-  providence: ProvidenceLog;
+  providence: BrokerProvidence;
   fheGate: FheGate;
   mcpMediator: McpMediator;
   adapter: OpenClawAdapter;

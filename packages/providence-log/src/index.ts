@@ -1,14 +1,34 @@
 // @xsoc/providence-log
 //
-// Append-only hash-chained audit log. Every security-relevant decision is logged.
-// The chain supports external anchor for tamper evidence. Each event contains
-// previousEventHash forming a linked chain; truncation is detectable via anchor.
+// The AIDA-Guard Providence chain, record encoding v3 (docs/providence-record-v3.md):
+// an append-only chain of records, each carrying its predecessor's content digest,
+// a durable head committed to under a deployment-scoped chain id, and signed
+// anchors over that commitment. The offline verifier is `xsoc-audit-verify
+// --chain guard`.
 
-export { ProvidenceLog } from './log.js';
-export { verifyChain } from './verifier.js';
-export type { LogAppendInput } from './log.js';
-export { MockProvidenceSigner, assertRealSigner } from './signer.js';
+export {
+  ProvidenceLog,
+  ProvidenceUnavailable,
+  CHAIN_FILE,
+  HEAD_FILE,
+  ANCHOR_DIR
+} from './log.js';
+export type { GuardHead, ProvidenceLogOptions, AppendedRecord } from './log.js';
+export {
+  RECORD_DOMAIN,
+  HEAD_DOMAIN,
+  ANCHOR_DOMAIN,
+  GUARD_KIND,
+  GENESIS_DIGEST,
+  EncodingError,
+  jcs,
+  recordDigest,
+  recordLine,
+  headCommitment,
+  anchorMessage,
+  keyIdOf,
+  checkpointGenesisNonce
+} from './encoding.js';
+export { signerSelfTest, SignerSelfTestFailed } from './signer.js';
 export type { ProvidenceSigner } from './signer.js';
-export { canonicalAnchor } from './log.js';
-export { verifyAnchor } from './verifier.js';
-export type { AnchorVerificationResult } from './verifier.js';
+export { AnchorScheduler, anchorIntervalSeconds } from './scheduler.js';
