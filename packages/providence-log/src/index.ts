@@ -13,7 +13,7 @@ export {
   HEAD_FILE,
   ANCHOR_DIR
 } from './log.js';
-export type { GuardHead, ProvidenceLogOptions, AppendedRecord } from './log.js';
+export type { GuardHead, ProvidenceLogOptions, AppendedRecord, ServedRecord, ChainPage } from './log.js';
 export {
   RECORD_DOMAIN,
   HEAD_DOMAIN,

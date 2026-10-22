@@ -19,6 +19,7 @@ import {
   mkdirSync,
   openSync,
   readFileSync,
+  readSync,
   readdirSync,
   renameSync,
   writeSync
@@ -65,6 +66,26 @@ export interface ProvidenceLogOptions {
   now?: () => number;
 }
 
+/** One record as the chain file holds it, with its digest. */
+export interface ServedRecord {
+  seq: number;
+  /** The record's digest, lowercase hex. */
+  digest: string;
+  /** The record's line in chain-v3.jsonl, byte for byte, without the newline. */
+  line: string;
+}
+
+/** A page of the chain, read under one head. */
+export interface ChainPage {
+  head: GuardHead & { commitment: string };
+  /** Records with seq from `from`, up to the head, at most `limit` of them. */
+  records: ServedRecord[];
+  /** Anchors whose head_seq falls in the page: after `from`, at most the last record served plus one. */
+  anchors: ProvidenceAnchor[];
+  /** The seq to ask for next; equal to head.seq when the page reaches the head. */
+  next: number;
+}
+
 export class ProvidenceUnavailable extends Error {
   constructor(reason: string) {
     super(`Providence log refuses appends: ${reason}`);
@@ -89,6 +110,11 @@ export class ProvidenceLog {
   private failure?: string;
   private recordsSinceStart = 0;
   private readonly listeners: Array<(r: AppendedRecord) => void> = [];
+  // Byte offset of each record's line in the chain file, by seq, and the file's
+  // length, so a page is one read of the bytes it covers. Undefined when the
+  // chain could not be opened, and then nothing is served.
+  private lineOffsets?: number[];
+  private chainBytes = 0;
 
   constructor(opts: ProvidenceLogOptions) {
     if (!CHAIN_ID.test(opts.chainId)) {
@@ -102,6 +128,7 @@ export class ProvidenceLog {
     this.head = { chain_id: this.chainId, seq: 0, head_digest: GENESIS_DIGEST.toString('hex') };
     try {
       this.head = this.openHead();
+      this.indexLines();
     } catch (err) {
       this.failure = (err as Error).message;
     }
@@ -188,6 +215,8 @@ export class ProvidenceLog {
       throw new ProvidenceUnavailable(this.failure);
     }
     this.head = next;
+    this.lineOffsets?.push(this.chainBytes);
+    this.chainBytes += Buffer.byteLength(line);
     this.recordsSinceStart++;
     const appended = { record, digest: digest.toString('hex') };
     for (const l of this.listeners) l(appended);
@@ -226,6 +255,45 @@ export class ProvidenceLog {
     return readdirSync(join(this.dir, ANCHOR_DIR)).filter((f) => f.endsWith('.json')).sort();
   }
 
+  /**
+   * Read records from seq `from`, at most `limit`, under the current head, with
+   * each record's line exactly as the file holds it, so a verifier given the
+   * lines checks the bytes this log wrote. Anchors whose head_seq lies after
+   * `from` and within the page come with it. Every line read is parsed and must
+   * carry the seq its position says, or the read throws.
+   */
+  page(from: number, limit: number): ChainPage {
+    if (!this.lineOffsets) throw new ProvidenceUnavailable(this.failure ?? 'the chain was not opened');
+    if (!Number.isSafeInteger(from) || from < 0) throw new RangeError('from must be a non-negative integer');
+    if (!Number.isSafeInteger(limit) || limit < 1) throw new RangeError('limit must be a positive integer');
+    const head = this.getHead();
+    const commitment = headCommitment(head.seq, Buffer.from(head.head_digest, 'hex'), head.chain_id).toString('hex');
+    const to = Math.min(head.seq, from + limit);
+    const records: ServedRecord[] = [];
+    if (from < to) {
+      const start = this.lineOffsets[from]!;
+      const end = to < this.lineOffsets.length ? this.lineOffsets[to]! : this.chainBytes;
+      const bytes = readRange(join(this.dir, CHAIN_FILE), start, end - start);
+      const text = bytes.toString('utf8');
+      if (!text.endsWith('\n')) throw new ProvidenceUnavailable('a served range ends in a partial line');
+      const lines = text.slice(0, -1).split('\n');
+      if (lines.length !== to - from) throw new ProvidenceUnavailable('the chain file and its index disagree');
+      lines.forEach((line, i) => {
+        const record = ProvidenceRecord.parse(JSON.parse(line));
+        if (record.seq !== from + i) throw new ProvidenceUnavailable(`line ${from + i} holds seq ${record.seq}`);
+        records.push({ seq: record.seq, digest: recordDigest(record).toString('hex'), line });
+      });
+    }
+    const anchors: ProvidenceAnchor[] = [];
+    for (const name of this.anchorFiles()) {
+      const anchorSeq = Number(name.slice(0, 12));
+      const inPage = (anchorSeq > from || (from === 0 && anchorSeq === 0)) && anchorSeq <= to;
+      if (!inPage) continue;
+      anchors.push(JSON.parse(readFileSync(join(this.dir, ANCHOR_DIR, name), 'utf8')) as ProvidenceAnchor);
+    }
+    return { head: { ...head, commitment }, records, anchors, next: to };
+  }
+
   // -------------------------------------------------------------------------
 
   private openHead(): GuardHead {
@@ -260,6 +328,25 @@ export class ProvidenceLog {
       throw new Error(`the last record computes to ${digest} and the head holds ${head.head_digest}`);
     }
     return head;
+  }
+
+  private indexLines(): void {
+    const chainPath = join(this.dir, CHAIN_FILE);
+    const bytes = existsSync(chainPath) ? readFileSync(chainPath) : Buffer.alloc(0);
+    const offsets: number[] = [];
+    let start = 0;
+    for (let i = 0; i < bytes.length; i++) {
+      if (bytes[i] === 0x0a) {
+        offsets.push(start);
+        start = i + 1;
+      }
+    }
+    if (start !== bytes.length) throw new Error(`${CHAIN_FILE} ends in a partial line`);
+    if (offsets.length !== this.head.seq) {
+      throw new Error(`${CHAIN_FILE} holds ${offsets.length} lines and the head names ${this.head.seq}`);
+    }
+    this.lineOffsets = offsets;
+    this.chainBytes = bytes.length;
   }
 
   private replaceHead(expected: GuardHead, next: GuardHead): void {
@@ -320,6 +407,22 @@ function readLegacyHead(path: string): string | undefined {
   const lines = text.split('\n');
   const last = JSON.parse(lines[lines.length - 1]!) as { eventHash?: unknown };
   return typeof last.eventHash === 'string' ? last.eventHash : undefined;
+}
+
+function readRange(path: string, position: number, length: number): Buffer {
+  const out = Buffer.alloc(length);
+  const fd = openSync(path, 'r');
+  try {
+    let done = 0;
+    while (done < length) {
+      const n = readSync(fd, out, done, length - done, position + done);
+      if (n === 0) throw new ProvidenceUnavailable('the chain file is shorter than its index');
+      done += n;
+    }
+  } finally {
+    closeSync(fd);
+  }
+  return out;
 }
 
 function appendDurably(path: string, data: string): void {

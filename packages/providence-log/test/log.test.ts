@@ -204,3 +204,96 @@ describe('AnchorScheduler', () => {
     await s.stop();
   });
 });
+
+describe('ProvidenceLog.page', () => {
+  function fileLines(d: string): string[] {
+    return readFileSync(join(d, CHAIN_FILE), 'utf8').slice(0, -1).split('\n');
+  }
+
+  it('serves each record line byte for byte, with its digest, under one head', () => {
+    const d = dir();
+    const log = new ProvidenceLog({ dir: d, chainId: CHAIN_ID });
+    for (let i = 0; i < 5; i++) log.append({ eventType: 'invoke', subjectId: `s-${i}`, metadata: { note: 'é ' + i } });
+    const p = log.page(0, 100);
+    expect(p.records.map((r) => r.seq)).toEqual([0, 1, 2, 3, 4]);
+    expect(p.records.map((r) => r.line)).toEqual(fileLines(d));
+    for (const r of p.records) {
+      expect(r.digest).toBe(recordDigest(ProvidenceRecord.parse(JSON.parse(r.line))).toString('hex'));
+    }
+    expect(p.head.seq).toBe(5);
+    expect(p.head.head_digest).toBe(p.records[4]!.digest);
+    expect(p.head.commitment).toBe(headCommitment(5, Buffer.from(p.head.head_digest, 'hex'), CHAIN_ID).toString('hex'));
+    expect(p.next).toBe(5);
+  });
+
+  it('pages by sequence and stops at the head', () => {
+    const d = dir();
+    const log = new ProvidenceLog({ dir: d, chainId: CHAIN_ID });
+    for (let i = 0; i < 7; i++) log.append({ eventType: 'admit' });
+    const a = log.page(0, 3);
+    expect(a.records.map((r) => r.seq)).toEqual([0, 1, 2]);
+    expect(a.next).toBe(3);
+    const b = log.page(a.next, 3);
+    expect(b.records.map((r) => r.seq)).toEqual([3, 4, 5]);
+    const c = log.page(b.next, 3);
+    expect(c.records.map((r) => r.seq)).toEqual([6]);
+    expect(c.next).toBe(7);
+    const empty = log.page(7, 3);
+    expect(empty.records).toEqual([]);
+    expect(empty.next).toBe(7);
+    expect(log.page(50, 3).next).toBe(7);
+  });
+
+  it('a page sees records appended after the log opened, and a reopened log serves the same bytes', () => {
+    const d = dir();
+    const log = new ProvidenceLog({ dir: d, chainId: CHAIN_ID });
+    log.append({ eventType: 'admit' });
+    expect(log.page(0, 10).records).toHaveLength(1);
+    log.append({ eventType: 'deny', reasonCode: 'ERR_X' });
+    const first = log.page(0, 10);
+    expect(first.records).toHaveLength(2);
+    const reopened = new ProvidenceLog({ dir: d, chainId: CHAIN_ID }).page(0, 10);
+    expect(reopened.records).toEqual(first.records);
+  });
+
+  it('serves the anchors whose head falls in the page', async () => {
+    const d = dir();
+    const log = new ProvidenceLog({ dir: d, chainId: CHAIN_ID });
+    const signer = testSigner();
+    log.append({ eventType: 'admit' });
+    await log.exportAnchor(signer);
+    log.append({ eventType: 'invoke' });
+    log.append({ eventType: 'invoke' });
+    await log.exportAnchor(signer);
+    expect(log.page(0, 10).anchors.map((a) => a.head_seq)).toEqual([1, 3]);
+    expect(log.page(0, 1).anchors.map((a) => a.head_seq)).toEqual([1]);
+    expect(log.page(1, 10).anchors.map((a) => a.head_seq)).toEqual([3]);
+    expect(log.page(3, 10).anchors).toEqual([]);
+  });
+
+  it('refuses a malformed request and a chain whose line does not carry its seq', () => {
+    const d = dir();
+    const log = new ProvidenceLog({ dir: d, chainId: CHAIN_ID });
+    log.append({ eventType: 'admit' });
+    log.append({ eventType: 'admit' });
+    expect(() => log.page(-1, 10)).toThrow(RangeError);
+    expect(() => log.page(0, 0)).toThrow(RangeError);
+    expect(() => log.page(1.5, 10)).toThrow(RangeError);
+    // Same length, so the index still lines up, and the second line now claims seq 0.
+    const text = readFileSync(join(d, CHAIN_FILE), 'utf8');
+    const lines = text.slice(0, -1).split('\n');
+    lines[1] = lines[1]!.replace('"seq":1,', '"seq":0,');
+    writeFileSync(join(d, CHAIN_FILE), lines.join('\n') + '\n');
+    expect(() => log.page(0, 10)).toThrow(ProvidenceUnavailable);
+  });
+
+  it('serves nothing from a chain it could not open', () => {
+    const d = dir();
+    const log = new ProvidenceLog({ dir: d, chainId: CHAIN_ID });
+    log.append({ eventType: 'admit' });
+    appendFileSync(join(d, CHAIN_FILE), '{"partial":');
+    const broken = new ProvidenceLog({ dir: d, chainId: CHAIN_ID });
+    expect(broken.refusal).toBeDefined();
+    expect(() => broken.page(0, 10)).toThrow(ProvidenceUnavailable);
+  });
+});

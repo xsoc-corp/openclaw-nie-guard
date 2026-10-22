@@ -25,6 +25,7 @@ import { config, providenceConfig } from './config.js';
 import type { BrokerServices } from './services/context.js';
 import { BrokerProvidence } from './services/providence.js';
 import { SessionLabelStore } from './services/labels.js';
+import { OperatorAuth } from './lib/operator-auth.js';
 
 export interface BuildServerOptions {
   /**
@@ -44,6 +45,11 @@ export interface BuildServerOptions {
    * own routes may supply them, so it runs the same under either workspace.
    */
   bindings?: NieBindings;
+  /**
+   * Operator authentication for the read routes. Defaults to the accepted token
+   * hashes in BROKER_OPERATOR_TOKEN_SHA256; with none, those routes refuse.
+   */
+  operatorAuth?: OperatorAuth;
 }
 
 export async function buildServer(opts: BuildServerOptions = {}): Promise<FastifyInstance> {
@@ -117,7 +123,11 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
   await registerInvokeRoute(app);
   await registerRevokeRoute(app);
   await registerSessionRoute(app);
-  await registerAuditRoute(app);
+  const operatorAuth = opts.operatorAuth ?? OperatorAuth.fromEnv();
+  if (!operatorAuth.configured) {
+    app.log.warn('BROKER_OPERATOR_TOKEN_SHA256 is not set: /v1/audit refuses every request');
+  }
+  await registerAuditRoute(app, operatorAuth);
   await registerHealthRoute(app);
   await registerVersionRoute(app);
   await registerCosignRoute(app);
