@@ -23,6 +23,8 @@ beforeAll(async () => {
   process.env.PROVIDENCE_CHAIN_FILE = join(dataDir, 'chain.jsonl');
   process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-audit-test';
   process.env.LOG_LEVEL = 'silent';
+  // The scaffolding transport, admitted explicitly as the production build requires.
+  process.env.BROKER_SCAFFOLDING_TRANSPORT = '1';
   const { buildServer } = await import('../src/server.js');
   app = await buildServer({
     signer: await ephemeralSigner(),

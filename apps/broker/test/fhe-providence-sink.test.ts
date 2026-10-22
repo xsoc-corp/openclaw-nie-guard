@@ -47,6 +47,8 @@ describe('FHE decisions reach the broker chain', () => {
     process.env.PROVIDENCE_CHAIN_FILE = join(dataDir, 'chain.jsonl');
     process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-fhe-sink-test';
     process.env.LOG_LEVEL = 'silent';
+  // The scaffolding transport, admitted explicitly as the production build requires.
+  process.env.BROKER_SCAFFOLDING_TRANSPORT = '1';
     const { buildServer } = await import('../src/server.js');
     app = await buildServer({ operatorAuth: testOperatorAuth(), signer: await ephemeralSigner(), bindings: createMockBindings() });
     expect(typeof captured.sink?.append).toBe('function');

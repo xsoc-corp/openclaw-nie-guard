@@ -22,6 +22,8 @@ beforeAll(async () => {
   process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-test';
   delete process.env.PROVIDENCE_ED25519_SEED_B64;
   process.env.LOG_LEVEL = 'silent';
+  // The scaffolding transport, admitted explicitly as the production build requires.
+  process.env.BROKER_SCAFFOLDING_TRANSPORT = '1';
   ({ buildServer } = await import('../src/server.js'));
 });
 
