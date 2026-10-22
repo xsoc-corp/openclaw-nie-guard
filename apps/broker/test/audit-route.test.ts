@@ -35,6 +35,7 @@ beforeAll(async () => {
     const r = await app.inject({
       method: 'POST',
       url: '/v1/admit',
+      headers: { authorization: `Bearer ${TOKEN}` },
       payload: {
         attestationPackage: 'mock-attestation-' + randomUUID(),
         requestedRole: 'operator',
@@ -144,3 +145,33 @@ describe('OperatorAuth', () => {
     expect(auth.authenticates({ headers: { authorization: 'Bearer ' } } as never)).toBe(false);
   });
 });
+
+describe('write routes', () => {
+  const writes: Array<[string, string]> = [
+    ['POST', '/v1/admit'], ['POST', '/v1/invoke'], ['POST', '/v1/revoke'], ['POST', '/v1/context/register'],
+    ['POST', '/v1/cosign'], ['POST', '/v1/mcp/ingest'], ['POST', '/v1/skill/register'], ['POST', '/v1/not-a-route']
+  ];
+
+  it('refuses every write without an operator token, before the route runs', async () => {
+    const before = readFileSync(join(dataDir, 'chain-v3.jsonl'), 'utf8');
+    for (const [method, url] of writes) {
+      const r = await app.inject({ method: method as 'POST', url, payload: {} });
+      expect(r.statusCode, url).toBe(401);
+      const wrong = await app.inject({ method: method as 'POST', url, payload: {}, headers: { authorization: 'Bearer wrong' } });
+      expect(wrong.statusCode, url).toBe(401);
+    }
+    // Nothing reached a route, so nothing was recorded.
+    expect(readFileSync(join(dataDir, 'chain-v3.jsonl'), 'utf8')).toBe(before);
+  });
+
+  it('lets an operator through to the route, which then decides', async () => {
+    const r = await app.inject({ method: 'POST', url: '/v1/revoke', payload: {}, headers: { authorization: `Bearer ${TOKEN}` } });
+    expect(r.statusCode).toBe(400);
+  });
+
+  it('reads stay open: health and version answer without a token', async () => {
+    expect((await app.inject({ method: 'GET', url: '/health' })).statusCode).toBe(200);
+    expect((await app.inject({ method: 'GET', url: '/version' })).statusCode).toBe(200);
+  });
+});
+

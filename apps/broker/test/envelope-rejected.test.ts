@@ -17,6 +17,7 @@ import { ephemeralSigner } from '@xsoc/providence-signer';
 import { createMockFheGate } from '@xsoc/fhe-gate';
 // The route under test runs over the mock bindings in either workspace.
 import { createMockBindings } from '@xsoc/nie-bindings';
+import { OPERATOR_HEADERS, testOperatorAuth } from './helpers/operator.js';
 
 const dataDir = mkdtempSync(join(tmpdir(), 'broker-envelope-'));
 let app: FastifyInstance;
@@ -27,7 +28,7 @@ beforeAll(async () => {
   process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-envelope-test';
   process.env.LOG_LEVEL = 'silent';
   const { buildServer } = await import('../src/server.js');
-  app = await buildServer({ signer: await ephemeralSigner(), fheGate: createMockFheGate(), bindings: createMockBindings() });
+  app = await buildServer({ operatorAuth: testOperatorAuth(), signer: await ephemeralSigner(), fheGate: createMockFheGate(), bindings: createMockBindings() });
 });
 
 afterAll(async () => {
@@ -39,6 +40,7 @@ const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
 async function admit(): Promise<{ sessionId: string; capabilityToken: string }> {
   const r = await app.inject({
     method: 'POST',
+    headers: OPERATOR_HEADERS,
     url: '/v1/admit',
     payload: {
       attestationPackage: 'mock-attestation-' + randomUUID(),
@@ -74,6 +76,7 @@ function envelope(sessionId: string, expiresAt: number) {
 async function invoke(token: string, sealed: string, targetId = 'target-a') {
   return app.inject({
     method: 'POST',
+    headers: OPERATOR_HEADERS,
     url: '/v1/invoke',
     payload: {
       capabilityToken: token, envelope: sealed, operationClass: 'tool.invoke', targetId,

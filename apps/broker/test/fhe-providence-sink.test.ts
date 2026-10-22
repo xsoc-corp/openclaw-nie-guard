@@ -11,6 +11,7 @@ import type { FastifyInstance } from 'fastify';
 import type { ProvidenceAppendInput } from '@xsoc/shared-types';
 import { ephemeralSigner } from '@xsoc/providence-signer';
 import { createMockBindings } from '@xsoc/nie-bindings';
+import { OPERATOR_HEADERS, testOperatorAuth } from './helpers/operator.js';
 
 type Sink = { append(input: ProvidenceAppendInput): Promise<void> };
 const captured: { sink?: Sink } = {};
@@ -40,7 +41,7 @@ describe('FHE decisions reach the broker chain', () => {
     process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-fhe-sink-test';
     process.env.LOG_LEVEL = 'silent';
     const { buildServer } = await import('../src/server.js');
-    app = await buildServer({ signer: await ephemeralSigner(), bindings: createMockBindings() });
+    app = await buildServer({ operatorAuth: testOperatorAuth(), signer: await ephemeralSigner(), bindings: createMockBindings() });
     expect(typeof captured.sink?.append).toBe('function');
 
     await captured.sink!.append({

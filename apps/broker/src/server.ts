@@ -119,14 +119,24 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
   };
   app.decorate('services', services);
 
+  // Operator authentication. /v1/audit asks for it on its own route; every
+  // write route is behind it here, by method, so a route added later is
+  // covered without naming it. A request that does not carry an accepted
+  // operator token is answered 401 before any route runs.
+  const operatorAuth = opts.operatorAuth ?? OperatorAuth.fromEnv();
+  if (!operatorAuth.configured) {
+    app.log.warn('BROKER_OPERATOR_TOKEN_SHA256 is not set: /v1/audit and every write route refuse every request');
+  }
+  const requireOperator = operatorAuth.preHandler();
+  app.addHook('onRequest', async (req, reply) => {
+    if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return;
+    return requireOperator(req, reply);
+  });
+
   await registerAdmitRoute(app);
   await registerInvokeRoute(app);
   await registerRevokeRoute(app);
   await registerSessionRoute(app);
-  const operatorAuth = opts.operatorAuth ?? OperatorAuth.fromEnv();
-  if (!operatorAuth.configured) {
-    app.log.warn('BROKER_OPERATOR_TOKEN_SHA256 is not set: /v1/audit refuses every request');
-  }
   await registerAuditRoute(app, operatorAuth);
   await registerHealthRoute(app);
   await registerVersionRoute(app);

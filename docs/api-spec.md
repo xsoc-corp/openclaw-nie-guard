@@ -3,6 +3,15 @@
 Broker endpoints. All endpoints return structured errors with a `code` from
 `@xsoc/shared-types/errors` on failure.
 
+**Operator authentication.** Every write route (any method other than GET, HEAD
+and OPTIONS) and `GET /v1/audit` require `Authorization: Bearer <token>`, where the
+SHA-256 of the token is one of those in `BROKER_OPERATOR_TOKEN_SHA256`
+(comma-separated, 64 lowercase hex). A request without an accepted token is
+answered 401 before the route runs, and nothing is recorded. With no token
+configured, all of these routes refuse every request. Agent-facing routes such as
+`/v1/admit` and `/v1/invoke` check their own NIE credentials as well; viewer,
+operator and presenter roles are separated in a later release.
+
 ## POST /v1/admit
 
 Admit a client. Submits attestation, receives scoped capability.
