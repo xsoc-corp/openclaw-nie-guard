@@ -22,7 +22,14 @@ vi.mock('@xsoc/fhe-gate', async (importOriginal) => {
     ...actual,
     loadFheGate: async (options: { providenceSink?: Sink } = {}) => {
       captured.sink = options.providenceSink;
-      return actual.createMockFheGate();
+      // A gate double over the real FheGate class; importing the test helper here
+      // would import this mocked module from inside its own factory.
+      return new actual.FheGate({
+        async encrypt() { return 'test-ct'; },
+        async decrypt() { return 'test-plaintext'; },
+        buildTokenMap() { return {}; },
+        describePerformance() { return { encryptMs: 0, multiplyMs: 0, scheme: 'test double' }; }
+      });
     }
   };
 });

@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { FastifyInstance } from 'fastify';
 import { ephemeralSigner } from '@xsoc/providence-signer';
-import { createMockFheGate } from '@xsoc/fhe-gate';
+import { testFheGate } from './helpers/fhe.js';
 import { createMockBindings } from '@xsoc/nie-bindings';
 import { OperatorAuth } from '../src/lib/operator-auth.js';
 
@@ -26,7 +26,7 @@ beforeAll(async () => {
   const { buildServer } = await import('../src/server.js');
   app = await buildServer({
     signer: await ephemeralSigner(),
-    fheGate: createMockFheGate(),
+    fheGate: testFheGate(),
     bindings: createMockBindings(),
     operatorAuth: new OperatorAuth([sha256(TOKEN)])
   });

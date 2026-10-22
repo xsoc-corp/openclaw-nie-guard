@@ -24,7 +24,12 @@ const DEVICE_FINGERPRINT = /^[0-9a-f]{64}$/;
  * denied with it.
  */
 export class BrokerProvidence {
-  constructor(readonly log: ProvidenceLog) {}
+  /**
+   * @param stamp metadata merged into every record this broker writes. Under the
+   *   scaffolding transport it is { transport: 'scaffolding' }, so no record
+   *   produced with it can be read as production traffic.
+   */
+  constructor(readonly log: ProvidenceLog, readonly stamp: Readonly<Record<string, string>> = {}) {}
 
   /**
    * A record's device_fingerprint is the NIE device fingerprint, 64 lowercase
@@ -35,7 +40,7 @@ export class BrokerProvidence {
   append(input: BrokerAppendInput): BrokerRecordRef {
     const { deviceFingerprint, metadata, ...rest } = input;
     let fingerprint: string | undefined;
-    let meta = metadata;
+    let meta = Object.keys(this.stamp).length > 0 ? { ...(metadata ?? {}), ...this.stamp } : metadata;
     if (deviceFingerprint !== undefined && deviceFingerprint !== '') {
       if (DEVICE_FINGERPRINT.test(deviceFingerprint)) fingerprint = deviceFingerprint;
       else meta = { ...(meta ?? {}), device_label: deviceFingerprint };

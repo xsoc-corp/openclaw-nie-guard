@@ -12,9 +12,7 @@ import type { FastifyInstance } from 'fastify';
 import { jcs } from '@xsoc/providence-log';
 import { ProvidenceRecord } from '@xsoc/shared-types';
 import { ephemeralSigner } from '@xsoc/providence-signer';
-// FHE is not under test here; the gate double keeps the broker from needing an
-// FHE service under the production workspace.
-import { createMockFheGate } from '@xsoc/fhe-gate';
+import { testFheGate } from './helpers/fhe.js';
 // The route under test runs over the mock bindings in either workspace.
 import { createMockBindings } from '@xsoc/nie-bindings';
 import { OPERATOR_HEADERS, testOperatorAuth } from './helpers/operator.js';
@@ -28,7 +26,7 @@ beforeAll(async () => {
   process.env.PROVIDENCE_CHAIN_ID = 'aida-guard/broker-envelope-test';
   process.env.LOG_LEVEL = 'silent';
   const { buildServer } = await import('../src/server.js');
-  app = await buildServer({ operatorAuth: testOperatorAuth(), signer: await ephemeralSigner(), fheGate: createMockFheGate(), bindings: createMockBindings() });
+  app = await buildServer({ operatorAuth: testOperatorAuth(), signer: await ephemeralSigner(), fheGate: testFheGate(), bindings: createMockBindings() });
 });
 
 afterAll(async () => {

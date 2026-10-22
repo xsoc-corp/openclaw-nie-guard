@@ -2,7 +2,7 @@
   "name": "@xsoc/openclaw-mock",
   "version": "0.1.0",
   "private": true,
-  "description": "Mock OpenClaw transport implementation for local development. Implements OpenClawTransport.",
+  "description": "Scaffolding, not product: an OpenClaw transport that answers every mediated operation without contacting OpenClaw. The broker loads it only when started with BROKER_SCAFFOLDING_TRANSPORT=1 (required in the production build), and then every Providence record carries metadata transport: scaffolding. The MCP transport replaces it on the production path.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {

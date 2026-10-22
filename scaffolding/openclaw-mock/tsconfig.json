@@ -6,7 +6,7 @@
   },
   "include": ["src/**/*"],
   "references": [
-    { "path": "../shared-types" },
-    { "path": "../openclaw-adapter" }
+    { "path": "../../packages/shared-types" },
+    { "path": "../../packages/openclaw-adapter" }
   ]
 }

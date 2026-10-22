@@ -8,8 +8,7 @@ import { createProvidenceSigner, ALLOWED_ANCHOR_ALGORITHMS, BUILD_PROFILE } from
 import type { ProvidenceSigner } from '@xsoc/providence-log';
 import { loadFheGate, type FheGate } from '@xsoc/fhe-gate';
 import { McpMediator } from '@xsoc/mcp-mediator';
-import { OpenClawAdapter } from '@xsoc/openclaw-adapter';
-import { MockOpenClawTransport } from '@xsoc/openclaw-mock';
+import { OpenClawAdapter, type OpenClawTransport } from '@xsoc/openclaw-adapter';
 import { registerAdmitRoute } from './routes/admit.js';
 import { registerInvokeRoute } from './routes/invoke.js';
 import { registerRevokeRoute } from './routes/revoke.js';
@@ -46,10 +45,37 @@ export interface BuildServerOptions {
    */
   bindings?: NieBindings;
   /**
-   * Operator authentication for the read routes. Defaults to the accepted token
-   * hashes in BROKER_OPERATOR_TOKEN_SHA256; with none, those routes refuse.
+   * Operator authentication for /v1/audit and every write route. Defaults to
+   * the accepted token hashes in BROKER_OPERATOR_TOKEN_SHA256; with none, those
+   * routes refuse.
    */
   operatorAuth?: OperatorAuth;
+  /**
+   * The OpenClaw transport. With none supplied, the broker uses the scaffolding
+   * transport (@xsoc/openclaw-mock), which the production build accepts only
+   * when started with BROKER_SCAFFOLDING_TRANSPORT=1, and then stamps every
+   * record with metadata transport: scaffolding.
+   */
+  transport?: OpenClawTransport;
+}
+
+/** The env flag that admits the scaffolding transport in the production build. */
+export const SCAFFOLDING_TRANSPORT_FLAG = 'BROKER_SCAFFOLDING_TRANSPORT';
+
+async function resolveTransport(
+  supplied: OpenClawTransport | undefined,
+  env: NodeJS.ProcessEnv
+): Promise<{ transport: OpenClawTransport; scaffolding: boolean }> {
+  if (supplied) return { transport: supplied, scaffolding: false };
+  const flagged = env[SCAFFOLDING_TRANSPORT_FLAG] === '1';
+  if (BUILD_PROFILE === 'production' && !flagged) {
+    throw new Error(
+      `no OpenClaw transport: the production build starts with the scaffolding transport only under ${SCAFFOLDING_TRANSPORT_FLAG}=1`
+    );
+  }
+  // Loaded only here, so nothing on the production path depends on it.
+  const { MockOpenClawTransport } = await import('@xsoc/openclaw-mock');
+  return { transport: new MockOpenClawTransport(), scaffolding: true };
 }
 
 export async function buildServer(opts: BuildServerOptions = {}): Promise<FastifyInstance> {
@@ -88,7 +114,11 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
     { chainId: providenceLog.chainId, algorithm: signer.algorithm, keyId: signer.keyId, anchorIntervalSeconds: anchorInterval },
     'Providence signer ready'
   );
-  const providence = new BrokerProvidence(providenceLog);
+  const { transport, scaffolding } = await resolveTransport(opts.transport, process.env);
+  if (scaffolding) {
+    app.log.warn('OpenClaw transport is the scaffolding transport: every record carries transport: scaffolding');
+  }
+  const providence = new BrokerProvidence(providenceLog, scaffolding ? { transport: 'scaffolding' } : {});
   // The FHE gate records its decisions on this chain. An append that fails
   // throws into the gate, which denies the operation it was recording.
   const fheGate = opts.fheGate ?? (await loadFheGate({
@@ -109,7 +139,6 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
     { serverId: 'attacker-mcp', trustLevel: 'blocked' }
   ]);
 
-  const transport = new MockOpenClawTransport();
   const adapter = new OpenClawAdapter(transport);
 
   const services: BrokerServices = {
