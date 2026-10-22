@@ -10,6 +10,7 @@
 // Public repo ships the mock gate. Production gate bridges to XSOC FHE SDK via the Java
 // gRPC wrapper (5-10x faster than JNI path). Substitution happens via workspace override.
 
+import type { ProvidenceAppendInput } from '@xsoc/shared-types';
 import type { FheGate } from './gate.js';
 import { createMockFheGate } from './mock.js';
 
@@ -25,9 +26,14 @@ export type { ModeASelection, ModeBSelection, ModeCSelection, GateDecision } fro
  * override and dispatches on XSOC_FHE_MODE to return a real gRPC-backed
  * gate. See PROD_INTERFACE.md section 2.2 in the private repo.
  *
- * The broker calls await loadFheGate() so the same boot path holds for
- * both the public reference build and the production override.
+ * The broker calls await loadFheGate({ providenceSink }) so the same boot path
+ * holds for both the public reference build and the production override. The
+ * sink is the broker's Providence chain: the production gate records its
+ * decisions there and refuses to start without it. The public mock records
+ * nothing and ignores it.
  */
-export async function loadFheGate(): Promise<FheGate> {
+export async function loadFheGate(_options: {
+  providenceSink?: { append(input: ProvidenceAppendInput): Promise<void> };
+} = {}): Promise<FheGate> {
   return createMockFheGate();
 }

@@ -83,7 +83,15 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
     'Providence signer ready'
   );
   const providence = new BrokerProvidence(providenceLog);
-  const fheGate = opts.fheGate ?? (await loadFheGate());
+  // The FHE gate records its decisions on this chain. An append that fails
+  // throws into the gate, which denies the operation it was recording.
+  const fheGate = opts.fheGate ?? (await loadFheGate({
+    providenceSink: {
+      append: async (input) => {
+        providence.append(input);
+      }
+    }
+  }));
   const mcpMediator = new McpMediator();
 
   // Seed MCP trust table for dev. Production loads from signed policy bundle.
