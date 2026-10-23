@@ -70,6 +70,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       if (!(err instanceof DeadlineExceeded)) throw err;
       providence.append({
         eventType: 'deny', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         reasonCode: 'ERR_UPSTREAM_TIMEOUT', metadata: { stage: 'nonce', budgetMs: err.budgetMs }
       });
       return reply.code(403).send({ code: 'ERR_UPSTREAM_TIMEOUT', message: 'Nonce consumption did not complete within its deadline.', correlationId });
@@ -79,6 +80,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'replay_fail',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         reasonCode: 'ERR_NONCE_REPLAY',
         metadata: { stage: 'nonce' }
@@ -132,6 +134,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'intent_drift',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         reasonCode: 'ERR_INTENT_DRIFT',
@@ -149,6 +152,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'deny',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         reasonCode: 'ERR_CONTEXT_MANIFEST_INVALID',
         metadata: { stage: 'manifest' }
@@ -178,6 +182,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: decision.denyReasonCode === 'ERR_SCOPE_DENIED' ? 'scope_fail' : 'deny',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         classification: envelope.classification,
@@ -202,6 +207,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'dual_control_requested',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         reasonCode: 'ERR_DUAL_CONTROL_REQUIRED',
@@ -233,6 +239,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       if (!(err instanceof DeadlineExceeded)) throw err;
       providence.append({
         eventType: 'tool_block', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         operationClass: body.operationClass, reasonCode: 'ERR_UPSTREAM_TIMEOUT',
         metadata: { stage: 'adapter', budgetMs: err.budgetMs }
       });
@@ -244,6 +251,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'tool_block',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         reasonCode: adapterResponse.error?.code ?? 'ERR_OPENCLAW_FORWARD_FAILED',
