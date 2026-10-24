@@ -67,3 +67,36 @@ describe('guard-providence-v3 known-answer vectors', () => {
     expect(jcs(-0)).toBe('0');
   });
 });
+
+// A chain the Rust MCP Guard wrote: aida-guard/xsoc-build-01-mcp, records 0 to 5,
+// copied byte for byte from openclaw-nie-guard-production evidence/c1-live/records.
+// The TypeScript schema accepts every line, the digests computed here link the
+// chain, and it ends at the head and commitment the Rust writer committed to. The
+// line bytes are the Rust writer's own: the spec fixes the fields and the digest,
+// not the line's byte layout, and the Rust writer puts payload members in JCS order.
+describe('a chain written by the Rust MCP Guard', () => {
+  const lines = readFileSync(new URL('./vectors/mcp-c1-chain-v3.jsonl', import.meta.url), 'utf8').trimEnd().split('\n');
+  const head = JSON.parse(readFileSync(new URL('./vectors/mcp-c1-head-v3.json', import.meta.url), 'utf8'));
+
+  it('parses, links, and ends at the committed head', () => {
+    expect(lines).toHaveLength(6);
+    let prev = GENESIS_DIGEST.toString('hex');
+    lines.forEach((line, i) => {
+      const r = ProvidenceRecord.parse(JSON.parse(line));
+      expect(r.seq).toBe(i);
+      expect(ProvidenceRecord.parse(JSON.parse(recordLine(r)))).toEqual(r);
+      expect(r.prev_digest).toBe(prev);
+      prev = recordDigest(r).toString('hex');
+    });
+    expect(head).toEqual({ chain_id: 'aida-guard/xsoc-build-01-mcp', seq: 6, head_digest: prev });
+    expect(prev).toBe('aee7e8a6cd22e4feec66c4509b90a003f35455d4e211941a42ad4edbfb35d76a');
+    expect(headCommitment(6, Buffer.from(prev, 'hex'), head.chain_id).toString('hex'))
+      .toBe('0113c7089effda533ce4a11d78c97364515f70ca4252af85a34837f8bc22a954');
+  });
+
+  it('carries both MCP event types, the refusing check in reason_code', () => {
+    const recs = lines.map((l) => ProvidenceRecord.parse(JSON.parse(l)));
+    expect(recs.map((r) => r.event_type)).toEqual(['invoke_refused', 'invoke_refused', 'invoke', 'invoke_refused', 'invoke_refused', 'invoke_refused']);
+    expect(recs.map((r) => r.reason_code)).toEqual(['constraints', 'constraints', '', 'constraints', 'tool_granted', 'token_present']);
+  });
+});

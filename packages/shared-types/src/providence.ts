@@ -1,10 +1,14 @@
 import { z } from 'zod';
 
 // Providence event types. Every security-relevant decision produces one of these.
+// `invoke` is a forwarded action, whichever Guard wrote it. `invoke_refused` is a
+// refused MCP tools/call, written by the Rust MCP Guard (xsoc-mcp-stdio), with the
+// refusing check in reason_code (openclaw-nie-guard-production docs/mcp-gate-checks.md).
 export const ProvidenceEventType = z.enum([
   'admit',
   'deny',
   'invoke',
+  'invoke_refused',
   'revoke',
   'continuity_fail',
   'envelope_rejected',
