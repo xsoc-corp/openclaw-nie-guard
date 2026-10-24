@@ -11,6 +11,7 @@
     { "path": "../../packages/policy-engine" },
     { "path": "../../packages/tstl-envelope" },
     { "path": "../../packages/providence-log" },
+    { "path": "../../packages/providence-signer" },
     { "path": "../../packages/fhe-gate" },
     { "path": "../../packages/openclaw-adapter" },
     { "path": "../../packages/mcp-mediator" }

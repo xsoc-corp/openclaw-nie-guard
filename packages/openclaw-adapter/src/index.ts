@@ -6,4 +6,5 @@
 // to the broker, providing defense in depth.
 
 export { OpenClawAdapter } from './adapter.js';
+export type { OpenClawTransport } from './adapter.js';
 export type { MediatedOperation, AdapterResponse } from './types.js';

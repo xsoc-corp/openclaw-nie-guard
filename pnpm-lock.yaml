@@ -71,13 +71,16 @@ importers:
         version: link:../../packages/openclaw-adapter
       '@xsoc/openclaw-mock':
         specifier: workspace:*
-        version: link:../../packages/openclaw-mock
+        version: link:../../scaffolding/openclaw-mock
       '@xsoc/policy-engine':
         specifier: workspace:*
         version: link:../../packages/policy-engine
       '@xsoc/providence-log':
         specifier: workspace:*
         version: link:../../packages/providence-log
+      '@xsoc/providence-signer':
+        specifier: workspace:*
+        version: link:../../packages/providence-signer
       '@xsoc/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
@@ -178,19 +181,6 @@ importers:
         specifier: ^1.5.0
         version: 1.6.1(@types/node@20.19.39)
 
-  packages/openclaw-mock:
-    dependencies:
-      '@xsoc/openclaw-adapter':
-        specifier: workspace:*
-        version: link:../openclaw-adapter
-      '@xsoc/shared-types':
-        specifier: workspace:*
-        version: link:../shared-types
-    devDependencies:
-      typescript:
-        specifier: ^5.4.5
-        version: 5.9.3
-
   packages/policy-engine:
     dependencies:
       '@xsoc/nie-bindings':
@@ -215,6 +205,19 @@ importers:
       '@xsoc/shared-types':
         specifier: workspace:*
         version: link:../shared-types
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.9.3
+      vitest:
+        specifier: ^1.5.0
+        version: 1.6.1(@types/node@20.19.39)
+
+  packages/providence-signer:
+    dependencies:
+      '@xsoc/providence-log':
+        specifier: workspace:*
+        version: link:../providence-log
     devDependencies:
       typescript:
         specifier: ^5.4.5
@@ -248,6 +251,19 @@ importers:
       vitest:
         specifier: ^1.5.0
         version: 1.6.1(@types/node@20.19.39)
+
+  scaffolding/openclaw-mock:
+    dependencies:
+      '@xsoc/openclaw-adapter':
+        specifier: workspace:*
+        version: link:../../packages/openclaw-adapter
+      '@xsoc/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.9.3
 
 packages:
 

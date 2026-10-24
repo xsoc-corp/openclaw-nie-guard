@@ -16,6 +16,13 @@ export interface NieBindings {
   deriveScopedCapability(input: DerivationRequest): Promise<CapabilityToken>;
   sealEnvelope(envelope: TstlEnvelope): Promise<SealedEnvelope>;
   validateContinuityEnvelope(sealed: SealedEnvelope): Promise<TstlEnvelope>;
+  /**
+   * SHA-256, lowercase hex, of the canonical readable copy a sealed envelope
+   * carries, without authenticating it; undefined when the value is malformed.
+   * For the Providence record of a rejected envelope, which keys on the readable
+   * copy and never on the sealed bytes. It decides nothing.
+   */
+  readableEnvelopeDigest?(sealed: SealedEnvelope): string | undefined;
   revokeSubject(input: RevocationInput): Promise<RevocationResult>;
   consumeNonce(nonce: string, sessionId: string): Promise<NonceConsumeResult>;
   getVersion(): VersionInfo;

@@ -5,7 +5,8 @@ import { z } from 'zod';
 // is documented by stated security properties, not internals. See docs/disclosure-policy.md.
 export const TstlEnvelope = z.object({
   deviceFingerprint: z.string().min(1),
-  sessionId: z.string().uuid(),
+  // The NIE session handle the envelope is bound to: 64 lowercase hex (32 bytes).
+  sessionId: z.string().regex(/^[0-9a-f]{64}$/),
   sessionNonceLineage: z.array(z.string()).min(1),
   roleScopeHash: z.string().length(64),
   operationType: z.string().min(1),

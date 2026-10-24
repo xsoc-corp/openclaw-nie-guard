@@ -42,6 +42,7 @@ export async function registerCosignRoute(app: FastifyInstance): Promise<void> {
       eventType,
       correlationId,
       subjectId: verification.subjectId,
+      deviceFingerprint: verification.deviceFingerprint,
       metadata: {
         targetCorrelationId: parsed.data.targetCorrelationId,
         decision: parsed.data.decision,

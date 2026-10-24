@@ -1,4 +1,4 @@
-import { randomUUID, createHash } from 'node:crypto';
+import { randomUUID, randomBytes, createHash } from 'node:crypto';
 import type { NieBindings, AttestationResult, TokenVerificationResult, RevocationInput, RevocationResult, VersionInfo, NonceConsumeResult } from './interface.js';
 import type { AdmissionRequest, CapabilityToken, DerivationRequest, SealedEnvelope, TstlEnvelope, OperationClass } from '@xsoc/shared-types';
 
@@ -17,6 +17,17 @@ interface MockState {
   revokedDevices: Set<string>;
   seenNonces: Map<string, Set<string>>;  // sessionId -> set of nonces
   activeTokens: Map<string, TokenState>;
+}
+
+// Sorted keys at every level, no whitespace: the canonical readable copy.
+function canonicalJson(v: unknown): string {
+  if (Array.isArray(v)) return `[${v.map(canonicalJson).join(',')}]`;
+  if (v !== null && typeof v === 'object') {
+    const o = v as Record<string, unknown>;
+    const keys = Object.keys(o).filter((k) => o[k] !== undefined).sort();
+    return `{${keys.map((k) => `${JSON.stringify(k)}:${canonicalJson(o[k])}`).join(',')}}`;
+  }
+  return JSON.stringify(v);
 }
 
 export function createMockBindings(): NieBindings {
@@ -46,7 +57,8 @@ export function createMockBindings(): NieBindings {
       }
 
       const now = Date.now();
-      const sessionId = randomUUID();
+      // Same form as an NIE session handle: 32 random bytes, 64 lowercase hex.
+      const sessionId = randomBytes(32).toString('hex');
       const correlationId = randomUUID();
       const expiresAt = now + 15 * 60 * 1000;
       const capabilityToken = hash(`${sessionId}:${subjectId}:${deviceFingerprint}:${now}`);
@@ -126,6 +138,15 @@ export function createMockBindings(): NieBindings {
         return JSON.parse(decoded) as TstlEnvelope;
       } catch {
         throw new Error('ERR_CONTINUITY_FAILED: envelope decode failure');
+      }
+    },
+
+    readableEnvelopeDigest(sealed: SealedEnvelope): string | undefined {
+      try {
+        const decoded = JSON.parse(Buffer.from(sealed, 'base64').toString('utf8')) as unknown;
+        return createHash('sha256').update(canonicalJson(decoded)).digest('hex');
+      } catch {
+        return undefined;
       }
     },
 

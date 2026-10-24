@@ -89,8 +89,9 @@ openclaw-nie-guard/
 │   ├── providence-log/      # Hash-chained audit log
 │   ├── fhe-gate/            # FHE Context Gate (mock; prod via override)
 │   ├── openclaw-adapter/    # Mediation boundary to OpenClaw
-│   ├── mcp-mediator/        # MCP boundary mediation
-│   └── openclaw-mock/       # Mock OpenClaw transport for dev
+│   └── mcp-mediator/        # MCP boundary mediation
+├── scaffolding/
+│   └── openclaw-mock/       # Scaffolding OpenClaw transport; records it touches carry transport: scaffolding
 ├── rust/
 │   └── nie-core/            # Public stub; real workspace lives in private repo
 ├── infra/

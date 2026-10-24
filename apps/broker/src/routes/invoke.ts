@@ -5,6 +5,19 @@ import type { PolicyEvaluationInput } from '@xsoc/policy-engine';
 import type { MediatedOperation } from '@xsoc/openclaw-adapter';
 import { randomUUID, createHash } from 'node:crypto';
 import { withDeadline, DeadlineExceeded, DEADLINES } from '../lib/deadline.js';
+import { envelopeDigest } from '../services/providence.js';
+
+/**
+ * The reason class of an envelope the bindings or the envelope checks refused:
+ * unauthenticated when it did not authenticate, expired when it did and its
+ * expiresAt has passed. Undefined for a target, scope or counter refusal, which
+ * keep their own event types.
+ */
+function envelopeRejectionClass(code: string | undefined): 'unauthenticated' | 'expired' | undefined {
+  if (code === 'ERR_SESSION_EXPIRED') return 'expired';
+  if (code === 'ERR_CONTINUITY_FAILED' || code === undefined) return 'unauthenticated';
+  return undefined;
+}
 
 // Full /v1/invoke pipeline: token verify, nonce consume, envelope validate, intent alignment,
 // policy evaluate, dual-control gate, MCP classification check, adapter forward. Fail-closed
@@ -57,6 +70,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       if (!(err instanceof DeadlineExceeded)) throw err;
       providence.append({
         eventType: 'deny', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         reasonCode: 'ERR_UPSTREAM_TIMEOUT', metadata: { stage: 'nonce', budgetMs: err.budgetMs }
       });
       return reply.code(403).send({ code: 'ERR_UPSTREAM_TIMEOUT', message: 'Nonce consumption did not complete within its deadline.', correlationId });
@@ -66,6 +80,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'replay_fail',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         reasonCode: 'ERR_NONCE_REPLAY',
         metadata: { stage: 'nonce' }
@@ -90,15 +105,23 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       return reply.code(403).send({ code: 'ERR_UPSTREAM_TIMEOUT', message: 'Envelope validation did not complete within its deadline.', correlationId });
     }
     if (!envelopeCheck.valid || !envelopeCheck.envelope) {
+      // An envelope that did not authenticate, or authenticated and has
+      // expired, is envelope_rejected with that reason class. Target, scope and
+      // counter refusals keep their own types. The record keys on the readable
+      // copy's digest, never on the sealed bytes.
+      const reasonClass = envelopeRejectionClass(envelopeCheck.reasonCode);
       providence.append({
-        eventType: envelopeCheck.reasonCode === 'ERR_TARGET_MISMATCH' ? 'target_mismatch' : 'continuity_fail',
+        eventType: reasonClass
+          ? 'envelope_rejected'
+          : envelopeCheck.reasonCode === 'ERR_TARGET_MISMATCH' ? 'target_mismatch' : 'continuity_fail',
         correlationId,
         sessionId: tokenResult.sessionId,
         subjectId: tokenResult.subjectId,
         deviceFingerprint: tokenResult.deviceFingerprint,
+        payloadDigest: bindings.readableEnvelopeDigest?.(body.envelope),
         operationClass: body.operationClass,
         reasonCode: envelopeCheck.reasonCode,
-        metadata: { stage: 'envelope' }
+        metadata: reasonClass ? { stage: 'envelope', reason_class: reasonClass } : { stage: 'envelope' }
       });
       return reply.code(403).send({ code: envelopeCheck.reasonCode ?? 'ERR_CONTINUITY_FAILED', message: 'Envelope validation failed.', correlationId });
     }
@@ -111,6 +134,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'intent_drift',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         reasonCode: 'ERR_INTENT_DRIFT',
@@ -128,6 +152,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'deny',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         reasonCode: 'ERR_CONTEXT_MANIFEST_INVALID',
         metadata: { stage: 'manifest' }
@@ -157,6 +182,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: decision.denyReasonCode === 'ERR_SCOPE_DENIED' ? 'scope_fail' : 'deny',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         classification: envelope.classification,
@@ -181,6 +207,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'dual_control_requested',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         reasonCode: 'ERR_DUAL_CONTROL_REQUIRED',
@@ -212,6 +239,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       if (!(err instanceof DeadlineExceeded)) throw err;
       providence.append({
         eventType: 'tool_block', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         operationClass: body.operationClass, reasonCode: 'ERR_UPSTREAM_TIMEOUT',
         metadata: { stage: 'adapter', budgetMs: err.budgetMs }
       });
@@ -223,6 +251,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
         eventType: 'tool_block',
         correlationId,
         sessionId: tokenResult.sessionId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         subjectId: tokenResult.subjectId,
         operationClass: body.operationClass,
         reasonCode: adapterResponse.error?.code ?? 'ERR_OPENCLAW_FORWARD_FAILED',
@@ -241,6 +270,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       sessionId: tokenResult.sessionId,
       subjectId: tokenResult.subjectId,
       deviceFingerprint: tokenResult.deviceFingerprint,
+      payloadDigest: envelopeDigest(envelope),
       operationClass: body.operationClass,
       targetHash: envelope.targetHash,
       classification: envelope.classification,

@@ -41,6 +41,7 @@ export async function registerContextRoute(app: FastifyInstance): Promise<void> 
         eventType: 'deny',
         correlationId,
         subjectId: tokenResult.subjectId,
+        deviceFingerprint: tokenResult.deviceFingerprint,
         reasonCode: 'ERR_POLICY_VIOLATION',
         metadata: { stage: 'context-register', reason: 'token carries no session id' }
       });
@@ -68,6 +69,7 @@ export async function registerContextRoute(app: FastifyInstance): Promise<void> 
       correlationId,
       sessionId: tokenResult.sessionId,
       subjectId: tokenResult.subjectId,
+      deviceFingerprint: tokenResult.deviceFingerprint,
       metadata: {
         stage: 'context-register',
         manifestHash,

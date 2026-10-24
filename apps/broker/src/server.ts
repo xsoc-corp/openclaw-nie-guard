@@ -1,13 +1,14 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import sensible from '@fastify/sensible';
 import rateLimit from '@fastify/rate-limit';
-import { loadBindings } from '@xsoc/nie-bindings';
+import { loadBindings, type NieBindings } from '@xsoc/nie-bindings';
 import { PolicyEngine } from '@xsoc/policy-engine';
-import { ProvidenceLog } from '@xsoc/providence-log';
-import { loadFheGate } from '@xsoc/fhe-gate';
+import { ProvidenceLog, AnchorScheduler, anchorIntervalSeconds, signerSelfTest } from '@xsoc/providence-log';
+import { createProvidenceSigner, ALLOWED_ANCHOR_ALGORITHMS, BUILD_PROFILE } from '@xsoc/providence-signer';
+import type { ProvidenceSigner } from '@xsoc/providence-log';
+import { loadFheGate, type FheGate } from '@xsoc/fhe-gate';
 import { McpMediator } from '@xsoc/mcp-mediator';
-import { OpenClawAdapter } from '@xsoc/openclaw-adapter';
-import { MockOpenClawTransport } from '@xsoc/openclaw-mock';
+import { OpenClawAdapter, type OpenClawTransport } from '@xsoc/openclaw-adapter';
 import { registerAdmitRoute } from './routes/admit.js';
 import { registerInvokeRoute } from './routes/invoke.js';
 import { registerRevokeRoute } from './routes/revoke.js';
@@ -19,20 +20,114 @@ import { registerCosignRoute } from './routes/cosign.js';
 import { registerContextRoute } from './routes/context.js';
 import { registerMcpRoute } from './routes/mcp.js';
 import { registerSkillRoute } from './routes/skill.js';
-import { config } from './config.js';
+import { config, providenceConfig } from './config.js';
 import type { BrokerServices } from './services/context.js';
+import { BrokerProvidence } from './services/providence.js';
 import { SessionLabelStore } from './services/labels.js';
+import { OperatorAuth } from './lib/operator-auth.js';
 
-export async function buildServer(): Promise<FastifyInstance> {
+export interface BuildServerOptions {
+  /**
+   * The anchor signer. Defaults to the deployment's, from
+   * @xsoc/providence-signer. Whatever is supplied passes the same self-test and
+   * the same build rule on algorithms, so a build accepts no signer it would not
+   * create itself.
+   */
+  signer?: ProvidenceSigner;
+  /**
+   * The FHE gate. Defaults to @xsoc/fhe-gate's. A test that is not about FHE
+   * may supply one so the broker builds without an FHE service.
+   */
+  fheGate?: FheGate;
+  /**
+   * The NIE bindings. Defaults to @xsoc/nie-bindings'. A test of the broker's
+   * own routes may supply them, so it runs the same under either workspace.
+   */
+  bindings?: NieBindings;
+  /**
+   * Operator authentication for /v1/audit and every write route. Defaults to
+   * the accepted token hashes in BROKER_OPERATOR_TOKEN_SHA256; with none, those
+   * routes refuse.
+   */
+  operatorAuth?: OperatorAuth;
+  /**
+   * The OpenClaw transport. With none supplied, the broker uses the scaffolding
+   * transport (@xsoc/openclaw-mock), which the production build accepts only
+   * when started with BROKER_SCAFFOLDING_TRANSPORT=1, and then stamps every
+   * record with metadata transport: scaffolding.
+   */
+  transport?: OpenClawTransport;
+}
+
+/** The env flag that admits the scaffolding transport in the production build. */
+export const SCAFFOLDING_TRANSPORT_FLAG = 'BROKER_SCAFFOLDING_TRANSPORT';
+
+async function resolveTransport(
+  supplied: OpenClawTransport | undefined,
+  env: NodeJS.ProcessEnv
+): Promise<{ transport: OpenClawTransport; scaffolding: boolean }> {
+  if (supplied) return { transport: supplied, scaffolding: false };
+  const flagged = env[SCAFFOLDING_TRANSPORT_FLAG] === '1';
+  if (BUILD_PROFILE === 'production' && !flagged) {
+    throw new Error(
+      `no OpenClaw transport: the production build starts with the scaffolding transport only under ${SCAFFOLDING_TRANSPORT_FLAG}=1`
+    );
+  }
+  // Loaded only here, so nothing on the production path depends on it.
+  const { MockOpenClawTransport } = await import('@xsoc/openclaw-mock');
+  return { transport: new MockOpenClawTransport(), scaffolding: true };
+}
+
+export async function buildServer(opts: BuildServerOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: { level: config.logLevel } });
 
   await app.register(sensible);
   await app.register(rateLimit, { max: 100, timeWindow: '1 minute' });
 
-  const bindings = await loadBindings();
+  const bindings = opts.bindings ?? (await loadBindings());
   const policy = new PolicyEngine();
-  const providence = new ProvidenceLog(config.providenceChainFile);
-  const fheGate = await loadFheGate();
+  // Providence. The signer is created and proved before anything is served: a
+  // signer that fails its self-test, or whose algorithm this build does not
+  // accept, stops startup. A chain whose last record disagrees with its head
+  // starts the broker refusing every action it would record.
+  const pc = providenceConfig();
+  const anchorInterval = anchorIntervalSeconds(pc.anchorInterval);
+  if (BUILD_PROFILE === 'production' && !pc.chainIdConfigured) {
+    throw new Error('PROVIDENCE_CHAIN_ID is not set: the production build requires aida-guard/<deployment-id>');
+  }
+  const signer = opts.signer ?? (await createProvidenceSigner());
+  await signerSelfTest(signer, ALLOWED_ANCHOR_ALGORITHMS);
+  const providenceLog = new ProvidenceLog({
+    dir: pc.dataDir,
+    chainId: pc.chainId,
+    legacyChainFile: pc.legacyChainFile
+  });
+  if (providenceLog.refusal) {
+    app.log.error({ reason: providenceLog.refusal }, 'Providence chain refuses appends; every recorded action will be denied');
+  }
+  const anchors = new AnchorScheduler(providenceLog, signer, anchorInterval);
+  anchors.start();
+  app.addHook('onClose', async () => {
+    await anchors.stop();
+  });
+  app.log.info(
+    { chainId: providenceLog.chainId, algorithm: signer.algorithm, keyId: signer.keyId, anchorIntervalSeconds: anchorInterval },
+    'Providence signer ready'
+  );
+  const { transport, scaffolding } = await resolveTransport(opts.transport, process.env);
+  if (scaffolding) {
+    app.log.warn('OpenClaw transport is the scaffolding transport: every record carries transport: scaffolding');
+  }
+  const providence = new BrokerProvidence(providenceLog, scaffolding ? { transport: 'scaffolding' } : {});
+  // The FHE gate records its decisions on this chain. An append that fails
+  // throws into the gate, which denies the operation it was recording.
+  const fheGate = opts.fheGate ?? (await loadFheGate({
+    providenceSink: {
+      append: async (input) => {
+        providence.append(input);
+      }
+    }
+  }));
   const mcpMediator = new McpMediator();
 
   // Seed MCP trust table for dev. Production loads from signed policy bundle.
@@ -44,7 +139,6 @@ export async function buildServer(): Promise<FastifyInstance> {
     { serverId: 'attacker-mcp', trustLevel: 'blocked' }
   ]);
 
-  const transport = new MockOpenClawTransport();
   const adapter = new OpenClawAdapter(transport);
 
   const services: BrokerServices = {
@@ -54,11 +148,25 @@ export async function buildServer(): Promise<FastifyInstance> {
   };
   app.decorate('services', services);
 
+  // Operator authentication. /v1/audit asks for it on its own route; every
+  // write route is behind it here, by method, so a route added later is
+  // covered without naming it. A request that does not carry an accepted
+  // operator token is answered 401 before any route runs.
+  const operatorAuth = opts.operatorAuth ?? OperatorAuth.fromEnv();
+  if (!operatorAuth.configured) {
+    app.log.warn('BROKER_OPERATOR_TOKEN_SHA256 is not set: /v1/audit and every write route refuse every request');
+  }
+  const requireOperator = operatorAuth.preHandler();
+  app.addHook('onRequest', async (req, reply) => {
+    if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return;
+    return requireOperator(req, reply);
+  });
+
   await registerAdmitRoute(app);
   await registerInvokeRoute(app);
   await registerRevokeRoute(app);
   await registerSessionRoute(app);
-  await registerAuditRoute(app);
+  await registerAuditRoute(app, operatorAuth);
   await registerHealthRoute(app);
   await registerVersionRoute(app);
   await registerCosignRoute(app);

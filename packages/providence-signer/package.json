@@ -1,0 +1,21 @@
+{
+  "name": "@xsoc/providence-signer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Signer for AIDA-Guard Providence anchors: Ed25519 through Node's built-in crypto. The production deployment overrides this package with an ML-DSA-65 signer.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@xsoc/providence-log": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
+  }
+}

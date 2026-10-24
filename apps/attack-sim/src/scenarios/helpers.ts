@@ -1,5 +1,12 @@
 import { createHash, randomUUID } from 'node:crypto';
 
+// The broker's write routes take an operator token: ATTACK_SIM_OPERATOR_TOKEN, sent
+// as Authorization: Bearer on every request the harness makes.
+function operatorHeader(): Record<string, string> {
+  const token = process.env.ATTACK_SIM_OPERATOR_TOKEN ?? '';
+  return token ? { authorization: `Bearer ${token}` } : {};
+}
+
 export interface AdmitResponse {
   sessionId: string;
   capabilityToken: string;
@@ -28,7 +35,7 @@ export function sha256(s: string): string {
 export async function admit(brokerUrl: string, overrides: Record<string, unknown> = {}): Promise<{ response: Response; body: AdmitResponse | DenyResponse }> {
   const response = await fetch(`${brokerUrl}/v1/admit`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...operatorHeader() },
     body: JSON.stringify({
       attestationPackage: overrides.attestationPackage ?? 'mock-attestation-' + randomUUID(),
       requestedRole: overrides.requestedRole ?? 'operator',
@@ -93,7 +100,7 @@ export async function invoke(brokerUrl: string, body: {
 }): Promise<{ status: number; body: InvokeResponse | DenyResponse }> {
   const res = await fetch(`${brokerUrl}/v1/invoke`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', ...(body.headers ?? {}) },
+    headers: { 'content-type': 'application/json', ...operatorHeader(), ...(body.headers ?? {}) },
     body: JSON.stringify({
       capabilityToken: body.capabilityToken,
       envelope: body.envelope,
@@ -116,7 +123,7 @@ export function isDeny(body: unknown): body is DenyResponse {
 export async function revoke(brokerUrl: string, kind: 'subject' | 'session' | 'device', id: string): Promise<void> {
   const res = await fetch(`${brokerUrl}/v1/revoke`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...operatorHeader() },
     body: JSON.stringify({ kind, id, reason: 'attack-sim-test' })
   });
   if (!res.ok) throw new Error(`revoke failed: ${res.status}`);
@@ -125,7 +132,7 @@ export async function revoke(brokerUrl: string, kind: 'subject' | 'session' | 'd
 export async function mcpIngest(brokerUrl: string, serverId: string, content: string): Promise<{ status: number; body: { code?: string; tagged?: string } }> {
   const res = await fetch(`${brokerUrl}/v1/mcp/ingest`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...operatorHeader() },
     body: JSON.stringify({
       serverId,
       method: 'ingest',
@@ -175,7 +182,7 @@ export async function registerContext(
 
   const res = await fetch(`${brokerUrl}/v1/context/register`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...operatorHeader() },
     body: JSON.stringify({ capabilityToken: input.capabilityToken, elements })
   });
 
@@ -193,7 +200,7 @@ export async function registerSkill(brokerUrl: string, input: {
 }): Promise<{ status: number; body: { code?: string; registered?: boolean } }> {
   const res = await fetch(`${brokerUrl}/v1/skill/register`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...operatorHeader() },
     body: JSON.stringify({
       skillId: input.skillId,
       signerKeyId: input.signerKeyId,
