@@ -35,3 +35,44 @@ export interface GateInput {
   endpointAttestationId?: string;
   dualControlReceiptId?: string;
 }
+
+/** A Mode A inference: the payload's values, each sealed as its own ciphertext, and
+ * a server-side template run on them with plaintext parameters. */
+export interface ModeAInferenceInput {
+  values: number[];
+  template: string;
+  parameters: Record<string, string>;
+}
+
+/** A ciphertext the FHE service holds, by its id, with its serialized size. */
+export interface CiphertextRef {
+  ciphertextId: string;
+  sizeBytes: number;
+}
+
+export interface ModeAInference {
+  /** One per input value, in order. */
+  inputs: CiphertextRef[];
+  /** The template's result, still ciphertext; `handle` is what a release names. */
+  output: CiphertextRef & { handle: string };
+  /** The scheme and parameters the ciphertexts are under. */
+  scheme: string;
+  polyModulusDegree?: number;
+  securityLevel?: number;
+}
+
+/** A dual-control receipt for one release of one ciphertext. */
+export interface DualControlGrant {
+  receiptId: string;
+  principals: string[];
+  expiresAt: number;
+}
+
+/** What a Mode C release record carries beside the provider's own fields. */
+export interface ReleaseContext {
+  correlationId: string;
+  classification: string;
+  operationClass: string;
+  endpointAttestationId: string;
+  principals: string[];
+}

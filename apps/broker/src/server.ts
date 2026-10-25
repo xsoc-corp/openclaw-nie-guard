@@ -20,6 +20,7 @@ import { registerCosignRoute } from './routes/cosign.js';
 import { registerContextRoute } from './routes/context.js';
 import { registerMcpRoute } from './routes/mcp.js';
 import { registerSkillRoute } from './routes/skill.js';
+import { registerFheRoute } from './routes/fhe.js';
 import { config, providenceConfig } from './config.js';
 import type { BrokerServices } from './services/context.js';
 import { BrokerProvidence } from './services/providence.js';
@@ -173,6 +174,7 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
   await registerContextRoute(app);
   await registerMcpRoute(app);
   await registerSkillRoute(app);
+  await registerFheRoute(app);
 
   return app;
 }

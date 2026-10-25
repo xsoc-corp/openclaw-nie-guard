@@ -15,8 +15,12 @@ import type { FheGate } from './gate.js';
 import { createMockFheGate } from './mock.js';
 
 export { FheGate } from './gate.js';
-export { createMockFheGate } from './mock.js';
-export type { ModeASelection, ModeBSelection, ModeCSelection, GateDecision } from './types.js';
+export { createMockFheGate, MOCK_SCHEME } from './mock.js';
+export type { FheProvider } from './gate.js';
+export type {
+  ModeASelection, ModeBSelection, ModeCSelection, GateDecision,
+  ModeAInferenceInput, ModeAInference, CiphertextRef, DualControlGrant, ReleaseContext
+} from './types.js';
 
 /**
  * Async loader for the FHE gate.
@@ -30,10 +34,10 @@ export type { ModeASelection, ModeBSelection, ModeCSelection, GateDecision } fro
  * holds for both the public reference build and the production override. The
  * sink is the broker's Providence chain: the production gate records its
  * decisions there and refuses to start without it. The public mock records
- * nothing and ignores it.
+ * only the Mode C release of a Mode A result there, as the production gate does.
  */
-export async function loadFheGate(_options: {
+export async function loadFheGate(options: {
   providenceSink?: { append(input: ProvidenceAppendInput): Promise<void> };
 } = {}): Promise<FheGate> {
-  return createMockFheGate();
+  return createMockFheGate({ providenceSink: options.providenceSink });
 }
