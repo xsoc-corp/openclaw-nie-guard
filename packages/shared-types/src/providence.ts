@@ -28,6 +28,7 @@ export const ProvidenceEventType = z.enum([
   'dual_control_requested',
   'dual_control_granted',
   'dual_control_denied',
+  'mode_a_inference',
   'mode_c_decryption',
   'profile_escalated',
   'profile_deescalated',

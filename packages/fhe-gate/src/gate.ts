@@ -1,5 +1,7 @@
 import { MODE_COMPATIBILITY } from '@xsoc/shared-types';
-import type { GateDecision, GateInput, ModeDenied } from './types.js';
+import type {
+  DualControlGrant, GateDecision, GateInput, ModeAInference, ModeAInferenceInput, ModeDenied, ReleaseContext
+} from './types.js';
 
 // Policy-aware mode enforcement. Cryptographic operations are delegated to a pluggable
 // provider; the default mock provider in this repo is deterministic and non-cryptographic.
@@ -57,6 +59,37 @@ export class FheGate {
     return this.provider.decrypt(ciphertext, receiptId);
   }
 
+  /**
+   * Seal each value under the provider's scheme and run a server-side template on the
+   * ciphertexts. The result stays ciphertext; releasing it is a separate step.
+   */
+  async inferModeA(input: ModeAInferenceInput): Promise<ModeAInference> {
+    if (!this.provider.inferModeA) throw new Error('this FHE provider runs no Mode A inference');
+    return this.provider.inferModeA(input);
+  }
+
+  /** The endpoint attestation a Mode C release presents: an id, fresh for this release. */
+  async attestEndpoint(): Promise<string> {
+    if (!this.provider.attestEndpoint) throw new Error('this FHE provider attests no endpoint');
+    return this.provider.attestEndpoint();
+  }
+
+  /** A dual-control receipt for one release of `ciphertext`, naming two principals or more. */
+  async issueDualControlReceipt(ciphertext: string, principals: string[]): Promise<DualControlGrant> {
+    if (!this.provider.issueDualControlReceipt) throw new Error('this FHE provider issues no dual-control receipt');
+    return this.provider.issueDualControlReceipt(ciphertext, principals);
+  }
+
+  /**
+   * Release a Mode A result as values, with a dual-control receipt. The caller has
+   * already had the release decided by evaluate() with requestedMode 'C'; the provider
+   * validates and consumes the receipt, and records the release.
+   */
+  async releaseModeC(ciphertext: string, receiptId: string, context: ReleaseContext): Promise<number[]> {
+    if (!this.provider.releaseModeC) throw new Error('this FHE provider releases no Mode A result');
+    return this.provider.releaseModeC(ciphertext, receiptId, context);
+  }
+
   private deny(reasonCode: string, input: GateInput): ModeDenied {
     return {
       mode: 'denied',
@@ -72,4 +105,8 @@ export interface FheProvider {
   decrypt(ciphertext: string, receiptId: string): Promise<string>;
   buildTokenMap(elements: readonly { elementId: string; contentHash: string }[]): Record<string, string>;
   describePerformance(): { encryptMs: number; multiplyMs: number; scheme: string };
+  inferModeA?(input: ModeAInferenceInput): Promise<ModeAInference>;
+  attestEndpoint?(): Promise<string>;
+  issueDualControlReceipt?(ciphertext: string, principals: string[]): Promise<DualControlGrant>;
+  releaseModeC?(ciphertext: string, receiptId: string, context: ReleaseContext): Promise<number[]>;
 }
