@@ -26,5 +26,10 @@ describe('Mode A inference and its release, on the reference gate', () => {
     await expect(gate.attestEndpoint()).rejects.toThrow(/attests no endpoint/);
     await expect(gate.issueDualControlReceipt('h', ['a', 'b'])).rejects.toThrow(/no dual-control receipt/);
     await expect(gate.releaseModeC('h', 'r', ctx)).rejects.toThrow(/releases no Mode A result/);
+    expect(await gate.preflight()).toEqual({ device: { ok: false, error: 'this FHE provider has no pre-flight' }, service: { ok: false, error: 'this FHE provider has no pre-flight' } });
+  });
+
+  it('reports the reference gate\'s pre-flight as the mock it is', async () => {
+    expect(await createMockFheGate().preflight()).toEqual({ device: { ok: true, id: 'mock-endpoint' }, service: { ok: true, status: MOCK_SCHEME } });
   });
 });

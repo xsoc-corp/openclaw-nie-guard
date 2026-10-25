@@ -19,7 +19,7 @@ export { createMockFheGate, MOCK_SCHEME } from './mock.js';
 export type { FheProvider } from './gate.js';
 export type {
   ModeASelection, ModeBSelection, ModeCSelection, GateDecision,
-  ModeAInferenceInput, ModeAInference, CiphertextRef, DualControlGrant, ReleaseContext
+  ModeAInferenceInput, ModeAInference, CiphertextRef, DualControlGrant, ReleaseContext, FhePreflight
 } from './types.js';
 
 /**
