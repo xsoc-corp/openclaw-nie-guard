@@ -27,6 +27,7 @@ import type { BrokerServices } from './services/context.js';
 import { BrokerProvidence } from './services/providence.js';
 import { SessionLabelStore } from './services/labels.js';
 import { OperatorAuth } from './lib/operator-auth.js';
+import { openClawGatewayFromEnv, OPENCLAW_GATEWAY_URL_ENV } from './lib/openclaw-gateway.js';
 
 export interface BuildServerOptions {
   /**
@@ -53,9 +54,11 @@ export interface BuildServerOptions {
    */
   operatorAuth?: OperatorAuth;
   /**
-   * The OpenClaw transport. With none supplied, the broker uses the scaffolding
-   * transport (@xsoc/openclaw-mock), which the production build accepts only
-   * when started with BROKER_SCAFFOLDING_TRANSPORT=1. Whichever it is, the record
+   * The OpenClaw transport. With none supplied, the broker uses the OpenClaw
+   * gateway transport when BROKER_OPENCLAW_GATEWAY_URL is set
+   * (lib/openclaw-gateway.ts), and otherwise the scaffolding transport
+   * (@xsoc/openclaw-mock), which the production build accepts only when started
+   * with BROKER_SCAFFOLDING_TRANSPORT=1. Whichever it is, the record
    * of each operation forwarded through it carries metadata transport: <its name>,
    * and no other record carries a transport field.
    */
@@ -71,6 +74,10 @@ async function resolveTransport(
 ): Promise<{ transport: OpenClawTransport; scaffolding: boolean }> {
   if (supplied) return { transport: supplied, scaffolding: false };
   const flagged = env[SCAFFOLDING_TRANSPORT_FLAG] === '1';
+  if (env[OPENCLAW_GATEWAY_URL_ENV]) {
+    if (flagged) throw new Error(`${OPENCLAW_GATEWAY_URL_ENV} and ${SCAFFOLDING_TRANSPORT_FLAG}=1 are both set: the broker takes one OpenClaw transport`);
+    return { transport: await openClawGatewayFromEnv(env), scaffolding: false };
+  }
   if (BUILD_PROFILE === 'production' && !flagged) {
     throw new Error(
       `no OpenClaw transport: the production build starts with the scaffolding transport only under ${SCAFFOLDING_TRANSPORT_FLAG}=1`
