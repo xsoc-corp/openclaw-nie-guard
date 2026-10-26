@@ -8,3 +8,5 @@
 export { OpenClawAdapter } from './adapter.js';
 export type { OpenClawTransport } from './adapter.js';
 export type { MediatedOperation, AdapterResponse } from './types.js';
+export { OpenClawGatewayTransport, OPENCLAW_GATEWAY_TRANSPORT } from './gateway-transport.js';
+export type { OpenClawGatewayTransportOptions, GatewayTarget } from './gateway-transport.js';
