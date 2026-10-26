@@ -25,11 +25,19 @@ const DEVICE_FINGERPRINT = /^[0-9a-f]{64}$/;
  */
 export class BrokerProvidence {
   /**
-   * @param stamp metadata merged into every record this broker writes. Under the
-   *   scaffolding transport it is { transport: 'scaffolding' }, so no record
-   *   produced with it can be read as production traffic.
+   * @param forwardStamp metadata merged into the record of an operation forwarded
+   *   through the OpenClaw transport, and into no other: { transport: <name> }, with
+   *   transport_version when the transport reports one. Under the scaffolding
+   *   transport it is { transport: 'scaffolding' }, so no forwarded operation it
+   *   answered can be read as production traffic. Admissions, FHE decisions and
+   *   everything else that forwards nothing carry no transport field.
    */
-  constructor(readonly log: ProvidenceLog, readonly stamp: Readonly<Record<string, string>> = {}) {}
+  constructor(readonly log: ProvidenceLog, readonly forwardStamp: Readonly<Record<string, string>> = {}) {}
+
+  /** The record of an operation the transport was called for: stamped with the transport. */
+  appendForwarded(input: BrokerAppendInput): BrokerRecordRef {
+    return this.write(input, this.forwardStamp);
+  }
 
   /**
    * A record's device_fingerprint is the NIE device fingerprint, 64 lowercase
@@ -38,9 +46,13 @@ export class BrokerProvidence {
    * fingerprint empty rather than calling a label a fingerprint.
    */
   append(input: BrokerAppendInput): BrokerRecordRef {
+    return this.write(input, {});
+  }
+
+  private write(input: BrokerAppendInput, stamp: Readonly<Record<string, string>>): BrokerRecordRef {
     const { deviceFingerprint, metadata, ...rest } = input;
     let fingerprint: string | undefined;
-    let meta = Object.keys(this.stamp).length > 0 ? { ...(metadata ?? {}), ...this.stamp } : metadata;
+    let meta = Object.keys(stamp).length > 0 ? { ...(metadata ?? {}), ...stamp } : metadata;
     if (deviceFingerprint !== undefined && deviceFingerprint !== '') {
       if (DEVICE_FINGERPRINT.test(deviceFingerprint)) fingerprint = deviceFingerprint;
       else meta = { ...(meta ?? {}), device_label: deviceFingerprint };

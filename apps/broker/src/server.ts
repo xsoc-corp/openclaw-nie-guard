@@ -54,8 +54,9 @@ export interface BuildServerOptions {
   /**
    * The OpenClaw transport. With none supplied, the broker uses the scaffolding
    * transport (@xsoc/openclaw-mock), which the production build accepts only
-   * when started with BROKER_SCAFFOLDING_TRANSPORT=1, and then stamps every
-   * record with metadata transport: scaffolding.
+   * when started with BROKER_SCAFFOLDING_TRANSPORT=1. Whichever it is, the record
+   * of each operation forwarded through it carries metadata transport: <its name>,
+   * and no other record carries a transport field.
    */
   transport?: OpenClawTransport;
 }
@@ -117,9 +118,12 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
   );
   const { transport, scaffolding } = await resolveTransport(opts.transport, process.env);
   if (scaffolding) {
-    app.log.warn('OpenClaw transport is the scaffolding transport: every record carries transport: scaffolding');
+    app.log.warn('OpenClaw transport is the scaffolding transport: every forwarded operation\'s record carries transport: scaffolding');
   }
-  const providence = new BrokerProvidence(providenceLog, scaffolding ? { transport: 'scaffolding' } : {});
+  const providence = new BrokerProvidence(providenceLog, {
+    transport: transport.name,
+    ...(transport.version ? { transport_version: transport.version } : {})
+  });
   // The FHE gate records its decisions on this chain. An append that fails
   // throws into the gate, which denies the operation it was recording.
   const fheGate = opts.fheGate ?? (await loadFheGate({

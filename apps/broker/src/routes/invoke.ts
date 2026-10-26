@@ -46,7 +46,8 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       tokenResult = await withDeadline('token-verify', DEADLINES.tokenVerify, bindings.verifyToken(body.capabilityToken));
     } catch (err) {
       if (!(err instanceof DeadlineExceeded)) throw err;
-      providence.append({
+      // The transport was called and did not answer in time: a forwarded operation.
+      providence.appendForwarded({
         eventType: 'deny', correlationId, reasonCode: 'ERR_UPSTREAM_TIMEOUT',
         metadata: { stage: 'token-verify', budgetMs: err.budgetMs }
       });
@@ -68,7 +69,8 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       nonceResult = await withDeadline('nonce', DEADLINES.nonceConsume, bindings.consumeNonce(body.nonce, tokenResult.sessionId));
     } catch (err) {
       if (!(err instanceof DeadlineExceeded)) throw err;
-      providence.append({
+      // The transport was called and did not answer in time: a forwarded operation.
+      providence.appendForwarded({
         eventType: 'deny', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
         deviceFingerprint: tokenResult.deviceFingerprint,
         reasonCode: 'ERR_UPSTREAM_TIMEOUT', metadata: { stage: 'nonce', budgetMs: err.budgetMs }
@@ -97,7 +99,8 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       }));
     } catch (err) {
       if (!(err instanceof DeadlineExceeded)) throw err;
-      providence.append({
+      // The transport was called and did not answer in time: a forwarded operation.
+      providence.appendForwarded({
         eventType: 'continuity_fail', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
         deviceFingerprint: tokenResult.deviceFingerprint, operationClass: body.operationClass,
         reasonCode: 'ERR_UPSTREAM_TIMEOUT', metadata: { stage: 'envelope', budgetMs: err.budgetMs }
@@ -220,8 +223,8 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       });
     }
 
-    // Layer 9: adapter forward. Mediated operation includes a broker signature binding correlation id plus target.
-    const brokerSignature = createHash('sha256')
+    // Layer 9: adapter forward. The mediated operation carries a binding hash over correlation id, target and operation class.
+    const bindingHash = createHash('sha256')
       .update(`${correlationId}:${body.targetId}:${body.operationClass}`)
       .digest('hex');
     const mediated: MediatedOperation = {
@@ -229,7 +232,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       targetId: body.targetId,
       targetClass: body.targetClass,
       payload: { classification: envelope.classification, profile: decision.profile },
-      brokerSignature,
+      bindingHash,
       correlationId
     };
     let adapterResponse;
@@ -237,7 +240,8 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       adapterResponse = await withDeadline('adapter', DEADLINES.adapterForward, adapter.forward(mediated, decision.profile));
     } catch (err) {
       if (!(err instanceof DeadlineExceeded)) throw err;
-      providence.append({
+      // The transport was called and did not answer in time: a forwarded operation.
+      providence.appendForwarded({
         eventType: 'tool_block', correlationId, sessionId: tokenResult.sessionId, subjectId: tokenResult.subjectId,
         deviceFingerprint: tokenResult.deviceFingerprint,
         operationClass: body.operationClass, reasonCode: 'ERR_UPSTREAM_TIMEOUT',
@@ -247,7 +251,8 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
     }
 
     if (!adapterResponse.ok) {
-      providence.append({
+      // Stamped only when the transport answered; the adapter's own refusal forwarded nothing.
+      (adapterResponse.forwarded ? providence.appendForwarded.bind(providence) : providence.append.bind(providence))({
         eventType: 'tool_block',
         correlationId,
         sessionId: tokenResult.sessionId,
@@ -264,7 +269,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       });
     }
 
-    const providenceEvent = providence.append({
+    const providenceEvent = providence.appendForwarded({
       eventType: 'invoke',
       correlationId,
       sessionId: tokenResult.sessionId,
@@ -277,7 +282,7 @@ export async function registerInvokeRoute(app: FastifyInstance): Promise<void> {
       metadata: {
         profile: decision.profile,
         allowedFheModes: decision.allowedFheModes,
-        brokerSignature,
+        bindingHash,
         // Recorded on allows too. A session that took in untrusted material and
         // was permitted anyway is exactly what sequence detection needs to see.
         predicates: decision.predicates
