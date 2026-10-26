@@ -58,6 +58,43 @@ credential sprawl, and malicious skill supply chain.
 
 See `docs/build-plan.md`, `docs/threat-model.md`, and `docs/exploit-mapping-and-disclosure-policy.md`.
 
+## The OpenClaw adapter (`@xsoc/openclaw-adapter` 0.3.0)
+
+Every operation the broker mediates reaches OpenClaw through one narrow interface, `OpenClawAdapter`:
+- It strips client-supplied auth headers and injects only broker-mediated credentials.
+- It enforces the operation allowlist and the default-deny categories again, behind the broker's own checks.
+- Each operation is bound by `bindingHash`: the SHA-256 of `correlationId:targetId:operationClass`. It was called `brokerSignature` before 0.2.0.
+
+The adapter forwards through a transport. The broker takes exactly one.
+
+| Transport | Selected when | What it does |
+| --- | --- | --- |
+| `openclaw-gateway` (`OpenClawGatewayTransport`) | `BROKER_OPENCLAW_GATEWAY_URL` is set | Forwards reads to a real OpenClaw gateway over its HTTP surface, `POST /tools/invoke`, on loopback only (`http://127.0.0.1:<port>` or `http://[::1]:<port>`), with the gateway's shared token |
+| `scaffolding` (`@xsoc/openclaw-mock`, in `scaffolding/`) | No gateway URL; in the production build, only with `BROKER_SCAFFOLDING_TRANSPORT=1` | A stand-in OpenClaw for development and the attack harness |
+
+**The gateway transport** is configured from the broker's environment, and startup stops if any of it is missing or malformed:
+
+| Variable | What it holds |
+| --- | --- |
+| `BROKER_OPENCLAW_GATEWAY_URL` | The gateway on loopback |
+| `BROKER_OPENCLAW_TOKEN_FILE` | The shared token: a regular file owned by the broker's user, mode 600, one hard link |
+| `BROKER_OPENCLAW_TARGETS_FILE` | `{ "targets": { "<targetId>": { "tool", "path" } } }`: the only tools and paths a request can reach |
+| `BROKER_OPENCLAW_VERSION` | The OpenClaw version the deployment pins |
+| `BROKER_OPENCLAW_WAIT_S` | How long startup waits for the gateway to be live, 0 to 600 seconds (default 120) |
+
+**What a request can reach:**
+- **Reads** (`operator.read`, `file.read`, `export.data`) go through the target table, from a `targetId` to a fixed `{ tool, path }`. Nothing in a request names a tool or a path.
+- **An unknown target, and every other operation class,** is refused before any call.
+
+**How the gateway's answers are recorded:**
+- **A non-200 answer** maps by status: 401 `ERR_OPENCLAW_UNAUTHORIZED`, 404 `ERR_OPENCLAW_TOOL_NOT_AVAILABLE`, and so on.
+- **The tool's own refusal,** which OpenClaw sends as HTTP 200, maps by its `details.status`, for example `ERR_OPENCLAW_MEMORY_PATH_NOT_ALLOWED` or `ERR_OPENCLAW_NOT_FOUND`.
+- **No answer** is `ERR_OPENCLAW_UNREACHABLE`.
+
+**The transport stamp on Providence records:** each record of an operation forwarded through a transport carries `transport: <its name>`, and the gateway transport adds `transport_version`. Every other record carries no transport field: admissions, refusals made before any call, FHE decisions and the pre-flight. `AdapterResponse.forwarded` tells the two apart.
+
+The changes by version are in `packages/openclaw-adapter/CHANGELOG.md`.
+
 ## Public / private boundary
 
 This repository is the **public** reference architecture. The following are **never** present here:
