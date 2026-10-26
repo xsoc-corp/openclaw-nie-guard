@@ -11,9 +11,7 @@ override.
 
 ## Status
 
-Phase 1. Scaffold with typed interfaces, mock bindings, disclosure lint, CI, and
-threat model. Implementation of business logic is tracked by `TODO(xsoc-openclaw-poc)`
-markers and proceeds through Phases 3 through 9 per `docs/build-plan.md`.
+A working reference implementation. The broker admits sessions, tracks context provenance, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. NIE and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
 
 ## Quickstart (reviewers, 3-5 minutes)
 
