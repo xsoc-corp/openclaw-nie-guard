@@ -141,6 +141,16 @@ export async function buildServer(opts: BuildServerOptions = {}): Promise<Fastif
       }
     }
   }));
+  // The server closes the gate it serves, so a stop releases the gate's keys and
+  // context on the FHE service before the process exits. The broker's signal
+  // handler exits only after the server's close has finished.
+  app.addHook('onClose', async () => {
+    try {
+      await fheGate.close();
+    } catch (err) {
+      app.log.error({ err }, 'the FHE gate did not close cleanly');
+    }
+  });
   const mcpMediator = new McpMediator();
 
   // Seed MCP trust table for dev. Production loads from signed policy bundle.

@@ -7,9 +7,32 @@ import type {
 // provider; the default mock provider in this repo is deterministic and non-cryptographic.
 export class FheGate {
   private readonly provider: FheProvider;
+  private readonly onClose?: () => Promise<void>;
+  private closing?: Promise<void>;
 
-  constructor(provider: FheProvider) {
+  /**
+   * `onClose` releases what the gate's owner set up around the provider (a gRPC
+   * connection, a spawned service); it runs after the provider's own close.
+   */
+  constructor(provider: FheProvider, options: { onClose?: () => Promise<void> } = {}) {
     this.provider = provider;
+    this.onClose = options.onClose;
+  }
+
+  /**
+   * Release the provider's resources and then the owner's, once: a second call
+   * waits on the first. The broker calls it when its server closes, so a stop
+   * destroys the service-side keys and context before the process exits.
+   */
+  close(): Promise<void> {
+    this.closing ??= (async () => {
+      try {
+        await this.provider.close?.();
+      } finally {
+        await this.onClose?.();
+      }
+    })();
+    return this.closing;
   }
 
   evaluate(input: GateInput): GateDecision {
@@ -122,4 +145,6 @@ export interface FheProvider {
   issueDualControlReceipt?(ciphertext: string, principals: string[]): Promise<DualControlGrant>;
   releaseModeC?(ciphertext: string, receiptId: string, context: ReleaseContext): Promise<number[]>;
   preflight?(): Promise<FhePreflight>;
+  /** Release what the provider holds on its service; called once, by FheGate.close(). */
+  close?(): Promise<void>;
 }
