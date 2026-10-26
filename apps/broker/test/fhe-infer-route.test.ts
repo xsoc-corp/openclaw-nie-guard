@@ -116,8 +116,13 @@ describe('POST /v1/fhe/infer', () => {
     });
     expect(inf.metadata.inputs).toHaveLength(4);
     expect(rel).toMatchObject({ event_type: 'mode_c_decryption', classification: 'regulated' });
-    // The released value is on the card, never on the chain.
-    expect(JSON.stringify([inf, rel])).not.toContain(String(a.release.result));
+    // The released value is on the card, never on the chain: no field of either
+    // record holds it. (A substring test was flaky: the digits recur in random ids.)
+    const values = (v: unknown): unknown[] => (v && typeof v === 'object' ? Object.values(v).flatMap(values) : [v]);
+    expect(values([inf, rel])).not.toContain(a.release.result);
+    // Neither forwarded anything through the OpenClaw transport: no transport field.
+    expect(inf.metadata.transport).toBeUndefined();
+    expect(rel.metadata.transport).toBeUndefined();
   });
 
   it('records a malformed request, and the same approver twice', async () => {

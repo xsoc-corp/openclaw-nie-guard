@@ -5,12 +5,21 @@ export interface MediatedOperation {
   targetId: string;
   targetClass: string;
   payload: unknown;
-  brokerSignature: string;
+  /**
+   * SHA-256 of correlationId:targetId:operationClass, binding the forwarded operation
+   * to the broker's decision. A hash anyone can compute, not a signature.
+   */
+  bindingHash: string;
   correlationId: string;
 }
 
 export interface AdapterResponse {
   ok: boolean;
+  /**
+   * Set by the adapter: true when the transport answered, false when the adapter
+   * refused the operation itself without calling the transport.
+   */
+  forwarded?: boolean;
   result?: unknown;
   error?: { code: string; message: string };
 }
