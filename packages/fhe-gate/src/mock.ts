@@ -45,6 +45,9 @@ export function createMockFheGate(options: { providenceSink?: { append(input: Pr
     async attestEndpoint() {
       return 'mock-endpoint';
     },
+    async preflight() {
+      return { device: { ok: true, id: 'mock-endpoint' }, service: { ok: true, status: MOCK_SCHEME } };
+    },
     async issueDualControlReceipt(ciphertext: string, principals: string[]) {
       if (new Set(principals).size < 2) throw new Error('dual-control requires at least 2 distinct principals');
       const receiptId = randomUUID();

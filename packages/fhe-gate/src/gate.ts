@@ -1,6 +1,6 @@
 import { MODE_COMPATIBILITY } from '@xsoc/shared-types';
 import type {
-  DualControlGrant, GateDecision, GateInput, ModeAInference, ModeAInferenceInput, ModeDenied, ReleaseContext
+  DualControlGrant, FhePreflight, GateDecision, GateInput, ModeAInference, ModeAInferenceInput, ModeDenied, ReleaseContext
 } from './types.js';
 
 // Policy-aware mode enforcement. Cryptographic operations are delegated to a pluggable
@@ -68,6 +68,18 @@ export class FheGate {
     return this.provider.inferModeA(input);
   }
 
+  /**
+   * Check the gate's dependencies without deciding anything: a fresh endpoint
+   * attestation (not kept for a release) and the FHE service's health.
+   */
+  async preflight(): Promise<FhePreflight> {
+    if (!this.provider.preflight) {
+      const error = 'this FHE provider has no pre-flight';
+      return { device: { ok: false, error }, service: { ok: false, error } };
+    }
+    return this.provider.preflight();
+  }
+
   /** The endpoint attestation a Mode C release presents: an id, fresh for this release. */
   async attestEndpoint(): Promise<string> {
     if (!this.provider.attestEndpoint) throw new Error('this FHE provider attests no endpoint');
@@ -109,4 +121,5 @@ export interface FheProvider {
   attestEndpoint?(): Promise<string>;
   issueDualControlReceipt?(ciphertext: string, principals: string[]): Promise<DualControlGrant>;
   releaseModeC?(ciphertext: string, receiptId: string, context: ReleaseContext): Promise<number[]>;
+  preflight?(): Promise<FhePreflight>;
 }

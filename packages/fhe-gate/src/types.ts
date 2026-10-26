@@ -76,3 +76,11 @@ export interface ReleaseContext {
   endpointAttestationId: string;
   principals: string[];
 }
+
+/** A pre-flight of the gate's dependencies, read-only: its endpoint attestation and its FHE service. */
+export interface FhePreflight {
+  /** A fresh endpoint attestation; for the production gate, a reauth of its NIE device. */
+  device: { ok: boolean; id?: string; error?: string };
+  /** The FHE service's health check, as the gate's own calls reach it. */
+  service: { ok: boolean; status?: string; version?: string; error?: string };
+}
