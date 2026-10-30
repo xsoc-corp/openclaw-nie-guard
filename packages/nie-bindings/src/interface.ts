@@ -8,6 +8,15 @@ import type {
   OperationClass
 } from '@xsoc/shared-types';
 
+/** One known device's pre-flight reauthentication. */
+export interface KnownDevicePreflight {
+  label: string;
+  ok: boolean;
+  /** The NIE device fingerprint the reauthentication carried, on success. */
+  deviceFingerprint?: string;
+  error?: string;
+}
+
 // Full public contract for NIE bindings. Implementations in this repo are mock.
 // Production implementation lives in @xsoc/nie-bindings-prod.
 export interface NieBindings {
@@ -23,6 +32,13 @@ export interface NieBindings {
    * copy and never on the sealed bytes. It decides nothing.
    */
   readableEnvelopeDigest?(sealed: SealedEnvelope): string | undefined;
+  /**
+   * For the pre-flight: a fresh reauthentication of each known device the bindings
+   * hold (devices enrolled once and admitted by reauthentication), one result per
+   * device, by label. It admits nothing and records nothing. Bindings without known
+   * devices do not implement it.
+   */
+  preflightKnownDevices?(): Promise<KnownDevicePreflight[]>;
   revokeSubject(input: RevocationInput): Promise<RevocationResult>;
   consumeNonce(nonce: string, sessionId: string): Promise<NonceConsumeResult>;
   getVersion(): VersionInfo;
