@@ -10,6 +10,6 @@
 // is black box by design and is referenced by stated security properties only.
 // See docs/disclosure-policy.md.
 
-export type { NieBindings } from './interface.js';
+export type { NieBindings, KnownDevicePreflight } from './interface.js';
 export { createMockBindings } from './mock.js';
 export { loadBindings } from './loader.js';
