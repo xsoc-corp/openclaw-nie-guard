@@ -47,7 +47,7 @@ Franklin et al. identify three vectors: RAG knowledge poisoning, latent memory p
 | Latent memory poisoning | Providence hash chain anchors every memory write. Retrieval of a poisoned memory entry produces a Providence event that correlates back to the write timestamp and source, enabling forensic reconstruction. A9 XEI detects anomalous memory reference patterns. | Medium |
 | Contextual learning traps (poisoned few-shot demos, reward signals) | A10 Signed policy bundles restrict which demo sources are permitted. Bundle rotation produces a Providence audit trail. In-context demonstrations sourced from external channels are external-classified and subject to A3 sanitization. | Medium |
 
-**Representative attack scenario:** RAG knowledge poisoning is addressed by the VectorShield evaluation track (scheduled Phase 5), including a Pure Storage DIM use case that demonstrates Mode A operation over encrypted RAG corpora.
+**Representative attack scenario:** RAG knowledge poisoning is addressed by the VectorShield evaluation track (scheduled Phase 5), including a storage-layer deployment use case that demonstrates Mode A operation over encrypted RAG corpora.
 
 ---
 

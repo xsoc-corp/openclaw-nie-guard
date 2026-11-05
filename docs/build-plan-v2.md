@@ -43,10 +43,10 @@ Tier A is now the entire delivery scope. Every item below ships in the POC.
 
 | # | Capability | Target |
 |---|---|---|
-| B1 | SDD Diode Mode for scif profile | Air-gap deployments, 16th AF use case |
+| B1 | SDD Diode Mode for scif profile | Air-gap deployments, including an air-gapped defense deployment |
 | B2 | Replay-Immune Nonce Merkle Lineage | Detects broker compromise |
 | B3 | Full Prompt/Context Envelope (per-token `provenance` labels) | scif profile extension |
-| B4 | CAISI Alignment Package | Direct submission to Carlson/Brown thread |
+| B4 | CAISI Alignment Package | Direct submission to NIST CAISI |
 
 ---
 
@@ -123,10 +123,10 @@ Each bound to a live customer conversation:
 
 | Use case | FHE mode | Customer thread | Differentiator |
 |---|---|---|---|
-| Storage-layer sensitive data, agent analysis | A | Pure Storage DIM | Data never decrypted at rest or in retrieval |
-| Financial memo review with client PII | A + B hybrid | JPMorgan GTAR, SRI | Client-identifying fields never leave FHE envelope |
+| Storage-layer sensitive data, agent analysis | A | A storage-layer deployment | Data never decrypted at rest or in retrieval |
+| Financial memo review with client PII | A + B hybrid | A financial institution | Client-identifying fields never leave FHE envelope |
 | PHI retrieval and aggregation | A | Healthcare vertical | HIPAA posture without trusting model vendor |
-| Classified-adjacent context, one-way output | A + SDD (B1) | 16th AF air-gapped | No cleartext in, no return channel out |
+| Classified-adjacent context, one-way output | A + SDD (B1) | An air-gapped defense deployment | No cleartext in, no return channel out |
 
 ### 2.6 Public narrative
 
@@ -136,7 +136,7 @@ Publication vehicles:
 
 - Zenodo companion paper to the QSIG/CGA pair, with DOI reservation
 - arXiv cs.CR candidate (strengthens the endorsement ask already in motion)
-- NIST CAISI submission extension through the Carlson/Brown thread
+- NIST CAISI submission extension
 - RSA Conference 2027 submission if timing fits
 - LinkedIn thought leadership sequence, including commentary from Avanzi and Aranha audience
 
@@ -259,7 +259,7 @@ Items that block nothing but sharpen the work if answered soon:
 
 1. **Telegram exploit specifics.** Advisory, internal writeup, or public reference. Needed to attach test case to scenario 16 with real attack shape rather than generic MCP-injection template.
 2. **OpenClaw version target.** Pin against which release. Affects adapter surface.
-3. **Tier B priority.** Of B1 through B4, which is the first post-POC commitment. My recommendation: B4 CAISI alignment first (leverages Carlson/Brown thread and turns the POC into a government-facing reference), then B1 SDD diode mode for 16th AF.
+3. **Tier B priority.** Of B1 through B4, which is the first post-POC commitment. My recommendation: B4 CAISI alignment first (turns the POC into a government-facing reference), then B1 SDD diode mode for an air-gapped defense deployment.
 4. **Public repo split.** OPENCLAW-NIE-GUARD as public reference architecture (maximum narrative leverage) or xsoc-corp private (preserves commercial differentiation). My recommendation: split. Public reference repo with the broker interface and mock NIE bindings, private production repo with full NIE and FHE integration. This is the same pattern used for xsoc-qsig-cga public release.
 5. **Zenodo companion paper authorship.** Solo or co-authored.
 

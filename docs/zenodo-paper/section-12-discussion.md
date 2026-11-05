@@ -87,8 +87,8 @@ to choose PQ-resistant underlying infrastructure.
 
 Five extensions are scheduled or under consideration.
 
-**VectorShield integration** for encrypted RAG corpora, with the
-Pure Storage DIM deployment as the reference case. This is the
+**VectorShield integration** for encrypted RAG corpora, with a
+storage-layer deployment as the reference case. This is the
 Phase 5 item in the Section 11 skeleton schedule and addresses the
 steganographic and RAG-poisoning gaps.
 

@@ -206,10 +206,8 @@ Because this is a public release and mistakes are costly to reverse:
       internals. Current scaffold uses `TODO(xsoc-openclaw-poc)` as the marker.
       Grep for that and confirm each one is safe for public reading.
 - [ ] Scan against XSOC's private name and deployment list,
-      `public-release-scan-list.txt`. Nothing on it should appear in the public
-      repo.
-- [ ] Search for `xsoc-corp/xsoc-qsig-cga` private repo references that might
-      have leaked into code or docs.
+      `public-release-scan-list.txt`. Private repository names are on that
+      list too. Nothing on it should appear in the public repo.
 - [ ] Search for author keys, signatures, or HSM configuration details.
 - [ ] Run `node scripts/disclosure-lint.mjs` one last time locally before push.
 - [ ] Run `node scripts/verify-public-boundary.mjs` one last time locally.
@@ -227,13 +225,11 @@ node scripts/verify-public-boundary.mjs
 # Scan against XSOC's private name and deployment list
 grep -rniwF -f public-release-scan-list.txt --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: nothing from the private list"
 
-grep -r "xsoc-qsig-cga\b" --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: no private QSIG repo references"
-
 grep -r "TODO\|FIXME\|XXX\|HACK" --exclude-dir=.git --exclude-dir=node_modules . | head -20
 ```
 
-All three greps should return either "clean:" messages or empty results, except
-the last which should show only the expected `TODO(xsoc-openclaw-poc)` markers
+Both greps should return either "clean:" messages or empty results, except
+the second, which should show only the expected `TODO(xsoc-openclaw-poc)` markers
 that are intentional.
 
 ---
