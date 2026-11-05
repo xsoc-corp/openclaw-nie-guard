@@ -28,6 +28,16 @@ The Guard terminates MCP from the client and re-originates to the servers. One G
 
 **Where the key lives:** the Guard runs apart from the agent and from each server. Its key is out of their reach. The key a Guard holds serves that Guard alone, so the loss of one Guard's key is the loss of one Guard.
 
+## Authority separation
+
+Authority is split across parties that do not hold one another's keys. Each holds only what its own part needs:
+- **The agent carries authority it cannot change.** It holds a token, never a key. A token whose content is altered fails `tag_verifies`.
+- **Granting is held apart from enforcing.** Tokens are minted by an authority bound to an identity enrolled in the Nexus Identity Engine. The Guard checks tokens and does not issue them.
+- **Each Guard's key serves that Guard alone,** so a key taken from one Guard is no use at another.
+- **Servers hold no authority.** The Guard removes the token before it relays a call, so no server receives it or can replay it. What a server receives is the Guard's own serialization of the arguments the checks evaluated.
+- **Revocation is held apart from both.** Advancing a tenant's epoch revokes its tokens whatever they say.
+- **The record is held apart from the token.** The Guard anchors its chain under a signing key separate from the key that checks tokens, and a TPM outside the Guard certifies the chain's head.
+
 ## What the token grants
 
 Each grant names a `(server, tool)` and the constraints its arguments must satisfy. The token also states:

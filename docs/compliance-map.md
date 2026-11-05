@@ -19,9 +19,9 @@ Palo Alto has mapped OpenClaw to every category. XSOC-NIE-GUARD addresses each:
 | OWASP category | Control |
 |---|---|
 | Permission escalation | A6 dual-control, A8 CDT, A10 signed bundles |
-| Memory poisoning | Context Provenance Chain, content-hash binding |
+| Memory poisoning | Context Providence Chain, content-hash binding |
 | Tool misuse | A2 Agent Intent Envelope, adapter allowlist |
-| Identity spoofing | NIE device attestation at admission |
+| Identity spoofing | Nexus Identity Engine (NIE) device attestation at admission |
 | Supply chain and trust | A10 signed bundles for skills and MCP servers |
 | Hallucinated output execution | Intent envelope, operation class allowlist |
 | Runaway autonomy | BEM adaptive profile escalation |

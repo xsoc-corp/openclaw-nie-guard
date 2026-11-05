@@ -55,7 +55,7 @@ Classification to mode compatibility:
 | regulated | A, B, C (Mode C requires dual-control receipt) |
 | classified-adjacent | A only |
 
-## Context Provenance Chain
+## Context Providence Chain
 
 Every element entering the model's context is a registered `ContextElement` with
 provenance (user, system, rag, tool-output, mcp-response, external-channel),

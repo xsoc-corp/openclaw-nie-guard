@@ -16,7 +16,7 @@ The Runtime Continuity Plane addresses all three through a per-operation
 sealed envelope carried with every `/v1/invoke` call.
 
 Three specific control surfaces compose the plane: the TSTL continuity
-envelope itself (subsection 5.2), the Context Provenance Chain that
+envelope itself (subsection 5.2), the Context Providence Chain that
 binds the context elements the operation operates over (subsection 5.3),
 and the Agent Intent Envelope that binds the agent's declared intent
 class into the sealed structure (subsection 5.4). Each surface rejects a
@@ -62,15 +62,15 @@ event (Section 10) with the reason code, the sealed envelope, and the
 correlation identifier.
 
 The envelope's cryptographic sealing construction is proprietary to the
-NIE binding implementation. The reference repository provides a mock
+Nexus Identity Engine (NIE) binding implementation. The reference repository provides a mock
 binding that produces a base64-encoded JSON serialization for
 development and attack-sim use, with production substitution to the
 NIE binding at deployment time. The mock is not a security mechanism
 and is labelled as such in the repository.
 
-## 5.3 Context Provenance Chain
+## 5.3 Context Providence Chain
 
-The Context Provenance Chain (CPC), control A4 in Section 3.3, is the
+The Context Providence Chain (CPC), control A4 in Section 3.3, is the
 mechanism that binds the full set of context elements an operation
 operates over into a single cryptographic commitment verifiable from
 the TSTL envelope.
@@ -177,7 +177,7 @@ the threat model (Section 2.4) excludes such paths by construction.
 
 The Runtime Continuity Plane binds every operation to three
 cryptographic commitments: the session context via the TSTL envelope,
-the reasoning context via the Context Provenance Chain, and the
+the reasoning context via the Context Providence Chain, and the
 operational intent via the Agent Intent Envelope. Each commitment
 rejects a distinct class of adversary behaviour. Their composition is
 what makes the mediation layer's claim to continuity enforceable.

@@ -14,7 +14,7 @@ Franklin et al. identify four vectors: web-standard obfuscation, dynamic cloakin
 
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
-| Web-standard obfuscation (CSS, HTML comments, aria-label injection) | A3 MCP Boundary Mediation sanitizer detects known injection patterns; A4 Context Provenance Chain tags content source and classification; external-channel content is never trusted as system context | Strong |
+| Web-standard obfuscation (CSS, HTML comments, aria-label injection) | A3 MCP Boundary Mediation sanitizer detects known injection patterns; A4 Context Providence Chain tags content source and classification; external-channel content is never trusted as system context | Strong |
 | Dynamic cloaking (agent-served trap content) | A3 plus A4 content hash registration; replayed fetches produce hash mismatches that Providence records | Strong |
 | Steganographic payloads in media (pixel-level perturbations) | A4 content hash binds the exact binary. Perturbation-based attacks that operate within a single legitimate image are NOT caught by content hashing alone and require image-level anomaly detection. | Partial. Gap acknowledged. |
 | Syntactic masking (Markdown, LaTeX, anchor text) | A3 sanitizer can be extended with Markdown-aware and LaTeX-aware pattern matching. Current patterns catch text-level injection; formatting-language cloaking is scheduled work. | Partial |
@@ -77,7 +77,7 @@ Franklin et al. identify five vectors: congestion traps, interdependence cascade
 | Interdependence cascades (feedback loop amplification) | Ecosystem-level problem. Our Providence chain provides per-operator forensic reconstruction but not cascade prevention. | Gap. |
 | Tacit collusion (agents synchronising via environmental signals) | Ecosystem-level problem. Signed policy bundles can restrict which signals an agent acts on within a single operator's population; cross-operator collusion requires separate mechanisms. | Gap. |
 | Compositional fragment traps (payload split across sources, reconstitutes on aggregation) | Content manifest hashes individual elements. Aggregation-level semantic analysis that detects reconstituted payloads is not present in current architecture. Interesting research direction. | Gap. Acknowledged as future work. |
-| Sybil attacks | NIE device attestation at admission limits a single adversary from producing multiple attested identities within our operator's population. Cross-operator Sybil resistance requires ecosystem-level identity coordination. | Partial |
+| Sybil attacks | Nexus Identity Engine (NIE) device attestation at admission limits a single adversary from producing multiple attested identities within our operator's population. Cross-operator Sybil resistance requires ecosystem-level identity coordination. | Partial |
 
 **Honest statement for the Zenodo paper and for buyer conversations:** XSOC-NIE-GUARD addresses the single-agent attack surface by construction. Systemic traps require a complementary layer of ecosystem coordination that we are not providing in this release. The right answer is to name this explicitly rather than over-claim. The Franklin paper itself treats systemic traps as largely theoretical at this point in the agent economy's development, and we can position our work alongside that framing.
 

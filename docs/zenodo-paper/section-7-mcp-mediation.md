@@ -48,7 +48,7 @@ modification of the broker source code.
 
 Content that passes the sanitizer is not admitted to the model
 context as trusted material. It is tagged as external-channel
-provenance in the Context Provenance Chain (Section 5.3) and wrapped
+provenance in the Context Providence Chain (Section 5.3) and wrapped
 in an `<external_content>` marker before it reaches the model. The
 model's system prompt is responsible for instructing the model to
 treat external_content as untrusted data rather than as instructions
@@ -89,7 +89,7 @@ answer to the messaging-channel and skill-marketplace injection
 surfaces documented in Section 2 and exercised by Scenarios 08, 16,
 23, 23b, and 25 in Section 11. It is not the complete answer to
 Content Injection; it is the structural floor on top of which the
-Context Provenance Chain and the FHE Context Gate impose the
+Context Providence Chain and the FHE Context Gate impose the
 additional semantic controls.
 
 ---

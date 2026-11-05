@@ -105,7 +105,7 @@ Slack, Discord, email, WhatsApp) treated as untrusted. Inbound MCP
 responses sanitized for known prompt-injection patterns and tagged with
 external-content markers before entering model context.
 
-**A4, Context Provenance Chain** (Section 5.2). Every context element
+**A4, Context Providence Chain** (Section 5.2). Every context element
 registered with provenance, classification, and content hash. Manifest
 hash anchors to Providence. Unregistered context elements rejected at the
 Action Mediation Plane.
@@ -158,7 +158,7 @@ dual-control receipt.
 ## 3.5 Public and proprietary boundaries
 
 The broker, policy engine, TSTL envelope schema, Providence event schema,
-Context Provenance Chain design, Agent Intent Envelope design, MCP
+Context Providence Chain design, Agent Intent Envelope design, MCP
 Boundary Mediation design, Capability Derivation Tree concept, and FHE
 Context Gate three-mode taxonomy are all public components of this
 architecture, released under Apache 2.0 in the reference repository. The

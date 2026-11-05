@@ -271,7 +271,7 @@ construction.)
 ## 5. Runtime Continuity
 
 (Draft: TSTL envelope schema at application level, Agent Intent Envelope
-extension, Context Provenance Chain registration, counter monotonicity,
+extension, Context Providence Chain registration, counter monotonicity,
 directionality enforcement.)
 
 ---
@@ -360,7 +360,7 @@ Table 11.1 summarizes current status:
 | 23b | Unknown MCP server rejected | Implemented | ERR_MCP_SERVER_BLOCKED |
 
 Fifteen primary scenarios plus two variant scenarios (21b, 23b) are wired
-and passing against the reference broker running with mock NIE bindings.
+and passing against the reference broker running with mock Nexus Identity Engine (NIE) bindings.
 Performance overhead measurements on the full invoke pipeline, taken with
 an Intel Core i9-13900K reference host running the broker with mock
 bindings and a local OpenClaw mock, show a median added latency of under
@@ -406,7 +406,7 @@ Appendix D.
 
 Greshake et al. (2023) introduced the concept of indirect prompt injection in
 LLM-integrated applications. XSOC-NIE-GUARD's agent intent envelope and context
-provenance chain are direct architectural responses to the indirect-injection
+providence chain are direct architectural responses to the indirect-injection
 vector Greshake et al. catalog.
 
 Shapira et al. (2025) report data exfiltration success rates exceeding 80

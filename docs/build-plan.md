@@ -9,7 +9,7 @@ Phases:
   public/private disclosure boundary, Zenodo paper kickoff
 - **Phase 1** (in progress): monorepo scaffold, CI, disclosure lint, typed interfaces,
   mock bindings, infrastructure compose
-- **Phase 2**: NIE admission ceremony wiring, attestation floor, capability derivation
+- **Phase 2**: Nexus Identity Engine (NIE) admission ceremony wiring, attestation floor, capability derivation
 - **Phase 3**: policy engine bundle loading, signed bundle schema, skill registration
   extension, role matrix evaluation
 - **Phase 4**: TSTL envelope full pipeline, AIE binding, context manifest, provenance

@@ -68,7 +68,7 @@ The capability token is a deterministic hash of the session context. It
 is not a random opaque identifier; it is a verifiable binding of session
 identity, subject identity, device fingerprint, and admission timestamp,
 which the Action Mediation Plane verifies on every `/v1/invoke` call
-without a database lookup. The underlying NIE binding implementation
+without a database lookup. The underlying Nexus Identity Engine (NIE) binding implementation
 (production substitution of the mock package described in the reference
 repository) is responsible for the cryptographic construction of the
 token; the broker treats the token as opaque beyond its structural

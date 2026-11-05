@@ -54,7 +54,7 @@ scenario in which a legitimate device is in attacker hands post-theft. *A8*
 is a supply chain implant hidden in a transitive dependency that attempts to
 compromise the broker at runtime.
 
-**Assumptions.** NIE cryptographic primitives are sound at the interface
+**Assumptions.** Nexus Identity Engine (NIE) cryptographic primitives are sound at the interface
 level; the broader XSOC cryptographic stack has been externally validated
 through the Perrin and Biryukov confidential audits of the legacy
 cryptosystem at the University of Luxembourg in 2020 and 2024 (mandatory

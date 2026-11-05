@@ -1,4 +1,4 @@
-# NIE Integration Contract
+# Nexus Identity Engine (NIE) Integration Contract
 
 Interface and stated security properties for the XSOC NIE primitives consumed by
 OPENCLAW-NIE-GUARD. This document describes only the public contract. Construction

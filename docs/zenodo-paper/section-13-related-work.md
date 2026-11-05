@@ -47,7 +47,7 @@ policy-bundle-extensible for future pattern additions.
 Memory and retrieval as distinct attack surfaces are treated in a
 growing literature. Zou et al. on PoisonedRAG [6] demonstrate
 corruption attacks against retrieval-augmented generation that the
-Section 5.3 Context Provenance Chain and the Section 6 Mode A
+Section 5.3 Context Providence Chain and the Section 6 Mode A
 encrypted retrieval path are designed to address. Wang et al. [35]
 analyze privacy risks in LLM agent memory; Dong et al. [36]
 demonstrate practical memory injection attacks. The Franklin

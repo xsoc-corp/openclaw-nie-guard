@@ -10,7 +10,7 @@ throughout this paper.*
 | Identifier | Meaning |
 |---|---|
 | P1 through P5 | Planes of the XSOC-NIE-GUARD architecture (Client Trust, Admission, Action Mediation, Runtime Continuity, Audit and Revocation) |
-| A1 through A10 | Named controls (FHE Context Gate, Agent Intent Envelope, MCP Boundary Mediation, Context Provenance Chain, Short-TTL Scoped Capabilities, Dual-Control for High-Risk Operations, Device Fingerprint Binding, Capability Derivation Tree, Behavioral Escalation Meter, Signed Policy Bundles) |
+| A1 through A10 | Named controls (FHE Context Gate, Agent Intent Envelope, MCP Boundary Mediation, Context Providence Chain, Short-TTL Scoped Capabilities, Dual-Control for High-Risk Operations, Device Fingerprint Binding, Capability Derivation Tree, Behavioral Escalation Meter, Signed Policy Bundles) |
 | T-01 through T-13 | Threat paths catalogued in Section 2 |
 
 ## A.2 XSOC cryptographic primitive names

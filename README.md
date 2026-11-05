@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19685360.svg)](https://doi.org/10.5281/zenodo.19685360)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-# OPENCLAW-NIE-GUARD
+# XSOC AIDA-Guard (formerly XSOC-NIE-GUARD)
 
 **Cryptographic trust mediation layer for OpenClaw and compatible AI agent frameworks.**
 
@@ -11,7 +11,7 @@ override.
 
 ## Status
 
-A working reference implementation. The broker admits sessions, tracks context provenance, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. NIE and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
+A working reference implementation. The broker admits sessions, tracks context provenance, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. Nexus Identity Engine (NIE) and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
 
 ## AIDA-Guard v3: the Guard for MCP
 
@@ -47,7 +47,7 @@ pnpm --filter @xsoc/attack-sim dev
 
 ## What this does
 
-XSOC-NIE-GUARD sits in front of OpenClaw (or any compatible agent framework) and enforces:
+XSOC AIDA-Guard sits in front of OpenClaw (or any compatible agent framework) and enforces:
 
 1. Hardware and context bound admission via NIE device attestation
 2. Role scoped, short-TTL capability derivation via DSKAG
@@ -57,12 +57,10 @@ XSOC-NIE-GUARD sits in front of OpenClaw (or any compatible agent framework) and
 6. FHE Context Gate for sensitive context that must never reach the model in cleartext
 7. MCP boundary mediation for external messaging channels (Telegram, Slack, Discord, email)
 8. Signed policy bundles with ceremony-rooted keys
-9. Immutable audit chain via Providence
+9. Hash-linked audit chain, anchored and verifiable offline, via Providence
 10. Adaptive profile escalation via BEM
 
-It answers the OpenClaw security crisis documented across multiple public advisories
-in early 2026, including the assume-compromise posture, pairing privilege escalation,
-credential sprawl, and malicious skill supply chain.
+It governs what an OpenClaw agent may do.
 
 See `docs/build-plan.md`, `docs/threat-model.md`, and `docs/exploit-mapping-and-disclosure-policy.md`.
 
@@ -181,6 +179,9 @@ cryptosystem at the University of Luxembourg in 2020 and 2024 (with mandatory fi
 incorporated into the current canonical build), Cal Poly San Luis Obispo Dieharder
 v3.31.1 at 99.4 percent aggregate across 98 tests, and GMU SENTINEL laboratory audit
 FP5223 (full report publication scheduled June 2026).
+
+Cryptography in AIDA-Guard runs through AWS-LC in FIPS-approved mode, and the XSOC
+cryptographic module is in CMVP validation with Leidos.
 
 - Website: https://xsoccorp.com
 - OWASP AI Exchange: contributor

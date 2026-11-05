@@ -44,7 +44,7 @@ are product-design and operational problems rather than
 cryptographic problems.
 
 **Steganographic and perturbation attacks within legitimate media.**
-The Context Provenance Chain (Section 5.3) binds content hashes,
+The Context Providence Chain (Section 5.3) binds content hashes,
 which catches binary substitution. Attacks that operate within a
 single legitimate image or audio file through adversarial
 perturbation are not caught by content hashing. VectorShield

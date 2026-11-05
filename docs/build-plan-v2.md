@@ -29,7 +29,7 @@ Tier A is now the entire delivery scope. Every item below ships in the POC.
 | A1 | **FHE Context Gate** (new, hero) | Sensitive context never reaches OpenClaw in cleartext without policy-approved decryption event |
 | A2 | Agent Intent Envelope | Binds stated agent purpose into TSTL envelope |
 | A3 | MCP Boundary Mediation | Second untrusted surface covered; Telegram and similar external channels defended |
-| A4 | Context Provenance Chain | Every context element has a Providence-anchored ID |
+| A4 | Context Providence Chain | Every context element has a Providence-anchored ID |
 | A5 | Fail-Closed Streaming | Mid-stream termination on continuity failure |
 | A6 | Dual-Control for Admin Actions | Co-sign via nie-enrollment ceremony for admin.control and exec.run |
 | A7 | Shadow Mode and Attack Replay | Policy regression detection without production impact |
@@ -60,7 +60,7 @@ OpenClaw, and by extension OpenAI, is a cleartext-hungry execution surface. The 
 
 ### 2.2 Context classification
 
-At admission, every context element is tagged with one of four classifications. Classification is bound into the TSTL envelope and into the Context Provenance Chain (A4).
+At admission, every context element is tagged with one of four classifications. Classification is bound into the TSTL envelope and into the Context Providence Chain (A4).
 
 - `public` — no restriction, flows to OpenClaw in cleartext
 - `sensitive` — passes through FHE gate, Mode B default (tokenized) or Mode C with approval
@@ -178,7 +178,7 @@ Controls stacked against this class:
 
 - **A3 MCP Boundary Mediation** — every MCP response passes through the broker's reverse-mediation proxy, scanned for injection patterns, tagged as `<external_content>` for the model's system prompt to treat skeptically
 - **A2 Agent Intent Envelope** — the agent's declared intent is bound before the MCP response is fetched, so post-fetch intent drift is detectable
-- **A4 Context Provenance Chain** — every MCP-sourced content element has a Providence-anchored ID and is marked as `external` provenance class
+- **A4 Context Providence Chain** — every MCP-sourced content element has a Providence-anchored ID and is marked as `external` provenance class
 - **A1 FHE Context Gate** — MCP content touching sensitive data surfaces is classified before being admitted to the context, and is not permitted to cross Mode C without approval
 - **A9 BEM** — anomalous MCP ingestion patterns are baseline inputs; a session that suddenly starts pulling large volumes of external-channel content is escalated
 
@@ -191,7 +191,7 @@ Send the specific Telegram advisory or internal writeup and I will map each iden
 Phase structure from v1 retained. Adjustments:
 
 - **Phase 0 (threat model, policy drafts)** extended to 1.5 days to include FHE classification schema and Telegram-class threat path.
-- **Phase 2 (NIE bindings abstraction)** extended to 1.5 days to include FHE bridge into the binding surface (`encryptContext`, `decryptResponse`, `enforceMode`). FHE is a first-class binding, not an adapter concern.
+- **Phase 2, the Nexus Identity Engine (NIE) bindings abstraction,** extended to 1.5 days to include FHE bridge into the binding surface (`encryptContext`, `decryptResponse`, `enforceMode`). FHE is a first-class binding, not an adapter concern.
 - **Phase 3 (shared packages)** extended to 3 days. Four parallel packages (shared-types, policy-engine, tstl-envelope, providence-log) plus the FHE gate package (fhe-gate). Policy engine gains classification-to-mode mapping responsibility.
 - **Phase 5 (adapter)** extended to 2.5 days. Adapter must invoke FHE gate on every forwarded operation and handle mode-specific request/response shapes.
 - **Phase 7 (tests)** extended to 3 days to include FHE-mode-specific attack scenarios and Mode C dual-control paths.

@@ -11,7 +11,7 @@ by CI through `scripts/disclosure-lint.mjs` (forbidden-term lint) and
 - Policy engine structure and role matrix format
 - TSTL envelope field definitions at the schema level
 - Providence event schema and chain verification algorithm
-- Context Provenance Chain design and element registration flow
+- Context Providence Chain design and element registration flow
 - Agent Intent Envelope design and intent class taxonomy
 - MCP Boundary Mediation design and sanitization patterns
 - Capability Derivation Tree concept and narrowing rules
@@ -20,7 +20,7 @@ by CI through `scripts/disclosure-lint.mjs` (forbidden-term lint) and
 - Signed policy bundle format at the JSON schema level
 - Compliance framework mapping
 - Attack simulation harness (demonstrates defenses, not exploits)
-- Mock NIE bindings with full TypeScript interface signatures
+- Mock Nexus Identity Engine (NIE) bindings with full TypeScript interface signatures
 - Mock FHE gate with published benchmark numbers
 - XSOC-NIE-GUARD architecture description at interface and behavior level
 

@@ -127,7 +127,7 @@ available, will be published as an evaluation addendum.
 
 Mediation introduces latency. The broker's `/v1/admit` and `/v1/invoke`
 endpoints add a mediation hop on every operation. In the reference
-implementation with mock NIE bindings, median admission latency is
+implementation with mock Nexus Identity Engine (NIE) bindings, median admission latency is
 approximately 12 ms and median invoke latency is approximately 18 ms,
 including policy evaluation, TSTL envelope verification, FHE gate routing,
 and Providence event emission. Production substitution of the mock bindings

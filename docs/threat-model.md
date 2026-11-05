@@ -51,7 +51,7 @@ controls to Franklin categories is in `docs/franklin-taxonomy-mapping.md`.
 
 ## 3. Assumptions
 
-- NIE cryptographic primitives are sound (interface-level assumption; the
+- Nexus Identity Engine (NIE) cryptographic primitives are sound (interface-level assumption; the
   broader XSOC cryptographic stack has been externally validated through
   Perrin and Biryukov audits of the legacy cryptosystem at the University
   of Luxembourg in 2020 and 2024 with mandatory findings incorporated,
@@ -85,7 +85,7 @@ composes with this path to produce full admin takeover in the common case.
 - A3 MCP Boundary Mediation: every MCP response sanitized; external content tagged
 - A2 Agent Intent Envelope: agent's declared intent is bound before MCP fetch; post-fetch
   intent drift detected
-- A4 Context Provenance Chain: every MCP-sourced element registered and classified as external
+- A4 Context Providence Chain: every MCP-sourced element registered and classified as external
 - A1 FHE Context Gate: MCP content touching sensitive data classified before admission to context
 - A9 BEM: anomalous ingestion patterns escalate session profile
 
