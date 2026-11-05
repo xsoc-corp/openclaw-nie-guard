@@ -114,9 +114,33 @@ Every public release follows this sequence before tag push:
 2. Automated disclosure lint pass (CI required)
 3. Private-import boundary check (CI required)
 4. Legal review, even if abbreviated
-5. Co-signed release tag using the policy bundle ceremony root
+5. Release tag signed with XSOC's release signing key (see "Release signing" below)
 6. Zenodo DOI reservation before public tag push
 7. Public announcement (LinkedIn, etc.) after at least 48 hours of public availability
+
+## Release signing
+
+A release tag, from v3.0.0 on, is an annotated git tag signed with XSOC's
+release signing key:
+- **The key:** an SSH Ed25519 key, used through git's SSH signing
+  (`gpg.format ssh`). Its private half is held in XSOC's key store on the
+  release workstation, protected by a passphrase. It is never in a repository
+  or on a build host.
+- **Its public half** is published in this repository, in
+  `.github/allowed_signers`, and its fingerprint is stated in the Zenodo record
+  of each release. The two come to a reader separately.
+- **Where tags are signed:** on the release workstation, and nowhere else.
+
+**Verifying a release tag.** From a clone of this repository:
+
+    git fetch --tags
+    git -c gpg.ssh.allowedSignersFile=.github/allowed_signers tag -v v3.0.0
+
+Git prints `Good "git" signature` with the key's fingerprint. Compare that
+fingerprint with the one in the Zenodo record.
+
+Tags before v3.0.0 are historical markers, unsigned. v2.0.0 marks the commit
+that sourced the Zenodo v2 record.
 
 ## Violations
 
