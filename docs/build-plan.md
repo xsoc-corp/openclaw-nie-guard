@@ -12,7 +12,7 @@ Phases:
 - **Phase 2**: Nexus Identity Engine (NIE) admission ceremony wiring, attestation floor, capability derivation
 - **Phase 3**: policy engine bundle loading, signed bundle schema, skill registration
   extension, role matrix evaluation
-- **Phase 4**: TSTL envelope full pipeline, AIE binding, context manifest, provenance
+- **Phase 4**: TSTL envelope full pipeline, AIE binding, context manifest, Providence anchoring
   chain integration
 - **Phase 5**: FHE Context Gate three-mode routing, Mode C endpoint attestation adapter
   stubs for Anthropic/OpenAI/Google

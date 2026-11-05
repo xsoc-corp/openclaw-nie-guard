@@ -22,7 +22,7 @@ credential storage, pairing privilege escalation, skill marketplace supply
 chain compromise, messaging channel prompt injection, and the lethal trifecta
 interaction described by Willison. The architecture composes device-attested
 admission, short-time-to-live scoped capability derivation, continuity-envelope
-binding, context provenance anchoring, agent intent envelope enforcement, and
+binding, context Providence anchoring, agent intent envelope enforcement, and
 fully homomorphic encryption for sensitive context into a five-plane mediation
 layer that eliminates each failure mode by construction rather than mitigating
 it by patch. We implement a reference architecture under Apache 2.0 with
@@ -125,7 +125,7 @@ to mediate high-risk operations with short-lived, narrowly scoped
 capabilities rather than standing privileges. Related disciplines,
 particularly the design of systems that process sensitive data in
 multi-party or regulated contexts, have developed additional primitives:
-attested endpoints, continuity-envelope binding, context provenance
+attested endpoints, continuity-envelope binding, context Providence
 anchoring, and homomorphic evaluation for cleartext-free operation on
 sensitive material. Each of these techniques is deployable today. What has
 not existed until now is an integrated layer that applies them specifically
@@ -140,7 +140,7 @@ sits between the agent framework and the rest of the world, enforcing:
 3. Continuity binding via telemetry-sealed runtime envelopes that commit
    each operation to a device, a session, a role, a target, a context
    manifest, and an intent class
-4. Context provenance anchoring that registers every piece of material
+4. Context Providence anchoring that registers every piece of material
    entering the model's context with source, classification, and content hash
 5. Agent intent envelope enforcement that defeats prompt-injection misuse
    of legitimate capabilities by binding the declared intent into the
@@ -291,7 +291,7 @@ gate is public.)
 ## 7. Messaging and MCP Mediation
 
 (Draft: external channel threat surface, sanitization pattern taxonomy,
-provenance anchoring, intent binding at the channel boundary.)
+Providence anchoring, intent binding at the channel boundary.)
 
 ---
 
@@ -388,7 +388,7 @@ that target different stages of an agent's operational cycle: Content Injection,
 Semantic Manipulation, Cognitive State, Behavioural Control, Systemic, and
 Human-in-the-Loop. XSOC-NIE-GUARD implements structural controls against four
 of those six categories by construction: content injection is contained by MCP
-boundary mediation and context provenance anchoring; semantic manipulation
+boundary mediation and context Providence anchoring; semantic manipulation
 targeting reasoning is contained by agent intent envelope binding; cognitive
 state traps on memory and retrieval are contained by VectorShield integration
 and Providence audit anchoring; and behavioural control traps including the

@@ -58,7 +58,7 @@ Classification to mode compatibility:
 ## Context Providence Chain
 
 Every element entering the model's context is a registered `ContextElement` with
-provenance (user, system, rag, tool-output, mcp-response, external-channel),
+`provenance` (user, system, rag, tool-output, mcp-response, external-channel),
 classification, and content hash. Manifest hash anchors to Providence. Unregistered
 context elements are rejected.
 

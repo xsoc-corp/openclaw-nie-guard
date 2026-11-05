@@ -34,7 +34,7 @@ The drift score is a weighted aggregation over five observables:
   shape for the session's role.
 - **Context manifest churn**: the rate at which new context elements
   are being registered into the session's manifests, with weight
-  applied to external-channel provenance.
+  applied to external-channel `provenance`.
 - **Mode C decryption frequency**: the per-window count of Mode C
   releases. Regulated-classification Mode C is weighted higher than
   sensitive-classification Mode C.

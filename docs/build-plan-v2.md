@@ -1,4 +1,4 @@
-# OPENCLAW-NIE-GUARD — Build Plan v2
+# OPENCLAW-NIE-GUARD: Build Plan v2
 
 **Revision:** v2, strategic posture update
 **Status:** Approved for execution at supreme-impact scope
@@ -22,7 +22,7 @@ The hero commercial claim: a customer running OPENCLAW-NIE-GUARD can operate Ope
 
 Tier A is now the entire delivery scope. Every item below ships in the POC.
 
-### Tier A — Core (mandatory)
+### Tier A: Core (mandatory)
 
 | # | Capability | Role |
 |---|---|---|
@@ -39,18 +39,18 @@ Tier A is now the entire delivery scope. Every item below ships in the POC.
 | A11 | VectorShield Integration | RAG chunks through VectorShield, composes with A1 |
 | A12 | Compliance Control Mapping | Named-framework map as first-class artifact |
 
-### Tier B — Roadmap (named timelines, post-POC)
+### Tier B: Roadmap (named timelines, post-POC)
 
 | # | Capability | Target |
 |---|---|---|
 | B1 | SDD Diode Mode for scif profile | Air-gap deployments, 16th AF use case |
 | B2 | Replay-Immune Nonce Merkle Lineage | Detects broker compromise |
-| B3 | Full Prompt/Context Envelope (per-token provenance) | scif profile extension |
+| B3 | Full Prompt/Context Envelope (per-token `provenance` labels) | scif profile extension |
 | B4 | CAISI Alignment Package | Direct submission to Carlson/Brown thread |
 
 ---
 
-## 2. FHE Context Gate (A1) — Detailed Architecture
+## 2. FHE Context Gate (A1): Detailed Architecture
 
 This is the hero feature. It deserves a full architectural section because it is novel and because it is the public-narrative anchor.
 
@@ -62,14 +62,14 @@ OpenClaw, and by extension OpenAI, is a cleartext-hungry execution surface. The 
 
 At admission, every context element is tagged with one of four classifications. Classification is bound into the TSTL envelope and into the Context Providence Chain (A4).
 
-- `public` — no restriction, flows to OpenClaw in cleartext
-- `sensitive` — passes through FHE gate, Mode B default (tokenized) or Mode C with approval
-- `regulated` — must pass through FHE gate, Mode A or Mode B only, Mode C requires dual-control cosign
-- `classified-adjacent` — Mode A only, cleartext path is deny by default at every profile above relaxed
+- `public`: no restriction, flows to OpenClaw in cleartext
+- `sensitive`: passes through FHE gate, Mode B default (tokenized) or Mode C with approval
+- `regulated`: must pass through FHE gate, Mode A or Mode B only, Mode C requires dual-control cosign
+- `classified-adjacent`: Mode A only, cleartext path is deny by default at every profile above relaxed
 
 ### 2.3 Processing modes
 
-**Mode A — Full FHE.** Operation runs on ciphertext. OpenClaw and model endpoint never see cleartext. Applies to:
+**Mode A: Full FHE.** Operation runs on ciphertext. OpenClaw and model endpoint never see cleartext. Applies to:
 
 - Embedding similarity search
 - Vector aggregations
@@ -85,11 +85,11 @@ Benchmarks (from XSOC FHE SDK production numbers, CKKS scheme):
 
 VectorShield (A11) composes directly in Mode A. Retrieved chunks are FHE-encrypted by VectorShield before entering the retrieval pipeline, remain encrypted through similarity scoring, and decrypt only on Mode C transition.
 
-**Mode B — Tokenized Substitution.** Sensitive fields in prompts are replaced with opaque tokens before OpenClaw sees the prompt. The model reasons over tokens. On the response path, the adapter substitutes cleartext back only for approved output destinations, with every substitution recorded as a Providence event.
+**Mode B: Tokenized Substitution.** Sensitive fields in prompts are replaced with opaque tokens before OpenClaw sees the prompt. The model reasons over tokens. On the response path, the adapter substitutes cleartext back only for approved output destinations, with every substitution recorded as a Providence event.
 
 This mode is the workhorse for most regulated-data text generation cases. The model does not need to comprehend the sensitive field; it needs to reference it. Account numbers, patient identifiers, classified-adjacent identifiers, client names all fit here.
 
-**Mode C — Attested Cleartext.** Where free-form generation requires cleartext on the sensitive field itself (rare in well-designed flows), it happens only with:
+**Mode C: Attested Cleartext.** Where free-form generation requires cleartext on the sensitive field itself (rare in well-designed flows), it happens only with:
 
 - Attested model endpoint (inherits from TSTL device attestation semantics applied to the model runtime)
 - Explicit per-request policy approval
@@ -151,11 +151,11 @@ The five-plane decomposition from v1 stands. Additions:
 
 The FHE Context Gate is not a sixth plane. It is a transverse primitive that binds into:
 
-- **Client Trust Plane** — classification tags originate here
-- **Admission Plane** — broker validates classification-to-role compatibility at admit time
-- **Action Mediation Plane** — gate enforces mode selection per operation
-- **Runtime Continuity Plane** — TSTL envelope carries classification hash; drift triggers mode downgrade denial
-- **Audit and Revocation Plane** — every mode transition is a Providence event
+- **Client Trust Plane:** classification tags originate here
+- **Admission Plane:** broker validates classification-to-role compatibility at admit time
+- **Action Mediation Plane:** gate enforces mode selection per operation
+- **Runtime Continuity Plane:** TSTL envelope carries classification hash; drift triggers mode downgrade denial
+- **Audit and Revocation Plane:** every mode transition is a Providence event
 
 ### 3.2 Updated threat model additions
 
@@ -176,11 +176,11 @@ Called out specifically because you flagged it. The pattern: an MCP server that 
 
 Controls stacked against this class:
 
-- **A3 MCP Boundary Mediation** — every MCP response passes through the broker's reverse-mediation proxy, scanned for injection patterns, tagged as `<external_content>` for the model's system prompt to treat skeptically
-- **A2 Agent Intent Envelope** — the agent's declared intent is bound before the MCP response is fetched, so post-fetch intent drift is detectable
-- **A4 Context Providence Chain** — every MCP-sourced content element has a Providence-anchored ID and is marked as `external` provenance class
-- **A1 FHE Context Gate** — MCP content touching sensitive data surfaces is classified before being admitted to the context, and is not permitted to cross Mode C without approval
-- **A9 BEM** — anomalous MCP ingestion patterns are baseline inputs; a session that suddenly starts pulling large volumes of external-channel content is escalated
+- **A3 MCP Boundary Mediation:** every MCP response passes through the broker's reverse-mediation proxy, scanned for injection patterns, tagged as `<external_content>` for the model's system prompt to treat skeptically
+- **A2 Agent Intent Envelope:** the agent's declared intent is bound before the MCP response is fetched, so post-fetch intent drift is detectable
+- **A4 Context Providence Chain:** every MCP-sourced content element has a Providence-anchored ID and is marked with the `provenance` class `external`
+- **A1 FHE Context Gate:** MCP content touching sensitive data surfaces is classified before being admitted to the context, and is not permitted to cross Mode C without approval
+- **A9 BEM:** anomalous MCP ingestion patterns are baseline inputs; a session that suddenly starts pulling large volumes of external-channel content is escalated
 
 Send the specific Telegram advisory or internal writeup and I will map each identified exploitation step to a specific broker deny path with test coverage in the attack sim.
 
@@ -209,7 +209,7 @@ With FHE as hero and full Tier A in scope, the compliance map now covers these f
 | Framework | Primary controls addressed | POC artifacts that demonstrate |
 |---|---|---|
 | NIST AI RMF 1.0 | GOVERN-1, GOVERN-4, MAP-5, MEASURE-2, MANAGE-2 | All Tier A items; compliance-map.md; attack-sim reports |
-| OWASP LLM Top 10 (2025) | LLM01 (Prompt Injection), LLM02 (Insecure Output Handling), LLM03 (Training Data Poisoning, via context provenance), LLM06 (Sensitive Info Disclosure), LLM07 (Insecure Plugin Design, via MCP mediation), LLM08 (Excessive Agency), LLM10 (Model Theft, via FHE for sensitive context) | A1-A12 collectively; narrative-ready |
+| OWASP LLM Top 10 (2025) | LLM01 (Prompt Injection), LLM02 (Insecure Output Handling), LLM03 (Training Data Poisoning, via context Providence), LLM06 (Sensitive Info Disclosure), LLM07 (Insecure Plugin Design, via MCP mediation), LLM08 (Excessive Agency), LLM10 (Model Theft, via FHE for sensitive context) | A1-A12 collectively; narrative-ready |
 | NIST SP 800-53 Rev 5 | AC-3, AC-3(2), AC-4, AU-2, AU-10, AU-14, IA-2, IA-4, SC-8, SC-12, SC-13, SC-28, SI-7 | Signed bundles, Providence, FHE, dual-control |
 | ISO/IEC 42001 AIMS | 6.1.2, 6.1.3, 6.1.4, 8.2, 8.4, 9.1 | Policy engine + Providence + compliance map |
 | EU AI Act | Article 14 (human oversight), Article 15 (accuracy, robustness, cybersecurity), Article 50 (transparency) | Dual-control, continuity profiles, audit chain |

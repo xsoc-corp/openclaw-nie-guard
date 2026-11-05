@@ -11,7 +11,7 @@ override.
 
 ## Status
 
-A working reference implementation. The broker admits sessions, tracks context provenance, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. Nexus Identity Engine (NIE) and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
+A working reference implementation. The broker admits sessions, tracks context Providence, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. Nexus Identity Engine (NIE) and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
 
 ## AIDA-Guard v3: the Guard for MCP
 
@@ -52,7 +52,7 @@ XSOC AIDA-Guard sits in front of OpenClaw (or any compatible agent framework) an
 1. Hardware and context bound admission via NIE device attestation
 2. Role scoped, short-TTL capability derivation via DSKAG
 3. Runtime continuity and per-operation integrity via TSTL envelopes
-4. Context provenance via hash-anchored context manifests
+4. Context Providence via hash-anchored context manifests
 5. Agent intent binding to prevent prompt-injection-driven misuse
 6. FHE Context Gate for sensitive context that must never reach the model in cleartext
 7. MCP boundary mediation for external messaging channels (Telegram, Slack, Discord, email)

@@ -102,18 +102,18 @@ in Section 11).
 
 Three properties follow from this construction. First, the context
 the operation operates over is immutable once the envelope is sealed.
-Second, the provenance of every element is audit-reconstructable; a
+Second, the `provenance` of every element is audit-reconstructable; a
 Providence event for the invoke contains the manifest hash, and the
-manifest's element records contain the provenance. Third, contamination
+manifest's element records contain the `provenance`. Third, contamination
 across classification boundaries is structurally detectable; an
 external-channel element in a manifest where the operation claims to be
-purely `user` provenance produces a classification violation at policy
+purely `user` `provenance` produces a classification violation at policy
 evaluation time.
 
 The CPC is the structural answer to Franklin et al. Content Injection
 attacks that rely on external content mixing into the model's trust
 assumption. Every element the model can attend to has a recorded
-provenance, and the sanitizer (Section 7) ensures that external-channel
+`provenance`, and the sanitizer (Section 7) ensures that external-channel
 content is tagged and its structure is legible.
 
 ## 5.4 Agent Intent Envelope

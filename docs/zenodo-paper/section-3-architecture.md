@@ -106,7 +106,7 @@ responses sanitized for known prompt-injection patterns and tagged with
 external-content markers before entering model context.
 
 **A4, Context Providence Chain** (Section 5.2). Every context element
-registered with provenance, classification, and content hash. Manifest
+registered with `provenance`, classification, and content hash. Manifest
 hash anchors to Providence. Unregistered context elements rejected at the
 Action Mediation Plane.
 

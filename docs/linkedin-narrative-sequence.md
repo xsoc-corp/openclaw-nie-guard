@@ -1,4 +1,4 @@
-# LinkedIn Narrative Sequence — XSOC-NIE-GUARD Release
+# LinkedIn Narrative Sequence: XSOC-NIE-GUARD Release
 
 Four-post arc paired with the Zenodo preprint. Day 0 is preprint publish date.
 All posts under the 1,250-character limit. Narrative prose, no bullets. No em-dashes,
@@ -6,7 +6,7 @@ no AI-tell phrases, no competitor callouts. Signed by Richard Blech.
 
 ---
 
-## Post 1 — Day 0 (release announcement)
+## Post 1: Day 0 (release announcement)
 
 **Character count: 1,174**
 
@@ -39,7 +39,7 @@ Simon Willison if appropriate.
 
 ---
 
-## Post 2 — Day +3 (FHE technical focus)
+## Post 2: Day +3 (FHE technical focus)
 
 **Character count: 1,202**
 
@@ -72,7 +72,7 @@ Preprint DOI in prior post. Implementation under Apache 2.0.
 
 ---
 
-## Post 3 — Day +7 (compliance framework coverage)
+## Post 3: Day +7 (compliance framework coverage)
 
 **Character count: 1,225**
 
@@ -103,7 +103,7 @@ agent frameworks in regulated contexts.
 
 ---
 
-## Post 4 — Day +14 (reflection and forward look)
+## Post 4: Day +14 (reflection and forward look)
 
 **Character count: 1,214**
 
