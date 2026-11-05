@@ -64,7 +64,7 @@ I would encourage readers to check the math. Any honest construction produces th
 kind of numbers above or worse. Publishing real numbers is how this community
 should operate.
 
-To my knowledge this is the first commercial deployment of FHE in an AI agent flow.
+AIDA-Guard's FHE Context Gate runs Mode A in production: sensitive context reaches the model only under encryption.
 We would welcome peer review of the construction and the benchmarks.
 
 Preprint DOI in prior post. Implementation under Apache 2.0.
@@ -161,5 +161,4 @@ Optional single-image assets for each post. Suggestions:
 ## Hard constraints reminder
 
 No em-dashes anywhere. No AI-tell phrases. No mention of competitor names in the
-posts themselves. No customer names in public posts. EternaX figure cited only when attributed to Dariia Porechna,
-Dr. Chen Feng, and Paarth Birla together, and not used in these posts by default.
+posts themselves. No customer names in public posts.

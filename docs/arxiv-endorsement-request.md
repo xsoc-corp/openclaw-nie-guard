@@ -141,9 +141,6 @@ If no academic endorsement materializes, alternative paths:
 
 ## What NOT to do
 
-- Do not include the EternaX comparison in the endorsement request. Save that
-  for a separate technical post or paper section. Referencing a competitor
-  dispute in an endorsement ask looks like drama to an academic.
 - Do not mention the OpenAI engagement in the endorsement request. Scope this
   ask strictly to the arXiv endorsement and the paper.
 - Do not attach the full reference implementation tarball. Give the GitHub

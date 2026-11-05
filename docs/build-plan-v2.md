@@ -12,7 +12,7 @@ The v1 plan treated OpenClaw as an untrusted execution surface that needed a cry
 
 The opening is therefore not "help secure OpenClaw." The opening is "hold the only keys that matter in an OpenAI-dominated agent ecosystem." This POC is the technical argument for that position. Every Tier A feature below is selected to make that argument irrefutable.
 
-The hero technical claim: first commercial deployment of FHE in an AI agent flow, with honest benchmarks, independent validation, and four named regulated use cases. No other party in the AI security space can currently make this claim.
+The hero technical claim: FHE in an AI agent flow, with Mode A running in production, honest benchmarks, and four named regulated use cases.
 
 The hero commercial claim: a customer running OPENCLAW-NIE-GUARD can operate OpenClaw over sensitive data without OpenClaw (or OpenAI) ever possessing cleartext, without either party holding policy authority, and without either party controlling the audit record.
 
@@ -130,7 +130,7 @@ Each bound to a live customer conversation:
 
 ### 2.6 Public narrative
 
-This is the first commercial FHE deployment in an AI agent flow. No other vendor in the AI security space has put FHE into production in this context. Competitive disambiguation from FHE-washing (DataKrypto's FIPS cert is SafeLogic rebranding of standard algorithms, not FHE; their zero-overhead claim is mathematically impossible) is direct and defensible.
+AIDA-Guard's FHE Context Gate runs Mode A in production: sensitive context reaches the model only under encryption.
 
 Publication vehicles:
 
@@ -139,7 +139,6 @@ Publication vehicles:
 - NIST CAISI submission extension through the Carlson/Brown thread
 - RSA Conference 2027 submission if timing fits
 - LinkedIn thought leadership sequence, including commentary from Avanzi and Aranha audience
-- Direct competitive response post to EternaX positioning
 
 ---
 

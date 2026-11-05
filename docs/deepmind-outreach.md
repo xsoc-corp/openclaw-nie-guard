@@ -252,7 +252,7 @@ If any author responds with interest:
 - Do not send the OpenAI liaison paper to any DeepMind author, in any form, at
   any stage of this outreach. The OpenAI thread and the DeepMind thread are
   separate and must remain separate.
-- Do not mention EternaX, Dariia Porechna, or any competitor in these messages.
+- Do not mention any competitor in these messages.
 - Do not mention the three prior IACR ePrint rejections.
 - Do not ask about hiring, consulting, or advisory arrangements.
 - Do not ask them to sign an NDA. This is public-track engagement.

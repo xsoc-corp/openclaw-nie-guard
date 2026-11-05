@@ -206,8 +206,8 @@ Because this is a public release and mistakes are costly to reverse:
       internals. Current scaffold uses `TODO(xsoc-openclaw-poc)` as the marker.
       Grep for that and confirm each one is safe for public reading.
 - [ ] Search for any stray customer names (Pure Storage, JPMorgan, 16th AF,
-      Micron, NIST CAISI, Keypasco, Wells Fargo, DTCC, CME, Accenture,
-      EternaX). These should not appear in the public repo.
+      Micron, NIST CAISI, Keypasco, Wells Fargo, DTCC, CME, Accenture).
+      These should not appear in the public repo.
 - [ ] Search for `xsoc-corp/xsoc-qsig-cga` private repo references that might
       have leaked into code or docs.
 - [ ] Search for any Azure, Cosmos, or specific deployment URLs from the
@@ -228,7 +228,7 @@ node scripts/disclosure-lint.mjs
 node scripts/verify-public-boundary.mjs
 
 # Additional manual scans
-grep -ri "jpmorgan\|pure storage\|16th air force\|keypasco\|wells fargo\|dtcc\|accenture\|eternax\|porechna\|caramico\|saddigh" --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: no customer or competitor names"
+grep -ri "jpmorgan\|pure storage\|16th air force\|keypasco\|wells fargo\|dtcc\|accenture\|caramico\|saddigh" --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: no customer or competitor names"
 
 grep -r "azurewebsites.net" --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: no internal deployment URLs"
 

@@ -157,9 +157,8 @@ The paper makes the following contributions:
   technique known to address it
 - A five-plane mediation architecture that composes these techniques into
   a deployable layer for AI agent frameworks
-- A three-mode fully homomorphic encryption context gate design that, to
-  our knowledge, represents the first commercial deployment of FHE in an
-  AI agent flow, with published benchmarks from our CKKS-based software
+- A three-mode fully homomorphic encryption context gate design, with
+  Mode A running in production and published benchmarks from our CKKS-based software
   development kit of 40.28 milliseconds per encrypt and 1.29 milliseconds
   per multiplication
 - An agent intent envelope construction that defeats a previously
@@ -367,7 +366,7 @@ implications for external review.)
 ## 13. Related Work
 
 Franklin, Tomašev, Jacobs, Leibo, and Osindero (2026) at Google DeepMind provide
-the first comprehensive taxonomy of the AI agent attack surface under the rubric
+a taxonomy of the AI agent attack surface under the rubric
 of Agent Traps, classifying six categories of environmental adversarial content
 that target different stages of an agent's operational cycle: Content Injection,
 Semantic Manipulation, Cognitive State, Behavioural Control, Systemic, and
@@ -455,8 +454,6 @@ referenced only by interface and stated security properties.
 
 ## Appendix B: Citation and Attribution Rules (internal editorial)
 
-- EternaX $144.4T figure attributed to Dariia Porechna, Dr. Chen Feng,
-  and Paarth Birla when referenced
 - Simon Willison lethal trifecta framing attributed
 - OpenClaw public coverage cited with source and date; no speculation
   on internal OpenClaw design beyond what public CVE and advisory
