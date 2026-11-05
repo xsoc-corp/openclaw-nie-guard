@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19685360.svg)](https://doi.org/10.5281/zenodo.19685360)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-# OPENCLAW-NIE-GUARD
+# XSOC AIDA-Guard (formerly XSOC-NIE-GUARD)
 
 **Cryptographic trust mediation layer for OpenClaw and compatible AI agent frameworks.**
 
@@ -11,7 +11,17 @@ override.
 
 ## Status
 
-A working reference implementation. The broker admits sessions, tracks context provenance, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. NIE and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
+A working reference implementation. The broker admits sessions, tracks context Providence, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. Nexus Identity Engine (NIE) and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
+
+## AIDA-Guard v3: the Guard for MCP
+
+AIDA-Guard v3 adds the Guard: AIDA-Guard's binding to MCP, an enforcement point in front of the tool servers an agent reaches. The agent carries a capability token that names the tools it may call and the constraints on their arguments. The Guard decides every `tools/call` against that token and records each decision before it forwards anything. A persuaded agent acts only within its grant.
+
+What this repository publishes for v3:
+- **The Guard, at the level of its capabilities and properties:** its checks, with the canonical names of XSOC-MCP-DN-001 v1.3, its record, and its transports, in `docs/aida-guard-mcp.md`.
+- **The record format:** Providence record encoding v3, with known-answer vectors shared byte for byte with the production writer and the offline verifier, in `docs/providence-record-v3.md`.
+- **Evidence you can verify yourself:** two Guard chains from XSOC's hosted deployment, each tied to a TPM by a checkpoint, with the pins and the procedure, in `evidence/aida-guard-hosted-checkpoint-1`.
+- **What stays private, and why,** in `docs/what-stays-private.md`.
 
 ## Quickstart (reviewers, 3-5 minutes)
 
@@ -21,7 +31,7 @@ cd openclaw-nie-guard
 ./scripts/quickstart.sh
 ```
 
-The quickstart script installs dependencies, builds the workspace, runs the test suite, starts the broker with mock bindings, executes the full 25-scenario attack simulation harness, and displays the resulting Providence audit chain. Requires Node 20+, pnpm 9+, and optionally Docker for Redis and the mock OpenClaw transport.
+The quickstart script installs dependencies, builds the workspace, runs the test suite, starts the broker with mock bindings, executes the attack simulation harness (29 scenarios: 20 run, and 9 skeletons report SKIP), and displays the resulting Providence audit chain. Requires Node 20+, pnpm 9+, and optionally Docker for Redis and the mock OpenClaw transport.
 
 ## Quick start (local dev)
 
@@ -37,22 +47,20 @@ pnpm --filter @xsoc/attack-sim dev
 
 ## What this does
 
-XSOC-NIE-GUARD sits in front of OpenClaw (or any compatible agent framework) and enforces:
+XSOC AIDA-Guard sits in front of OpenClaw (or any compatible agent framework) and enforces:
 
-1. Hardware and context bound admission via NIE device attestation
-2. Role scoped, short-TTL capability derivation via DSKAG
+1. Hardware- and context-bound admission via Nexus Identity Engine (NIE) device attestation
+2. Role-scoped, short-TTL capability derivation via DSKAG
 3. Runtime continuity and per-operation integrity via TSTL envelopes
-4. Context provenance via hash-anchored context manifests
-5. Agent intent binding to prevent prompt-injection-driven misuse
-6. FHE Context Gate for sensitive context that must never reach the model in cleartext
+4. Context Providence via hash-anchored context manifests
+5. Agent intent binding, which holds an agent to the intent its operator authorized, under prompt injection included
+6. FHE Context Gate: sensitive context reaches the model only under encryption
 7. MCP boundary mediation for external messaging channels (Telegram, Slack, Discord, email)
-8. Signed policy bundles with ceremony-rooted keys
-9. Immutable audit chain via Providence
-10. Adaptive profile escalation via BEM
+8. The broker decides from a built-in role matrix whose content is the default policy bundle. Policy bundles carry a signature field; loading a bundle from the bundle store, verified against XSOC's release-signed root, is the next item on the build plan, and the broker will refuse an unverified bundle from that point.
+9. Hash-linked audit chain, anchored and verifiable offline, via Providence
+10. Adaptive profile escalation via XEI, the XSOC ExposureShield exposure index
 
-It answers the OpenClaw security crisis documented across multiple public advisories
-in early 2026, including the assume-compromise posture, pairing privilege escalation,
-credential sprawl, and malicious skill supply chain.
+It governs what an OpenClaw agent may do. It is built for the assume-compromise posture the early-2026 OpenClaw advisories describe.
 
 See `docs/build-plan.md`, `docs/threat-model.md`, and `docs/exploit-mapping-and-disclosure-policy.md`.
 
@@ -105,7 +113,8 @@ This repository is the **public** reference architecture. The following are **ne
 - XSOC FHE SDK internals
 - Actual customer policy bundles
 
-See `docs/disclosure-policy.md` for the full boundary. A disclosure lint runs in CI
+See `docs/disclosure-policy.md` for the full boundary, and `docs/what-stays-private.md`
+for the AIDA-Guard v3 items and the reason for each. A disclosure lint runs in CI
 on every push; forbidden terms cause a hard CI failure.
 
 ## Repository layout
@@ -115,7 +124,7 @@ openclaw-nie-guard/
 ├── apps/
 │   ├── broker/              # Fastify broker service
 │   ├── demo-client/         # Happy-path demo driver
-│   └── attack-sim/          # Deterministic 23-scenario attack harness
+│   └── attack-sim/          # Deterministic attack harness: 29 scenarios, 20 implemented
 ├── packages/
 │   ├── shared-types/        # Zod schemas and TS types
 │   ├── nie-bindings/        # Stable NIE interface (mock impl; prod via override)
@@ -137,7 +146,12 @@ openclaw-nie-guard/
 │   ├── disclosure-lint.mjs  # Forbidden-term lint (CI-enforced)
 │   └── verify-public-boundary.mjs  # Private-import lint (CI-enforced)
 ├── .github/workflows/       # CI: Node, Rust, Disclosure Lint
+├── evidence/
+│   └── aida-guard-hosted-checkpoint-1/  # Guard chains with TPM checkpoints, verify it yourself
 └── docs/
+    ├── aida-guard-mcp.md    # The Guard for MCP: checks, record, transports (v3)
+    ├── providence-record-v3.md
+    ├── what-stays-private.md
     ├── architecture.md
     ├── threat-model.md
     ├── disclosure-policy.md
@@ -159,12 +173,10 @@ Apache 2.0. See LICENSE.
 
 XSOC Corp designs and builds cryptographic infrastructure for high-trust environments,
 including post-quantum key agreement, policy-bound encryption, homomorphic evaluation,
-software-defined diode transport, and continuity-bound audit. Independent validations
-of the broader XSOC cryptographic stack include Perrin and Biryukov audits of the legacy
-cryptosystem at the University of Luxembourg in 2020 and 2024 (with mandatory findings
-incorporated into the current canonical build), Cal Poly San Luis Obispo Dieharder
-v3.31.1 at 99.4 percent aggregate across 98 tests, and GMU SENTINEL laboratory audit
-FP5223 (full report publication scheduled June 2026).
+software-defined diode transport, and continuity-bound audit. AIDA-Guard's assurance rests
+on what this repository lets you reproduce: the known-answer vectors, the record format, the
+offline verifier and a published evidence set, with cryptography through AWS-LC in
+FIPS-approved mode today and the XSOC cryptographic module in CMVP validation with Leidos.
 
 - Website: https://xsoccorp.com
 - OWASP AI Exchange: contributor

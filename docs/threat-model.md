@@ -51,14 +51,9 @@ controls to Franklin categories is in `docs/franklin-taxonomy-mapping.md`.
 
 ## 3. Assumptions
 
-- NIE cryptographic primitives are sound (interface-level assumption; the
-  broader XSOC cryptographic stack has been externally validated through
-  Perrin and Biryukov audits of the legacy cryptosystem at the University
-  of Luxembourg in 2020 and 2024 with mandatory findings incorporated,
-  Cal Poly San Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate,
-  and GMU SENTINEL FP5223 forthcoming June 2026)
+- Nexus Identity Engine (NIE) cryptographic primitives are sound (interface-level assumption)
 - Device attestation is trustworthy up to the stated attestation floor
-- Ceremony-rooted signing keys are held in HSM or equivalent
+- The policy bundle signing key is a release signing key held by XSOC outside every deployment
 - Redis is available for revocation propagation (fallback to in-process cache
   with conservative TTL if unavailable)
 - OpenClaw instance is treated as untrusted even when operated by the customer
@@ -85,9 +80,9 @@ composes with this path to produce full admin takeover in the common case.
 - A3 MCP Boundary Mediation: every MCP response sanitized; external content tagged
 - A2 Agent Intent Envelope: agent's declared intent is bound before MCP fetch; post-fetch
   intent drift detected
-- A4 Context Provenance Chain: every MCP-sourced element registered and classified as external
+- A4 Context Providence Chain: every MCP-sourced element registered and classified as external
 - A1 FHE Context Gate: MCP content touching sensitive data classified before admission to context
-- A9 BEM: anomalous ingestion patterns escalate session profile
+- A9 XEI: anomalous ingestion patterns escalate session profile
 
 ### T-02 Plaintext credential theft at rest
 
@@ -186,7 +181,7 @@ gateway does not need to be internet-facing to be compromised.
 
 **Controls:**
 
-- A10 Signed policy bundles: bundle swap requires ceremony-rooted co-signed key
+- A10 Signed policy bundles: the build plan item loads the bundle from the bundle store and verifies it against XSOC's release-signed root at startup; from then a swapped or forged bundle is refused and the broker does not start
 - A6 Dual-control on admin.control
 - Providence log: every admin action is tamper-evident; truncation detectable via anchor
 
@@ -264,6 +259,6 @@ Adversarial perturbations encoded into legitimate images or audio that a multi-m
   assume the risk.
 - Mode C decryption, even with attestation, leaks cleartext to the attested endpoint.
   This is the release valve and is expected to be rare. Metrics on Mode C frequency
-  per subject drive BEM escalation.
+  per subject drive XEI escalation.
 - Disclosure policy failure is a catastrophic risk (loss of trade secret IP). Mechanical
   CI enforcement is the primary mitigation; advisor review is the secondary.

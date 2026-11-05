@@ -48,13 +48,6 @@ plaintext credential storage, ClawHub supply chain, Willison lethal trifecta).
 The construction is composed of standard primitives at the interface level;
 internal cryptographic construction details for XSOC-proprietary components are
 black box and are described by public name and stated security properties only.
-Independent validations on the underlying XSOC cryptographic stack are in the
-bibliography: Perrin and Biryukov audits of the legacy cryptosystem at the
-University of Luxembourg in 2020 and 2024, with mandatory findings incorporated
-into the current canonical build; Cal Poly San Luis Obispo Dieharder v3.31.1
-statistical testing of the entropy subsystem at 99.4 percent aggregate across
-98 tests; and George Mason University SENTINEL laboratory audit FP5223, with
-full report publication scheduled for June 2026.
 
 If you would prefer I send the preprint PDF for a closer read before you decide,
 I am happy to do that.
@@ -148,11 +141,6 @@ If no academic endorsement materializes, alternative paths:
 
 ## What NOT to do
 
-- Do not include the EternaX comparison in the endorsement request. Save that
-  for a separate technical post or paper section. Referencing a competitor
-  dispute in an endorsement ask looks like drama to an academic.
-- Do not mention the OpenAI engagement in the endorsement request. Scope this
-  ask strictly to the arXiv endorsement and the paper.
 - Do not attach the full reference implementation tarball. Give the GitHub
   link and let them decide if they want to look.
 - Do not include a pitch for commercial engagement. This is an academic ask.

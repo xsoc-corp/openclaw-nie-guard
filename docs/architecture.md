@@ -55,10 +55,10 @@ Classification to mode compatibility:
 | regulated | A, B, C (Mode C requires dual-control receipt) |
 | classified-adjacent | A only |
 
-## Context Provenance Chain
+## Context Providence Chain
 
 Every element entering the model's context is a registered `ContextElement` with
-provenance (user, system, rag, tool-output, mcp-response, external-channel),
+`provenance` (user, system, rag, tool-output, mcp-response, external-channel),
 classification, and content hash. Manifest hash anchors to Providence. Unregistered
 context elements are rejected.
 
@@ -81,7 +81,7 @@ External channels (Telegram, Slack, Discord, email, WhatsApp) are treated as
 untrusted. MCP responses are sanitized for known prompt-injection patterns and
 tagged with `<external_content>` markers before entering the model context.
 
-## Behavioral Exposure Meter (BEM) integration
+## XEI integration (the XSOC ExposureShield exposure index)
 
 Per-session drift scoring based on intent variance, target dispersion, context
 manifest churn, Mode C decryption frequency, and continuity counter pattern.
@@ -90,7 +90,5 @@ from strict to scif.
 
 ## Signed Policy Bundles
 
-Every policy change is a signed bundle produced by a ceremony-rooted signer.
-Role matrix, MCP server trust table, and skill manifest all live in the bundle.
-Unsigned or wrong-signer bundles are rejected at load. Bundle rotation is a
-Providence event.
+Role matrix, MCP server trust table, and skill manifest all live in the policy
+bundle. The broker decides from a built-in role matrix whose content is the default policy bundle. Policy bundles carry a signature field; loading a bundle from the bundle store, verified against XSOC's release-signed root, is the next item on the build plan, and the broker will refuse an unverified bundle from that point.

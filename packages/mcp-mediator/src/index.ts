@@ -4,7 +4,7 @@
 //   1. Authenticates the MCP server request against the policy bundle's mcpServers list
 //   2. Sanitizes responses for known prompt-injection patterns
 //   3. Tags residual untrusted content with <external_content> markers
-//   4. Registers response elements in the Context Provenance Chain
+//   4. Registers response elements in the Context Providence Chain
 
 export { McpMediator } from './mediator.js';
 export { sanitizeResponse, tagExternalContent } from './sanitizer.js';

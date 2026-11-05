@@ -24,6 +24,6 @@ See `docs/compliance-map.md`.
 
 ## Performance tests
 
-- Admission p95 under 100ms end-to-end (mock binding; production numbers from NIE baseline)
+- Admission p95 under 100ms end-to-end (mock binding; production numbers from Nexus Identity Engine (NIE) baseline)
 - Invoke p95 under 15ms added latency over raw OpenClaw forward
 - FHE Mode A encrypt operation: use published CKKS numbers; not re-measured

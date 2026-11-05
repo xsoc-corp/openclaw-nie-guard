@@ -1,4 +1,4 @@
-# LinkedIn Narrative Sequence — XSOC-NIE-GUARD Release
+# LinkedIn Narrative Sequence: XSOC-NIE-GUARD Release
 
 Four-post arc paired with the Zenodo preprint. Day 0 is preprint publish date.
 All posts under the 1,250-character limit. Narrative prose, no bullets. No em-dashes,
@@ -6,7 +6,7 @@ no AI-tell phrases, no competitor callouts. Signed by Richard Blech.
 
 ---
 
-## Post 1 — Day 0 (release announcement)
+## Post 1: Day 0 (release announcement)
 
 **Character count: 1,174**
 
@@ -39,7 +39,7 @@ Simon Willison if appropriate.
 
 ---
 
-## Post 2 — Day +3 (FHE technical focus)
+## Post 2: Day +3 (FHE technical focus)
 
 **Character count: 1,202**
 
@@ -64,7 +64,7 @@ I would encourage readers to check the math. Any honest construction produces th
 kind of numbers above or worse. Publishing real numbers is how this community
 should operate.
 
-To my knowledge this is the first commercial deployment of FHE in an AI agent flow.
+AIDA-Guard's FHE Context Gate runs Mode A in production: sensitive context reaches the model only under encryption.
 We would welcome peer review of the construction and the benchmarks.
 
 Preprint DOI in prior post. Implementation under Apache 2.0.
@@ -72,7 +72,7 @@ Preprint DOI in prior post. Implementation under Apache 2.0.
 
 ---
 
-## Post 3 — Day +7 (compliance framework coverage)
+## Post 3: Day +7 (compliance framework coverage)
 
 **Character count: 1,225**
 
@@ -91,11 +91,7 @@ oversight map to the classification schema, the Providence chain, and the dual
 control mechanism.
 
 For US federal buyers, attestation floor selection supports IL4 and IL5
-posture. Independent validations of the underlying components come from the
-University of Luxembourg audits by Perrin and Biryukov (2020 and 2024, on the
-legacy cryptosystem predating DSKAG, with mandatory findings incorporated),
-Cal Poly San Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate across
-98 tests, and George Mason University SENTINEL FP5223 (full report June 2026).
+posture.
 
 Full compliance map in the paper appendix. Happy to talk with teams evaluating
 agent frameworks in regulated contexts.
@@ -103,7 +99,7 @@ agent frameworks in regulated contexts.
 
 ---
 
-## Post 4 — Day +14 (reflection and forward look)
+## Post 4: Day +14 (reflection and forward look)
 
 **Character count: 1,214**
 
@@ -149,8 +145,7 @@ DOI and repository in prior posts. Open to technical conversations.
   numbers and independent validations
 - For buyer inquiries, move to direct message quickly; do not publish pricing
   or customer names in public thread
-- For journalist inquiries, refer to XSOC comms; do not comment on OpenAI
-  relationship status publicly regardless of whether engagement is active
+- For journalist inquiries, refer to XSOC comms
 
 ## Visual assets
 
@@ -165,6 +160,4 @@ Optional single-image assets for each post. Suggestions:
 ## Hard constraints reminder
 
 No em-dashes anywhere. No AI-tell phrases. No mention of competitor names in the
-posts themselves. No customer names in public posts. Cal Poly San Luis Obispo,
-never Pomona. EternaX figure cited only when attributed to Dariia Porechna,
-Dr. Chen Feng, and Paarth Birla together, and not used in these posts by default.
+posts themselves. No customer names in public posts.

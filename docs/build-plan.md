@@ -9,18 +9,17 @@ Phases:
   public/private disclosure boundary, Zenodo paper kickoff
 - **Phase 1** (in progress): monorepo scaffold, CI, disclosure lint, typed interfaces,
   mock bindings, infrastructure compose
-- **Phase 2**: NIE admission ceremony wiring, attestation floor, capability derivation
+- **Phase 2**: Nexus Identity Engine (NIE) admission ceremony wiring, attestation floor, capability derivation
 - **Phase 3**: policy engine bundle loading, signed bundle schema, skill registration
   extension, role matrix evaluation
-- **Phase 4**: TSTL envelope full pipeline, AIE binding, context manifest, provenance
+- **Phase 4**: TSTL envelope full pipeline, AIE binding, context manifest, Providence anchoring
   chain integration
 - **Phase 5**: FHE Context Gate three-mode routing, Mode C endpoint attestation adapter
   stubs for Anthropic/OpenAI/Google
 - **Phase 6**: adapter wiring, MCP mediator active on all configured servers, attack
   sim scenarios fully implemented
-- **Phase 7**: BEM scoring, profile escalation, shadow mode, attack replay harness
-- **Phase 8**: compliance map validation, Zenodo paper final draft, Cal Poly SLO and
-  GMU SENTINEL citation check
+- **Phase 7**: XEI scoring, profile escalation, shadow mode, attack replay harness
+- **Phase 8**: compliance map validation, Zenodo paper final draft
 - **Phase 9**: public release ceremony, Zenodo DOI publication, LinkedIn narrative arc
 
 Tier A scope is fully in-scope. Tier B items (per-vendor endpoint attestation for

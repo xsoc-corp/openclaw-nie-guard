@@ -30,8 +30,8 @@ pnpm --filter @xsoc/demo-client dev
 pnpm --filter @xsoc/attack-sim dev
 ```
 
-Expected: 23 scenarios executed. Each prints PASS or FAIL. Zero FAIL in the final
-release.
+Expected: 29 scenarios. The 20 implemented each print PASS or FAIL, and the 9
+skeletons print SKIP. Zero FAIL in the final release.
 
 ## Live demo scenario sequence (15 minutes)
 

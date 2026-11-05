@@ -1,0 +1,29 @@
+{
+  "verifier": {
+    "name": "xsoc-audit-verify",
+    "build": "xsoc-pqc-s3-console-api 84a8df3",
+    "linux_sha256": "8433f7401b3befa0da5b126cc7813c8a226b183827b57cac09e9519f880001c7",
+    "windows_sha256": "5476682e14274bcfa7b76657018e73d143886f46d1f9ba6f022d5054851e5a3a",
+    "runs_build_sha256": "219f53f1deb987fd814c6516507157c50ebf98e808b03624e36f4d272eb8ef38"
+  },
+  "pins": {
+    "root": "pins/optiga-ecc-root-ca2.der",
+    "intermediates": "pins/intermediates",
+    "pin_ek": "82ffcba105989a69748cf8ab7406d97be0a77d8f71640e0c602c5291762c476b",
+    "pin_ak": "000b152a26fdbc29614b0c0921b473025d53d1a6199df12e8c165c5e3d408ed75a90"
+  },
+  "chains": [
+    {
+      "chain_id": "aida-guard/aida-guard-01-mcp-g1",
+      "records": "records/g1",
+      "anchor_key": "g1-anchor-key.json",
+      "checkpoints": "checkpoints-g1"
+    },
+    {
+      "chain_id": "aida-guard/aida-guard-01-mcp-g2",
+      "records": "records/g2",
+      "anchor_key": "g2-anchor-key.json",
+      "checkpoints": "checkpoints-g2"
+    }
+  ]
+}

@@ -105,8 +105,8 @@ Slack, Discord, email, WhatsApp) treated as untrusted. Inbound MCP
 responses sanitized for known prompt-injection patterns and tagged with
 external-content markers before entering model context.
 
-**A4, Context Provenance Chain** (Section 5.2). Every context element
-registered with provenance, classification, and content hash. Manifest
+**A4, Context Providence Chain** (Section 5.2). Every context element
+registered with `provenance`, classification, and content hash. Manifest
 hash anchors to Providence. Unregistered context elements rejected at the
 Action Mediation Plane.
 
@@ -128,17 +128,18 @@ scoped derivation primitive that produces children strictly narrower than
 parents. Children cannot widen scope, cannot outlive parents, and revoke
 through the parent in sub-millisecond time.
 
-**A9, Behavioral Escalation Meter** (Section 9). Per-session drift scoring
+**A9, XEI, the XSOC ExposureShield exposure index** (Section 9). Per-session drift scoring
 based on intent variance, target dispersion, context manifest churn, Mode
 C frequency, and continuity counter pattern. Score crossing a threshold
 escalates session profile from standard to strict or from strict to
 restricted-information.
 
-**A10, Signed Policy Bundles** (Section 8). Every policy change is a
-signed bundle produced by a ceremony-rooted signer. Role matrix, MCP
-server trust table, and skill manifest live in the bundle. Unsigned or
-wrong-signer bundles rejected at load. Bundle rotation is a Providence
-event.
+**A10, Signed Policy Bundles** (Section 8). Role matrix, MCP server
+trust table, and skill manifest live in the policy bundle. The broker
+decides from a built-in role matrix today; loading a bundle from the
+bundle store, verified against XSOC's release-signed root, is the next
+item on the build plan, and from then an unsigned or wrong-signer bundle
+is refused at load and its rotation is a Providence event.
 
 ## 3.4 Profile composition and the lethal trifecta
 
@@ -151,14 +152,14 @@ breaks via envelope counter cycles. Strict admits private data under Mode
 A or Mode B only and requires intent match for external communication.
 Restricted-information separates private data and external communication
 into mutually exclusive sessions. Profile selection is a signed policy
-bundle field and is enforced at admission; escalation via A9 BEM is
+bundle field and is enforced at admission; escalation via A9 XEI is
 audit-recorded. Per-operation downgrade is not permitted without a
 dual-control receipt.
 
 ## 3.5 Public and proprietary boundaries
 
 The broker, policy engine, TSTL envelope schema, Providence event schema,
-Context Provenance Chain design, Agent Intent Envelope design, MCP
+Context Providence Chain design, Agent Intent Envelope design, MCP
 Boundary Mediation design, Capability Derivation Tree concept, and FHE
 Context Gate three-mode taxonomy are all public components of this
 architecture, released under Apache 2.0 in the reference repository. The

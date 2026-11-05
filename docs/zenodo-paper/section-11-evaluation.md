@@ -96,7 +96,7 @@ expected error codes are already determined.
 | 14 | Regulated Mode C forced without dual-control | ERR_DUAL_CONTROL_REQUIRED | FHE gate Mode C enforcement | Phase 5 |
 | 15 | Mode A similarity search on FHE-encrypted RAG | 200 OK on ciphertext | VectorShield integration | Phase 5 |
 | 18 | Policy bundle signature forgery | ERR_POLICY_BUNDLE_INVALID | Ceremony key verification | Phase 4 |
-| 19 | Lethal-trifecta drift detected in long session via BEM | Profile escalation event | BEM streaming input | Phase 6 |
+| 19 | Lethal-trifecta drift detected in long session via XEI | Profile escalation event | XEI streaming input | Phase 6 |
 | 20 | Honest-but-curious endpoint extracts Mode A | ERR_ENDPOINT_ATTESTATION_FAILED | FHE gate endpoint attestation | Phase 5 |
 
 Each skeleton scenario corresponds to a Franklin category that the
@@ -127,7 +127,7 @@ available, will be published as an evaluation addendum.
 
 Mediation introduces latency. The broker's `/v1/admit` and `/v1/invoke`
 endpoints add a mediation hop on every operation. In the reference
-implementation with mock NIE bindings, median admission latency is
+implementation with mock Nexus Identity Engine (NIE) bindings, median admission latency is
 approximately 12 ms and median invoke latency is approximately 18 ms,
 including policy evaluation, TSTL envelope verification, FHE gate routing,
 and Providence event emission. Production substitution of the mock bindings

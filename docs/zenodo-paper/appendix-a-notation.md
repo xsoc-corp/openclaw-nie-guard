@@ -10,7 +10,7 @@ throughout this paper.*
 | Identifier | Meaning |
 |---|---|
 | P1 through P5 | Planes of the XSOC-NIE-GUARD architecture (Client Trust, Admission, Action Mediation, Runtime Continuity, Audit and Revocation) |
-| A1 through A10 | Named controls (FHE Context Gate, Agent Intent Envelope, MCP Boundary Mediation, Context Provenance Chain, Short-TTL Scoped Capabilities, Dual-Control for High-Risk Operations, Device Fingerprint Binding, Capability Derivation Tree, Behavioral Escalation Meter, Signed Policy Bundles) |
+| A1 through A10 | Named controls (FHE Context Gate, Agent Intent Envelope, MCP Boundary Mediation, Context Providence Chain, Short-TTL Scoped Capabilities, Dual-Control for High-Risk Operations, Device Fingerprint Binding, Capability Derivation Tree, XEI (XSOC ExposureShield exposure index), Signed Policy Bundles) |
 | T-01 through T-13 | Threat paths catalogued in Section 2 |
 
 ## A.2 XSOC cryptographic primitive names
@@ -22,7 +22,7 @@ throughout this paper.*
 | SP-VERSA | Volatile memory key protection via seed-based contextual derivation. | 6.3 |
 | PGUID | Persistent Globally Unique Identifier. Revocation handle that invalidates subsequent derivation attempts via a database write. | 6.3 |
 | TSTL | Cryptographic envelope construction that carries session continuity state across operations. | 5.2 |
-| XSOC FHE SDK | The integrated four-layer FHE product described in [42]. | 6 |
+| XSOC FHE SDK | The integrated four-layer FHE product described in [39]. | 6 |
 | XRNG | XSOC random number generator. Referenced by name; internals out of scope. | 1.7 |
 | X-ARC | Adaptive response cryptography. Referenced by name; internals out of scope. | 1.7 |
 

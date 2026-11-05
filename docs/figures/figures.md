@@ -32,7 +32,7 @@ graph TD
 
     subgraph P4["P4 Runtime Continuity Plane"]
         TSTL[TSTL Envelope<br/>device + session + target binding]
-        CPC[A4 Context Provenance Chain]
+        CPC[A4 Context Providence Chain]
         AIE[A2 Agent Intent Envelope]
     end
 

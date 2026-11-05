@@ -11,16 +11,16 @@ by CI through `scripts/disclosure-lint.mjs` (forbidden-term lint) and
 - Policy engine structure and role matrix format
 - TSTL envelope field definitions at the schema level
 - Providence event schema and chain verification algorithm
-- Context Provenance Chain design and element registration flow
+- Context Providence Chain design and element registration flow
 - Agent Intent Envelope design and intent class taxonomy
 - MCP Boundary Mediation design and sanitization patterns
 - Capability Derivation Tree concept and narrowing rules
 - FHE Context Gate mode taxonomy (A / B / C) and mode selection criteria
-- BEM integration interface and drift escalation pattern
+- XEI integration interface and drift escalation pattern
 - Signed policy bundle format at the JSON schema level
 - Compliance framework mapping
 - Attack simulation harness (demonstrates defenses, not exploits)
-- Mock NIE bindings with full TypeScript interface signatures
+- Mock Nexus Identity Engine (NIE) bindings with full TypeScript interface signatures
 - Mock FHE gate with published benchmark numbers
 - XSOC-NIE-GUARD architecture description at interface and behavior level
 
@@ -48,71 +48,15 @@ in this repository or in any public deliverable.
 - Statistical testing harness methodology and bias evaluation internals
 - Full parameterization detail from the XSOC Executive Validation Report Section 3 and Appendix F
 
-## Citation rules for external validations
+## Citation rules
 
-Three independent validations of XSOC cryptographic primitives may be cited in
-public materials using precise language that does not misrepresent their scope
-or timing. These rules are mandatory for all Zenodo publications, arXiv
-submissions, commercial briefs, LinkedIn posts, and any other public-facing
-XSOC communication.
-
-### Perrin and Biryukov
-
-Confidential cryptographic audits of the **legacy XSOC cryptosystem** conducted
-by Léo Perrin and Alex Biryukov (University of Luxembourg) in **2020 and 2024**.
-These audits **predate the creation of DSKAG**. Mandatory findings from both
-audits were incorporated into the canonical build 2025-10.
-
-**Correct citation form:**
-
-> "Independent cryptographic audits of the legacy XSOC cryptosystem were
-> performed by Léo Perrin and Alex Biryukov of the University of Luxembourg
-> in 2020 and 2024. These audits predate the creation of DSKAG. Mandatory
-> recommendations from both audits were incorporated into the current
-> canonical build (SP-VERSA Canonical Build 2025-10)."
-
-**Incorrect forms that must never be used:**
-
-- "Perrin and Biryukov reviewed DSKAG" (false; audits predate DSKAG)
-- "Perrin and Biryukov peer-reviewed the canonical build" (false; the audits
-  were of the legacy implementation, with findings incorporated into the
-  canonical build rather than re-audited against it)
-- "Perrin and Biryukov validated XSOC-NIE-GUARD" (false; out of scope)
-- "Published peer review by Perrin and Biryukov" (false; the audits are
-  confidential)
-
-### California Polytechnic State University at San Luis Obispo
-
-Department of Computer Science, Faculty Cryptography Laboratory, Dieharder
-v3.31.1 statistical validation of the XSOC entropy subsystem.
-
-**Citable facts:**
-
-- Tool: Dieharder v3.31.1
-- Dataset identifier: "XSOC Dieharder Output 20220104A," available under
-  controlled access (Appendix F of the Executive Validation Report)
-- Methodology: 50 test batches, each exceeding 64 Mbits of output, produced
-  via the generateInitialKeyVector() method on the canonical XSOC RNG
-- Test matrices: Diehard, NIST SP 800-22 STS, RGB, DAB
-- Results: 98 tests total, 97 passed, 1 weak (within tolerance 0.01 <= p <= 0.99), 0 failed
-- Aggregate: **99.4 percent** pass rate
-
-**Always Cal Poly San Luis Obispo. Never Pomona.**
-
-### George Mason University SENTINEL FP5223
-
-GMU SENTINEL laboratory audit of the XSOC cryptographic stack with finding
-reference FP5223. **The full public report is scheduled for publication in
-June 2026.** Until publication, the audit may be cited as a forthcoming
-public report.
-
-**Correct citation form (pre-publication):**
-
-> "George Mason University SENTINEL laboratory audit, finding reference
-> FP5223, with the full report scheduled for public release in June 2026."
-
-**Post-June-2026 citation** will cite the published report directly with
-authors, title, and publication venue.
+AIDA-Guard's assurance in this repository rests on what a reader can
+reproduce: the known-answer vectors, the record format, the offline verifier
+and a published evidence set. External evaluations of other XSOC components
+belong with those components and are cited where they are the subject. The
+rule below is mandatory for all Zenodo publications, arXiv submissions,
+commercial briefs, LinkedIn posts, and any other public-facing XSOC
+communication made from this repository.
 
 ### XSOC Executive Validation Report
 
@@ -170,9 +114,35 @@ Every public release follows this sequence before tag push:
 2. Automated disclosure lint pass (CI required)
 3. Private-import boundary check (CI required)
 4. Legal review, even if abbreviated
-5. Co-signed release tag using the policy bundle ceremony root
+5. Release tag signed with XSOC's release signing key (see "Release signing" below)
 6. Zenodo DOI reservation before public tag push
 7. Public announcement (LinkedIn, etc.) after at least 48 hours of public availability
+
+## Release signing
+
+A release tag, from v3.0.0 on, is an annotated git tag signed with XSOC's
+release signing key:
+- **The key:** an SSH Ed25519 key, used through git's SSH signing
+  (`gpg.format ssh`). Its private half is held in XSOC's key store on the
+  release workstation, protected by a passphrase. It is never in a repository
+  or on a build host.
+- **Its public half** is published in this repository, in
+  `.github/allowed_signers`, and its fingerprint is stated in the Zenodo record
+  of each release. The two come to a reader separately. The fingerprint is
+  `SHA256:+M4mwWmePU9ZPTMEovQM+p6ubKaVqKdLH9tbGUs/cNA` (ED25519, 256 bits),
+  for the signer `rblech@xsoccorp.com`.
+- **Where tags are signed:** on the release workstation, and nowhere else.
+
+**Verifying a release tag.** From a clone of this repository:
+
+    git fetch --tags
+    git -c gpg.ssh.allowedSignersFile=.github/allowed_signers tag -v v3.0.0
+
+Git prints `Good "git" signature` with the key's fingerprint. Compare that
+fingerprint with the one in the Zenodo record.
+
+Tags before v3.0.0 are historical markers, unsigned. v2.0.0 marks the commit
+that sourced the Zenodo v2 record.
 
 ## Violations
 

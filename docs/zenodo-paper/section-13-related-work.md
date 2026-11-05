@@ -36,8 +36,8 @@ eighty percent data exfiltration success, a result whose severity is
 the motivation for the Section 6 FHE Context Gate and the Section 11
 Scenario 20 skeleton.
 
-Shen et al. [39] characterize in-the-wild jailbreak prompts;
-Bagdasaryan et al. [38] extend the injection surface to multi-modal
+Shen et al. [36] characterize in-the-wild jailbreak prompts;
+Bagdasaryan et al. [35] extend the injection surface to multi-modal
 modalities. The pattern-matching sanitizer in Section 7 covers the
 text-level structural classes documented in this literature and is
 policy-bundle-extensible for future pattern additions.
@@ -47,9 +47,9 @@ policy-bundle-extensible for future pattern additions.
 Memory and retrieval as distinct attack surfaces are treated in a
 growing literature. Zou et al. on PoisonedRAG [6] demonstrate
 corruption attacks against retrieval-augmented generation that the
-Section 5.3 Context Provenance Chain and the Section 6 Mode A
-encrypted retrieval path are designed to address. Wang et al. [35]
-analyze privacy risks in LLM agent memory; Dong et al. [36]
+Section 5.3 Context Providence Chain and the Section 6 Mode A
+encrypted retrieval path are designed to address. Wang et al. [32]
+analyze privacy risks in LLM agent memory; Dong et al. [33]
 demonstrate practical memory injection attacks. The Franklin
 Cognitive State category is the taxonomic framing under which these
 works fall, and the CPC manifest registration mechanism is the
@@ -66,7 +66,7 @@ scenarios exist in the evaluation harness.
 The architecture's reliance on short-time-to-live scoped capabilities
 and on the Capability Derivation Tree (Section 4) is an application
 of the capability security discipline established by Hardy's confused
-deputy paper [40] and developed over four decades of operating-system
+deputy paper [37] and developed over four decades of operating-system
 and distributed-system research. The novelty here is not capability
 security itself but its application to the AI agent mediation
 setting, where the capability is narrowed by declared intent
@@ -103,13 +103,10 @@ such success. We cite this evidence in Section 2 and in Section
 
 The underlying XSOC cryptographic primitives referenced throughout
 this paper are described in prior XSOC publications. The
-XSOC QSIG / DSKAG-IT-SIG preprint is on Zenodo [41]. The XSOC FHE
-SDK v3.0.0.0 Technical White Paper [42] is the public technical
+XSOC QSIG / DSKAG-IT-SIG preprint is on Zenodo [38]. The XSOC FHE
+SDK v3.0.0.0 Technical White Paper [39] is the public technical
 reference for the four-layer FHE architecture that Section 6
-delegates to. External validations of the broader XSOC cryptographic
-stack are cited in [16] (Perrin and Biryukov audits of the legacy
-cryptosystem), [17] (Cal Poly San Luis Obispo Dieharder validation),
-and [18] (GMU SENTINEL FP5223). Interface-level references to these
+delegates to. Interface-level references to these
 primitives follow the disclosure policy established in Section 1.7.
 
 ---

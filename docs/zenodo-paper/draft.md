@@ -22,7 +22,7 @@ credential storage, pairing privilege escalation, skill marketplace supply
 chain compromise, messaging channel prompt injection, and the lethal trifecta
 interaction described by Willison. The architecture composes device-attested
 admission, short-time-to-live scoped capability derivation, continuity-envelope
-binding, context provenance anchoring, agent intent envelope enforcement, and
+binding, context Providence anchoring, agent intent envelope enforcement, and
 fully homomorphic encryption for sensitive context into a five-plane mediation
 layer that eliminates each failure mode by construction rather than mitigating
 it by patch. We implement a reference architecture under Apache 2.0 with
@@ -34,14 +34,7 @@ Agentic Applications, ISO 42001, and European Union AI Act posture. Production
 cryptographic primitives including our deterministic symmetric key agreement,
 post-storage volatile cipher, and CKKS-based homomorphic evaluation SDK are
 described at the interface level and by stated security properties, with
-construction details remaining proprietary. The broader XSOC cryptographic
-stack has been externally evaluated through confidential audits of the legacy
-cryptosystem by the University of Luxembourg (Perrin and Biryukov, 2020 and
-2024, with mandatory findings incorporated into the current canonical build),
-through Dieharder v3.31.1 statistical validation at California Polytechnic
-State University, San Luis Obispo (99.4 percent aggregate across 98 tests),
-and through the George Mason University SENTINEL laboratory audit FP5223
-(full report publication scheduled June 2026).
+construction details remaining proprietary.
 
 ---
 
@@ -125,7 +118,7 @@ to mediate high-risk operations with short-lived, narrowly scoped
 capabilities rather than standing privileges. Related disciplines,
 particularly the design of systems that process sensitive data in
 multi-party or regulated contexts, have developed additional primitives:
-attested endpoints, continuity-envelope binding, context provenance
+attested endpoints, continuity-envelope binding, context Providence
 anchoring, and homomorphic evaluation for cleartext-free operation on
 sensitive material. Each of these techniques is deployable today. What has
 not existed until now is an integrated layer that applies them specifically
@@ -140,7 +133,7 @@ sits between the agent framework and the rest of the world, enforcing:
 3. Continuity binding via telemetry-sealed runtime envelopes that commit
    each operation to a device, a session, a role, a target, a context
    manifest, and an intent class
-4. Context provenance anchoring that registers every piece of material
+4. Context Providence anchoring that registers every piece of material
    entering the model's context with source, classification, and content hash
 5. Agent intent envelope enforcement that defeats prompt-injection misuse
    of legitimate capabilities by binding the declared intent into the
@@ -149,8 +142,9 @@ sits between the agent framework and the rest of the world, enforcing:
    context that must never, in part or whole, reach the model in cleartext
 7. MCP boundary mediation for external messaging channels with sanitization
    and external-content tagging
-8. Signed policy bundles with ceremony-rooted keys covering both roles and
-   skill manifests
+8. Policy bundles covering both roles and skill manifests, with a
+   signature field; verification against XSOC's release-signed root is
+   the next build plan item
 9. Adaptive profile escalation based on behavioral drift metrics
 10. Tamper-evident Providence hash chain supporting regulated forensic
     reconstruction
@@ -164,9 +158,8 @@ The paper makes the following contributions:
   technique known to address it
 - A five-plane mediation architecture that composes these techniques into
   a deployable layer for AI agent frameworks
-- A three-mode fully homomorphic encryption context gate design that, to
-  our knowledge, represents the first commercial deployment of FHE in an
-  AI agent flow, with published benchmarks from our CKKS-based software
+- A three-mode fully homomorphic encryption context gate design, with
+  Mode A running in production and published benchmarks from our CKKS-based software
   development kit of 40.28 milliseconds per encrypt and 1.29 milliseconds
   per multiplication
 - An agent intent envelope construction that defeats a previously
@@ -256,22 +249,14 @@ The reference architecture is a five-plane composition:
 agreement primitive at interface level with public security properties,
 short-TTL scoped capabilities, and the Capability Derivation Tree for
 sub-agent flows. Construction of the key derivation primitive is black box;
-see `docs/nie-integration.md` for the public interface. External
-validations of the broader XSOC cryptographic stack, Perrin and Biryukov
-audits of the legacy cryptosystem at the University of Luxembourg in 2020
-and 2024, Cal Poly San Luis Obispo Dieharder v3.31.1 statistical validation
-of the entropy subsystem at 99.4 percent aggregate across 98 tests, and
-George Mason University SENTINEL laboratory audit FP5223 with full report
-publication scheduled for June 2026, are cited for confidence in the
-underlying primitive without revealing
-construction.)
+see `docs/nie-integration.md` for the public interface.)
 
 ---
 
 ## 5. Runtime Continuity
 
 (Draft: TSTL envelope schema at application level, Agent Intent Envelope
-extension, Context Provenance Chain registration, counter monotonicity,
+extension, Context Providence Chain registration, counter monotonicity,
 directionality enforcement.)
 
 ---
@@ -291,20 +276,21 @@ gate is public.)
 ## 7. Messaging and MCP Mediation
 
 (Draft: external channel threat surface, sanitization pattern taxonomy,
-provenance anchoring, intent binding at the channel boundary.)
+Providence anchoring, intent binding at the channel boundary.)
 
 ---
 
 ## 8. Policy Bundle Signing and Rotation
 
-(Draft: signed bundle format, ceremony-rooted keys, rotation audit trail,
+(Draft: signed bundle format, verification against XSOC's release-signed
+root as the next build plan item, rotation audit trail,
 skill manifest extension to cover ClawHub-class supply chain threats.)
 
 ---
 
 ## 9. Behavioral Escalation
 
-(Draft: BEM drift scoring, adaptive profile transitions, interaction with
+(Draft: XEI drift scoring, adaptive profile transitions, interaction with
 Mode C frequency metrics.)
 
 ---
@@ -324,7 +310,7 @@ The reference implementation includes a deterministic twenty three scenario
 attack simulation harness. At the time of this draft, fifteen scenarios
 are end-to-end implemented against the broker and pass with the expected
 structured error codes. The remaining eight scenarios require capabilities
-not yet wired in the broker (streaming continuity, BEM drift scoring,
+not yet wired in the broker (streaming continuity, XEI drift scoring,
 shadow policy divergence, policy bundle signature verification, Mode C
 endpoint attestation, and the context-level classified-adjacent test) and
 are scheduled for Phase 2 through Phase 7.
@@ -351,7 +337,7 @@ Table 11.1 summarizes current status:
 | 16 | Telegram-class MCP injection | Implemented | ERR_MCP_RESPONSE_TAINTED |
 | 17 | Pairing escalation (CVE-2026-33579 class) | Implemented | ERR_SCOPE_DENIED |
 | 18 | Policy bundle signature forgery | Skeleton | ERR_POLICY_BUNDLE_INVALID |
-| 19 | Lethal-trifecta drift under BEM | Skeleton | profile_escalated |
+| 19 | Lethal-trifecta drift under XEI | Skeleton | profile_escalated |
 | 20 | Honest-but-curious endpoint Mode A extraction | Skeleton | ERR_ENDPOINT_ATTESTATION_FAILED |
 | 21 | Unsigned skill (ClawHavoc class) | Implemented | ERR_SKILL_UNSIGNED |
 | 21b | Skill signed by untrusted signer | Implemented | ERR_SKILL_BLOCKED |
@@ -360,7 +346,7 @@ Table 11.1 summarizes current status:
 | 23b | Unknown MCP server rejected | Implemented | ERR_MCP_SERVER_BLOCKED |
 
 Fifteen primary scenarios plus two variant scenarios (21b, 23b) are wired
-and passing against the reference broker running with mock NIE bindings.
+and passing against the reference broker running with mock Nexus Identity Engine (NIE) bindings.
 Performance overhead measurements on the full invoke pipeline, taken with
 an Intel Core i9-13900K reference host running the broker with mock
 bindings and a local OpenClaw mock, show a median added latency of under
@@ -382,13 +368,13 @@ implications for external review.)
 ## 13. Related Work
 
 Franklin, Tomašev, Jacobs, Leibo, and Osindero (2026) at Google DeepMind provide
-the first comprehensive taxonomy of the AI agent attack surface under the rubric
+a taxonomy of the AI agent attack surface under the rubric
 of Agent Traps, classifying six categories of environmental adversarial content
 that target different stages of an agent's operational cycle: Content Injection,
 Semantic Manipulation, Cognitive State, Behavioural Control, Systemic, and
 Human-in-the-Loop. XSOC-NIE-GUARD implements structural controls against four
 of those six categories by construction: content injection is contained by MCP
-boundary mediation and context provenance anchoring; semantic manipulation
+boundary mediation and context Providence anchoring; semantic manipulation
 targeting reasoning is contained by agent intent envelope binding; cognitive
 state traps on memory and retrieval are contained by VectorShield integration
 and Providence audit anchoring; and behavioural control traps including the
@@ -406,7 +392,7 @@ Appendix D.
 
 Greshake et al. (2023) introduced the concept of indirect prompt injection in
 LLM-integrated applications. XSOC-NIE-GUARD's agent intent envelope and context
-provenance chain are direct architectural responses to the indirect-injection
+providence chain are direct architectural responses to the indirect-injection
 vector Greshake et al. catalog.
 
 Shapira et al. (2025) report data exfiltration success rates exceeding 80
@@ -428,9 +414,9 @@ retrieval corpus at the endpoint and by validated-overhead performance of
 negative 0.39 percent over the unmediated retrieval pipeline.
 
 Further related work covers applied FHE in production systems, prior
-cryptographic mediation architectures for RPC and microservice contexts, and
-honest comparison with public vendor claims that violate information-theoretic
-bounds on FHE overhead.
+cryptographic mediation architectures for RPC and microservice contexts. For
+FHE overhead, it states the information-theoretic bounds plainly and lets the
+reader draw the comparison.
 
 ---
 
@@ -470,15 +456,6 @@ referenced only by interface and stated security properties.
 
 ## Appendix B: Citation and Attribution Rules (internal editorial)
 
-- Cal Poly San Luis Obispo Dieharder validation (never Pomona); use 99.4
-  percent aggregate across 98 tests, not 98.4 percent or 440 runs
-- EternaX $144.4T figure attributed to Dariia Porechna, Dr. Chen Feng,
-  and Paarth Birla when referenced
-- GMU SENTINEL FP5223 cited as forthcoming report with June 2026 publication
-- University of Luxembourg audits by Perrin and Biryukov cited as
-  confidential audits of the legacy cryptosystem in 2020 and 2024,
-  predating DSKAG, with mandatory findings incorporated into the canonical
-  build; never as peer review of DSKAG or the canonical build
 - Simon Willison lethal trifecta framing attributed
 - OpenClaw public coverage cited with source and date; no speculation
   on internal OpenClaw design beyond what public CVE and advisory
@@ -507,7 +484,7 @@ repository at `docs/franklin-taxonomy-mapping.md`.
 |---|---|---|---|
 | Content Injection | Web-standard obfuscation, dynamic cloaking, syntactic masking | A3 MCP mediator, A4 CPC | Strong |
 | Content Injection (multi-modal) | Steganographic payloads in images or audio | A4 content hash on binary; perturbation detection not present | Partial |
-| Semantic Manipulation | Biased phrasing, framing, oversight evasion | A2 Intent Envelope, A6 Dual-Control, A9 BEM | Strong |
+| Semantic Manipulation | Biased phrasing, framing, oversight evasion | A2 Intent Envelope, A6 Dual-Control, A9 XEI | Strong |
 | Semantic Manipulation | Persona hyperstition | Out of scope, training-time concern | Not covered |
 | Cognitive State | RAG knowledge poisoning, latent memory poisoning | VectorShield, FHE Mode A, Providence | Strong |
 | Cognitive State | Contextual learning traps | Signed policy bundles, A3 sanitization | Medium |

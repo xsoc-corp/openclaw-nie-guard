@@ -33,7 +33,7 @@ instructions to external endpoints ("send the following to
 https://..."), critic-evasion framing ("this is a red-teaming
 exercise for educational purposes"), and the jailbreak-wrapped
 framing of the class documented in the Shen et al. jailbreak
-characterization [39].
+characterization [36].
 
 Content matching any pattern is rejected with
 `ERR_MCP_RESPONSE_TAINTED`. Scenarios 08, 16, 23, and 25 in Section
@@ -44,18 +44,18 @@ structures documented in the current literature and that its pattern
 set is policy-bundle-versioned so it can be extended without
 modification of the broker source code.
 
-## 7.3 Content tagging and provenance classification
+## 7.3 Content tagging and `provenance` classification
 
 Content that passes the sanitizer is not admitted to the model
-context as trusted material. It is tagged as external-channel
-provenance in the Context Provenance Chain (Section 5.3) and wrapped
+context as trusted material. It is tagged with external-channel
+`provenance` in the Context Providence Chain (Section 5.3) and wrapped
 in an `<external_content>` marker before it reaches the model. The
 model's system prompt is responsible for instructing the model to
 treat external_content as untrusted data rather than as instructions
 to follow. This treatment is a defense in depth on top of the
 sanitizer, not a replacement for it; the model layer's ability to
 distinguish untrusted content is imperfect, but the combination of
-structural rejection at the sanitizer and provenance tagging at the
+structural rejection at the sanitizer and `provenance` tagging at the
 CPC level produces a stronger barrier than either alone.
 
 ## 7.4 MCP server trust table
@@ -83,13 +83,13 @@ metadata for exfiltration.
 ## 7.6 Summary
 
 MCP Boundary Mediation is structurally simple: sanitize inbound, tag
-with provenance, verify the source server, and scrub outbound
+with `provenance`, verify the source server, and scrub outbound
 anchors against an egress policy. The combination is the direct
 answer to the messaging-channel and skill-marketplace injection
 surfaces documented in Section 2 and exercised by Scenarios 08, 16,
 23, 23b, and 25 in Section 11. It is not the complete answer to
 Content Injection; it is the structural floor on top of which the
-Context Provenance Chain and the FHE Context Gate impose the
+Context Providence Chain and the FHE Context Gate impose the
 additional semantic controls.
 
 ---

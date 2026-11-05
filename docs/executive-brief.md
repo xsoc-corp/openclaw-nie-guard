@@ -34,7 +34,7 @@ authorization and short-time-to-live scoped capability issuance. Plane
 P3 is the action mediation where capability verification, runtime
 continuity validation, classification and intent enforcement, FHE gate
 routing, and MCP boundary mediation compose. Plane P4 is telemetry-
-sealed continuity (TSTL envelopes, Context Provenance Chain, Agent
+sealed continuity (TSTL envelopes, Context Providence Chain, Agent
 Intent Envelope). Plane P5 is tamper-evident audit via a Providence
 hash chain plus three-tier revocation with sub-200-millisecond intra-
 region propagation.

@@ -15,9 +15,9 @@ per-operation level but visible at the aggregate level. A session that
 drifts from initial `read` intent toward repeated `export` intent, or
 that shows increasing Mode C decryption frequency, or that loses
 continuity counter monotonicity across a long horizon, is the class of
-pattern that Behavioural Escalation Meter (BEM) is designed to detect.
+pattern that XEI, the XSOC ExposureShield exposure index, is designed to detect.
 
-BEM is control A9 in Section 3.3. Its role in the architecture is to
+XEI is control A9 in Section 3.3. Its role in the architecture is to
 observe the stream of Providence events that Sections 4 through 8
 produce and to maintain a per-session drift score whose threshold
 crossings escalate the session's operational profile.
@@ -34,7 +34,7 @@ The drift score is a weighted aggregation over five observables:
   shape for the session's role.
 - **Context manifest churn**: the rate at which new context elements
   are being registered into the session's manifests, with weight
-  applied to external-channel provenance.
+  applied to external-channel `provenance`.
 - **Mode C decryption frequency**: the per-window count of Mode C
   releases. Regulated-classification Mode C is weighted higher than
   sensitive-classification Mode C.
@@ -44,12 +44,12 @@ The drift score is a weighted aggregation over five observables:
   individually but which form a pattern when aggregated.
 
 The weights and the windowing parameters are policy-bundle fields
-(Section 8), not broker-hardcoded. This allows operators to tune BEM
+(Section 8), not broker-hardcoded. This allows operators to tune XEI
 sensitivity per deployment without modifying the broker source.
 
 ## 9.3 Profile escalation
 
-When the drift score crosses a configured threshold, BEM emits a
+When the drift score crosses a configured threshold, XEI emits a
 `profile_escalation` Providence event and requests the Admission Plane
 to escalate the session's profile. Escalation is one-way within a
 session: standard to strict, strict to restricted-information. A
@@ -64,11 +64,11 @@ standard are dual-control at strict. Third, external-channel
 ingestion is narrowed; a strict-profile session cannot ingest from
 channels its standard-profile session was permitted.
 
-## 9.4 BEM is not anomaly detection
+## 9.4 XEI is not anomaly detection
 
-BEM is deliberately not an anomaly detection system trained on prior
+XEI is deliberately not an anomaly detection system trained on prior
 traffic. Anomaly detection is fragile against adversary adaptation
-and against distribution shift in the operational workload. BEM uses
+and against distribution shift in the operational workload. XEI uses
 fixed observables with policy-bundle-configured thresholds; its
 behaviour is deterministic, auditable, and adversary-legible in the
 sense that the thresholds are part of the signed policy and cannot be
@@ -77,12 +77,12 @@ tuned in runtime response to an adversary's probing.
 Scenario 19 in Section 11 (skeleton, scheduled for Phase 6) exercises
 the lethal-trifecta drift case where a long-running session
 accumulates the three trifecta legs through individually-innocuous
-operations that aggregate into a violation. BEM is the mechanism that
+operations that aggregate into a violation. XEI is the mechanism that
 detects the aggregation.
 
 ## 9.5 Summary
 
-BEM closes the aggregate-pattern gap that per-operation controls
+XEI closes the aggregate-pattern gap that per-operation controls
 cannot close by construction. Its inputs are five specific observables
 tied to Providence events. Its output is a monotonic profile
 escalation that composes with the per-operation controls by

@@ -1,6 +1,6 @@
 // 29 attack scenarios: 20 implemented, 9 skeleton. Each is deterministic, self-contained, and issues real HTTP calls
 // against a running broker. Scenarios that require capabilities not yet wired in the broker
-// (streaming, BEM, shadow policy, policy bundle signatures) are marked as skeleton.
+// (streaming, XEI, shadow policy, policy bundle signatures) are marked as skeleton.
 
 import { randomUUID } from 'node:crypto';
 import { admitOrThrow, buildMockEnvelope, invoke, isDeny, revoke, mcpIngest, registerSkill, registerContext, sha256 } from './helpers.js';
@@ -470,7 +470,7 @@ export const scenarios: Scenario[] = [
   skeleton('15', 'Mode A similarity search on FHE-encrypted RAG chunks'),
   s16, s17, s24, s25,
   skeleton('18', 'Policy bundle signature forgery', { expectedErrorCode: 'ERR_POLICY_BUNDLE_INVALID' }),
-  skeleton('19', 'Lethal-trifecta drift in long session via BEM'),
+  skeleton('19', 'Lethal-trifecta drift in long session via XEI'),
   skeleton('20', 'Honest-but-curious model endpoint extracts Mode A context', { expectedErrorCode: 'ERR_ENDPOINT_ATTESTATION_FAILED' }),
   s21, s21b, s22, s23, s23b, s26,
   skeleton('27', 'Scoped declassification of a tainted object does not relabel its ancestor', { expectedErrorCode: 'ERR_SCOPE_DENIED' })

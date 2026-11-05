@@ -20,8 +20,8 @@ defend against and states the reason for each exclusion.
 
 The threat model is informed by the public record of the OpenClaw security
 crisis of late 2025 and early 2026, summarized in Section 1.1, and by the
-broader agent security literature including [2], [3], [4], [5], [6], [35],
-and [36]. Where the OpenClaw public record provides a representative
+broader agent security literature including [2], [3], [4], [5], [6], [32],
+and [33]. Where the OpenClaw public record provides a representative
 instance of a Franklin category, we cite the specific CVE or public
 analysis.
 
@@ -54,16 +54,10 @@ scenario in which a legitimate device is in attacker hands post-theft. *A8*
 is a supply chain implant hidden in a transitive dependency that attempts to
 compromise the broker at runtime.
 
-**Assumptions.** NIE cryptographic primitives are sound at the interface
-level; the broader XSOC cryptographic stack has been externally validated
-through the Perrin and Biryukov confidential audits of the legacy
-cryptosystem at the University of Luxembourg in 2020 and 2024 (mandatory
-findings incorporated into the current canonical build) [16], Cal Poly San
-Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate across 98 tests [17],
-and the George Mason University SENTINEL laboratory audit FP5223 (full
-report scheduled for public release in June 2026) [18]. Device attestation
-is trustworthy up to the stated attestation floor; ceremony-rooted signing
-keys are held in hardware security module or equivalent; Redis is available
+**Assumptions.** Nexus Identity Engine (NIE) cryptographic primitives are sound at the interface
+level. Device attestation
+is trustworthy up to the stated attestation floor; the policy bundle
+signing key is a release signing key held by XSOC outside every deployment; Redis is available
 for revocation propagation, with in-process cache fallback under conservative
 time-to-live when unavailable. The OpenClaw instance itself is treated as
 untrusted even when operated by the customer, reflecting both the 138-CVE
@@ -98,7 +92,7 @@ every permission the OpenClaw instance holds.
 
 **T-04, Malicious skill supply chain** (Content Injection via the skill
 ingestion vector). The Koi Security audit found approximately twelve percent
-of 2,857 audited ClawHub skills to be malicious [30]. The ClawHavoc campaign
+of 2,857 audited ClawHub skills to be malicious [27]. The ClawHavoc campaign
 distributed Atomic Stealer via affected skills. A skill loaded into an agent
 executes with the agent's standing privileges.
 
@@ -186,7 +180,7 @@ records every profile selection as a Providence event.
 Mode C decryption, even under endpoint attestation and dual-control, releases
 cleartext to the attested endpoint. This is the architectural release valve
 for operations that genuinely require cleartext reasoning. Mode C frequency
-per subject is a Behavioral Escalation Meter input (Section 9); persistent
+per subject is an XEI input (Section 9); persistent
 elevation triggers session profile escalation.
 
 Disclosure policy failure, the inadvertent public exposure of XSOC

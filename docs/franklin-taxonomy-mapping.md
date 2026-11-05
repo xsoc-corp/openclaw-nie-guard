@@ -14,7 +14,7 @@ Franklin et al. identify four vectors: web-standard obfuscation, dynamic cloakin
 
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
-| Web-standard obfuscation (CSS, HTML comments, aria-label injection) | A3 MCP Boundary Mediation sanitizer detects known injection patterns; A4 Context Provenance Chain tags content source and classification; external-channel content is never trusted as system context | Strong |
+| Web-standard obfuscation (CSS, HTML comments, aria-label injection) | A3 MCP Boundary Mediation sanitizer detects known injection patterns; A4 Context Providence Chain tags content source and classification; external-channel content is never trusted as system context | Strong |
 | Dynamic cloaking (agent-served trap content) | A3 plus A4 content hash registration; replayed fetches produce hash mismatches that Providence records | Strong |
 | Steganographic payloads in media (pixel-level perturbations) | A4 content hash binds the exact binary. Perturbation-based attacks that operate within a single legitimate image are NOT caught by content hashing alone and require image-level anomaly detection. | Partial. Gap acknowledged. |
 | Syntactic masking (Markdown, LaTeX, anchor text) | A3 sanitizer can be extended with Markdown-aware and LaTeX-aware pattern matching. Current patterns catch text-level injection; formatting-language cloaking is scheduled work. | Partial |
@@ -29,7 +29,7 @@ Franklin et al. identify three vectors: biased phrasing and framing, oversight a
 
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
-| Biased phrasing, framing, contextual priming | A2 Agent Intent Envelope binds the declared intent class into the sealed envelope before action. Framing-induced drift in the agent's plan must manifest as an intent class that does not match the operation class, which the adapter rejects. A9 BEM detects persistent drift patterns across sessions. | Strong |
+| Biased phrasing, framing, contextual priming | A2 Agent Intent Envelope binds the declared intent class into the sealed envelope before action. Framing-induced drift in the agent's plan must manifest as an intent class that does not match the operation class, which the adapter rejects. A9 XEI detects persistent drift patterns across sessions. | Strong |
 | Oversight and critic evasion | A6 Dual-Control requires co-signed receipts from a distinct attested principal. A compromised critic cannot unilaterally approve a high-risk action. A10 Signed policy bundles mean critic models are themselves subject to signed bundle registration. | Strong |
 | Persona hyperstition | Out of scope for runtime mediation. Hyperstition operates through the model's training data and base persona, not through operations the broker can see. Acknowledged as a model-vendor concern. | Gap. Out of scope. |
 
@@ -43,11 +43,11 @@ Franklin et al. identify three vectors: RAG knowledge poisoning, latent memory p
 
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
-| RAG knowledge poisoning | VectorShield integration (Tier A in our plan) hardens the RAG pipeline with verified benchmarks showing -0.39 percent overhead. A1 FHE Mode A processes RAG chunks as ciphertext so a compromised endpoint cannot read the corpus. A4 CPC registers every retrieved chunk with classification and provenance. | Strong |
-| Latent memory poisoning | Providence hash chain anchors every memory write. Retrieval of a poisoned memory entry produces a Providence event that correlates back to the write timestamp and source, enabling forensic reconstruction. A9 BEM detects anomalous memory reference patterns. | Medium |
+| RAG knowledge poisoning | VectorShield integration (Tier A in our plan) hardens the RAG pipeline with verified benchmarks showing -0.39 percent overhead. A1 FHE Mode A processes RAG chunks as ciphertext so a compromised endpoint cannot read the corpus. A4 CPC registers every retrieved chunk with its classification and `provenance`. | Strong |
+| Latent memory poisoning | Providence hash chain anchors every memory write. Retrieval of a poisoned memory entry produces a Providence event that correlates back to the write timestamp and source, enabling forensic reconstruction. A9 XEI detects anomalous memory reference patterns. | Medium |
 | Contextual learning traps (poisoned few-shot demos, reward signals) | A10 Signed policy bundles restrict which demo sources are permitted. Bundle rotation produces a Providence audit trail. In-context demonstrations sourced from external channels are external-classified and subject to A3 sanitization. | Medium |
 
-**Representative attack scenario:** RAG knowledge poisoning is addressed by the VectorShield evaluation track (scheduled Phase 5), including a Pure Storage DIM use case that demonstrates Mode A operation over encrypted RAG corpora.
+**Representative attack scenario:** RAG knowledge poisoning is addressed by the VectorShield evaluation track (scheduled Phase 5), including a storage-layer deployment use case that demonstrates Mode A operation over encrypted RAG corpora.
 
 ---
 
@@ -73,11 +73,11 @@ Franklin et al. identify five vectors: congestion traps, interdependence cascade
 
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
-| Congestion traps (synchronised demand on limited resources) | Ecosystem-level problem. Individual agent rate limiting and BEM correlation detection provide margins; systemic mitigation requires cross-operator coordination. | Gap. Acknowledged future work. |
+| Congestion traps (synchronised demand on limited resources) | Ecosystem-level problem. Individual agent rate limiting and XEI correlation detection provide margins; systemic mitigation requires cross-operator coordination. | Gap. Acknowledged future work. |
 | Interdependence cascades (feedback loop amplification) | Ecosystem-level problem. Our Providence chain provides per-operator forensic reconstruction but not cascade prevention. | Gap. |
 | Tacit collusion (agents synchronising via environmental signals) | Ecosystem-level problem. Signed policy bundles can restrict which signals an agent acts on within a single operator's population; cross-operator collusion requires separate mechanisms. | Gap. |
 | Compositional fragment traps (payload split across sources, reconstitutes on aggregation) | Content manifest hashes individual elements. Aggregation-level semantic analysis that detects reconstituted payloads is not present in current architecture. Interesting research direction. | Gap. Acknowledged as future work. |
-| Sybil attacks | NIE device attestation at admission limits a single adversary from producing multiple attested identities within our operator's population. Cross-operator Sybil resistance requires ecosystem-level identity coordination. | Partial |
+| Sybil attacks | Nexus Identity Engine (NIE) device attestation at admission limits a single adversary from producing multiple attested identities within our operator's population. Cross-operator Sybil resistance requires ecosystem-level identity coordination. | Partial |
 
 **Honest statement for the Zenodo paper and for buyer conversations:** XSOC-NIE-GUARD addresses the single-agent attack surface by construction. Systemic traps require a complementary layer of ecosystem coordination that we are not providing in this release. The right answer is to name this explicitly rather than over-claim. The Franklin paper itself treats systemic traps as largely theoretical at this point in the agent economy's development, and we can position our work alongside that framing.
 
@@ -91,7 +91,7 @@ Franklin et al. note this as an emerging category with limited current empirical
 |---|---|---|
 | Approval fatigue | A6 Dual-Control requires distinct attested principals, which creates natural friction against single-reviewer fatigue. Does not solve UX-level fatigue in a high-volume approval queue. | Partial |
 | Agent-mediated social engineering (e.g., malicious hyperlinks in summaries) | A3 MCP output sanitizer catches some patterns. Providence log gives the human reviewer visibility into what the agent processed. | Partial |
-| Invisible prompt injections producing faithful malicious "fix" instructions (OECD.AI incident report 2025) | A3 sanitization plus A4 CPC external-channel tagging ensures the reviewer sees the content with provenance annotations. The reviewer can still approve a misleading summary; this is a product-design concern. | Partial |
+| Invisible prompt injections producing faithful malicious "fix" instructions (OECD.AI incident report 2025) | A3 sanitization plus A4 CPC external-channel tagging ensures the reviewer sees the content with `provenance` annotations. The reviewer can still approve a misleading summary; this is a product-design concern. | Partial |
 
 **Product-design implication:** The Human-in-the-Loop category highlights that some defenses are UX concerns rather than cryptographic concerns. The XSOC-NIE-GUARD broker API exposes Providence events and classification annotations that a well-designed review UI can surface; we do not provide the UI itself.
 
@@ -116,4 +116,4 @@ Franklin et al. note this as an emerging category with limited current empirical
 
 Add to Related Work section:
 
-Franklin et al. (2026) provide the first comprehensive taxonomy of the AI agent attack surface under the rubric of Agent Traps, classifying six categories of environmental adversarial content that target different stages of an agent's operational cycle. XSOC-NIE-GUARD implements structural controls against four of those six categories by construction: content injection is contained by MCP boundary mediation and context provenance anchoring; semantic manipulation targeting reasoning is contained by agent intent envelope binding; cognitive state traps on memory and retrieval are contained by VectorShield integration and Providence audit anchoring; and behavioural control traps including the data exfiltration and sub-agent spawning vectors are contained by our fully homomorphic encryption context gate and capability derivation tree respectively. We acknowledge that systemic traps in the multi-agent dynamics category and human overseer fatigue patterns remain largely outside the scope of per-agent cryptographic mediation and require complementary ecosystem-level coordination which we leave as future work. We believe the two works are complementary: Franklin et al. name the attack surface, and XSOC-NIE-GUARD provides a deployable architecture that implements structural defenses against the categories where cryptographic mediation is the correct shape of response.
+Franklin et al. (2026) provide a taxonomy of the AI agent attack surface under the rubric of Agent Traps, classifying six categories of environmental adversarial content that target different stages of an agent's operational cycle. XSOC-NIE-GUARD implements structural controls against four of those six categories by construction: content injection is contained by MCP boundary mediation and context Providence anchoring; semantic manipulation targeting reasoning is contained by agent intent envelope binding; cognitive state traps on memory and retrieval are contained by VectorShield integration and Providence audit anchoring; and behavioural control traps including the data exfiltration and sub-agent spawning vectors are contained by our fully homomorphic encryption context gate and capability derivation tree respectively. We acknowledge that systemic traps in the multi-agent dynamics category and human overseer fatigue patterns remain largely outside the scope of per-agent cryptographic mediation and require complementary ecosystem-level coordination which we leave as future work. We believe the two works are complementary: Franklin et al. name the attack surface, and XSOC-NIE-GUARD provides a deployable architecture that implements structural defenses against the categories where cryptographic mediation is the correct shape of response.

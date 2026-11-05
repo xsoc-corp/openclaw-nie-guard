@@ -44,7 +44,7 @@ are product-design and operational problems rather than
 cryptographic problems.
 
 **Steganographic and perturbation attacks within legitimate media.**
-The Context Provenance Chain (Section 5.3) binds content hashes,
+The Context Providence Chain (Section 5.3) binds content hashes,
 which catches binary substitution. Attacks that operate within a
 single legitimate image or audio file through adversarial
 perturbation are not caught by content hashing. VectorShield
@@ -67,7 +67,7 @@ occur; its consequences are bounded.
 We do not claim the XSOC FHE SDK's 40.28 ms encryption latency is a
 universal performance claim. That figure is from published
 validation on reference hardware under specific CKKS parameters
-[42]. Production deployment will see different numbers depending on
+[39]. Production deployment will see different numbers depending on
 hardware, parameter choices, and workload shape. We do claim the
 architecture's mediation overhead is within the operational budget
 for interactive agent flows.
@@ -75,9 +75,9 @@ for interactive agent flows.
 We do not claim end-to-end quantum resistance of the overall system.
 The XSOC FHE SDK's DSKAG layer uses symmetric primitives that
 provide 256-bit post-quantum security under Grover's algorithm
-[42]. The CKKS scheme's underlying Ring Learning With Errors
+[39]. The CKKS scheme's underlying Ring Learning With Errors
 problem is believed quantum-resistant under current analysis [15,
-42]. The non-cryptographic components of the broker (transport,
+39]. The non-cryptographic components of the broker (transport,
 storage, operational logging) use commodity TLS and commodity
 database storage whose quantum posture is not our assertion to
 make. A fully quantum-resistant deployment requires the operator
@@ -87,8 +87,8 @@ to choose PQ-resistant underlying infrastructure.
 
 Five extensions are scheduled or under consideration.
 
-**VectorShield integration** for encrypted RAG corpora, with the
-Pure Storage DIM deployment as the reference case. This is the
+**VectorShield integration** for encrypted RAG corpora, with a
+storage-layer deployment as the reference case. This is the
 Phase 5 item in the Section 11 skeleton schedule and addresses the
 steganographic and RAG-poisoning gaps.
 

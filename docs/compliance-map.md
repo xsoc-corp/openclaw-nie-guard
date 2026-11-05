@@ -8,9 +8,9 @@ is a property of the architecture rather than a configuration option.
 | Function | Categories addressed | NIE-GUARD control |
 |---|---|---|
 | Map | Context, risks, actors | Threat model, classification taxonomy |
-| Measure | Trustworthy AI characteristics | Providence metrics, BEM scoring |
+| Measure | Trustworthy AI characteristics | Providence metrics, XEI scoring |
 | Manage | Risk mitigation, response | Profile escalation, revocation, dual-control |
-| Govern | Accountability, roles | Signed policy bundles, ceremony-rooted keys |
+| Govern | Accountability, roles | Policy bundles with a signature field; verification against XSOC's release-signed root is the next build plan item |
 
 ## OWASP Top 10 for Agentic Applications
 
@@ -19,12 +19,12 @@ Palo Alto has mapped OpenClaw to every category. XSOC-NIE-GUARD addresses each:
 | OWASP category | Control |
 |---|---|
 | Permission escalation | A6 dual-control, A8 CDT, A10 signed bundles |
-| Memory poisoning | Context Provenance Chain, content-hash binding |
+| Memory poisoning | Context Providence Chain, content-hash binding |
 | Tool misuse | A2 Agent Intent Envelope, adapter allowlist |
-| Identity spoofing | NIE device attestation at admission |
+| Identity spoofing | Nexus Identity Engine (NIE) device attestation at admission |
 | Supply chain and trust | A10 signed bundles for skills and MCP servers |
 | Hallucinated output execution | Intent envelope, operation class allowlist |
-| Runaway autonomy | BEM adaptive profile escalation |
+| Runaway autonomy | XEI adaptive profile escalation |
 | Cascading failures | Short-TTL, CDT containment |
 | Untraceability | Providence hash chain |
 | Prompt injection | A3 MCP mediation, external-content tagging |
@@ -42,12 +42,6 @@ map to classification taxonomy, Providence chain, and dual-control mechanism.
 ## FedRAMP and DoD IL considerations
 
 Attestation floor selection (TPM, Secure Enclave, StrongBox, HSM) supports IL4/IL5
-posture. XSOC black-box cryptographic primitives referenced by this architecture
-have been externally validated through Perrin and Biryukov audits of the legacy
-XSOC cryptosystem at the University of Luxembourg (2020 and 2024, predating DSKAG,
-with mandatory findings incorporated into the canonical build), Cal Poly San Luis
-Obispo Dieharder v3.31.1 statistical validation of the entropy subsystem (99.4
-percent aggregate across 98 tests), and the George Mason University SENTINEL
-laboratory audit FP5223 (full report publication scheduled June 2026). FHE Mode A
+posture. FHE Mode A
 and Mode B eliminate cleartext exposure entirely for the highest-classification
 operations.
