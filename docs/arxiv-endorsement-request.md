@@ -141,8 +141,6 @@ If no academic endorsement materializes, alternative paths:
 
 ## What NOT to do
 
-- Do not mention the OpenAI engagement in the endorsement request. Scope this
-  ask strictly to the arXiv endorsement and the paper.
 - Do not attach the full reference implementation tarball. Give the GitHub
   link and let them decide if they want to look.
 - Do not include a pitch for commercial engagement. This is an academic ask.

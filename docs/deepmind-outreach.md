@@ -239,9 +239,8 @@ If any author responds with interest:
    (systemic compositional fragment, skeleton), and one where their reaction
    is genuinely valuable (the latent memory manifest check).
 
-4. Do not pitch XSOC commercially. Do not ask for an endorsement. Do not mention
-   the OpenAI engagement thread. Those are separate conversations on separate
-   tracks.
+4. Do not pitch XSOC commercially. Do not ask for an endorsement. Those are
+   separate conversations on separate tracks.
 
 5. After the call, send a one-paragraph thank-you with a clear specific ask
    about whether we may cite any of their reaction in a revised version of the
@@ -249,9 +248,6 @@ If any author responds with interest:
 
 ## What NOT to do
 
-- Do not send the OpenAI liaison paper to any DeepMind author, in any form, at
-  any stage of this outreach. The OpenAI thread and the DeepMind thread are
-  separate and must remain separate.
 - Do not mention any competitor in these messages.
 - Do not mention the three prior IACR ePrint rejections.
 - Do not ask about hiring, consulting, or advisory arrangements.

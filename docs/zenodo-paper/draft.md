@@ -412,9 +412,9 @@ retrieval corpus at the endpoint and by validated-overhead performance of
 negative 0.39 percent over the unmediated retrieval pipeline.
 
 Further related work covers applied FHE in production systems, prior
-cryptographic mediation architectures for RPC and microservice contexts, and
-honest comparison with public vendor claims that violate information-theoretic
-bounds on FHE overhead.
+cryptographic mediation architectures for RPC and microservice contexts. For
+FHE overhead, it states the information-theoretic bounds plainly and lets the
+reader draw the comparison.
 
 ---
 

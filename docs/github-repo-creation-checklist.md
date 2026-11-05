@@ -14,7 +14,7 @@ each section, override where needed, and check off as you complete each step.
 openclaw-nie-guard
 ```
 Rationale: matches `package.json` name, matches the URLs embedded in the Zenodo
-paper, matches the OpenAI liaison paper, matches the XSOC-corp-owned scaffold
+paper, matches the XSOC-corp-owned scaffold
 in the current tarball. Do not change this unless you have a reason.
 
 **Owner:**
@@ -205,15 +205,11 @@ Because this is a public release and mistakes are costly to reverse:
 - [ ] Search the repo for any TODO comments referencing sensitive XSOC
       internals. Current scaffold uses `TODO(xsoc-openclaw-poc)` as the marker.
       Grep for that and confirm each one is safe for public reading.
-- [ ] Search for any stray customer names (Pure Storage, JPMorgan, 16th AF,
-      Micron, NIST CAISI, Keypasco, Wells Fargo, DTCC, CME, Accenture).
-      These should not appear in the public repo.
+- [ ] Scan against XSOC's private name and deployment list,
+      `public-release-scan-list.txt`. Nothing on it should appear in the public
+      repo.
 - [ ] Search for `xsoc-corp/xsoc-qsig-cga` private repo references that might
       have leaked into code or docs.
-- [ ] Search for any Azure, Cosmos, or specific deployment URLs from the
-      XSOC commercial stack (`xsoc-nie-gateway.azurewebsites.net`,
-      `xsoc-vault.azurewebsites.net`, etc.). These should not be in the public
-      repo.
 - [ ] Search for author keys, signatures, or HSM configuration details.
 - [ ] Run `node scripts/disclosure-lint.mjs` one last time locally before push.
 - [ ] Run `node scripts/verify-public-boundary.mjs` one last time locally.
@@ -228,16 +224,15 @@ node scripts/disclosure-lint.mjs
 node scripts/verify-public-boundary.mjs
 
 # Additional manual scans
-grep -ri "jpmorgan\|pure storage\|16th air force\|keypasco\|wells fargo\|dtcc\|accenture\|caramico\|saddigh" --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: no customer or competitor names"
-
-grep -r "azurewebsites.net" --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: no internal deployment URLs"
+# Scan against XSOC's private name and deployment list
+grep -rniwF -f public-release-scan-list.txt --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: nothing from the private list"
 
 grep -r "xsoc-qsig-cga\b" --exclude-dir=.git --exclude-dir=node_modules . || echo "clean: no private QSIG repo references"
 
 grep -r "TODO\|FIXME\|XXX\|HACK" --exclude-dir=.git --exclude-dir=node_modules . | head -20
 ```
 
-All four greps should return either "clean:" messages or empty results, except
+All three greps should return either "clean:" messages or empty results, except
 the last which should show only the expected `TODO(xsoc-openclaw-poc)` markers
 that are intentional.
 

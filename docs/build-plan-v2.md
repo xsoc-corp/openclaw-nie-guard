@@ -8,13 +8,13 @@
 
 ## 0. Strategic Framing
 
-The v1 plan treated OpenClaw as an untrusted execution surface that needed a cryptographic mediator. That framing stands, but the context around it has shifted materially. OpenAI ownership of OpenClaw means regulated buyers now face a single-vendor trust stack in which the model provider, the agent framework, and the execution context are all inside the same commercial boundary. This is not an acceptable posture for any regulated customer operating under NIST SP 800-53, SWIFT CSP, FedRAMP Moderate or High, ISO 42001, or EU AI Act Article 14.
+The v1 plan treated OpenClaw as an untrusted execution surface that needed a cryptographic mediator. That framing stands, but the context around it has shifted materially. OpenClaw is now under an OpenAI-sponsored independent foundation. A regulated customer operating under NIST SP 800-53, SWIFT CSP, FedRAMP Moderate or High, ISO 42001, or EU AI Act Article 14 needs the keys, the policy authority and the audit record held apart from the model provider and the agent framework.
 
-The opening is therefore not "help secure OpenClaw." The opening is "hold the only keys that matter in an OpenAI-dominated agent ecosystem." This POC is the technical argument for that position. Every Tier A feature below is selected to make that argument irrefutable.
+The opening is therefore not "help secure OpenClaw." The opening is "hold the keys that matter in an agent ecosystem where the model is someone else's." This POC is the technical argument for that position. Every Tier A feature below is selected to make that argument.
 
 The hero technical claim: FHE in an AI agent flow, with Mode A running in production, honest benchmarks, and four named regulated use cases.
 
-The hero commercial claim: a customer running OPENCLAW-NIE-GUARD can operate OpenClaw over sensitive data without OpenClaw (or OpenAI) ever possessing cleartext, without either party holding policy authority, and without either party controlling the audit record.
+The hero commercial claim: a customer running OPENCLAW-NIE-GUARD can operate OpenClaw over sensitive data without OpenClaw or the model provider ever possessing cleartext, without either holding policy authority, and without either controlling the audit record.
 
 ---
 
@@ -56,7 +56,7 @@ This is the hero feature. It deserves a full architectural section because it is
 
 ### 2.1 Design principle
 
-OpenClaw, and by extension OpenAI, is a cleartext-hungry execution surface. The FHE Context Gate refuses that assumption. Sensitive context is classified at admission, encrypted under CKKS at the adapter boundary, and either operated on as ciphertext (where FHE semantics apply) or held encrypted until a policy-approved, Providence-logged decryption event. The gate is a policy enforcement point, not a blanket encryption layer.
+OpenClaw is a cleartext-hungry execution surface. The FHE Context Gate refuses that assumption. Sensitive context is classified at admission, encrypted under CKKS at the adapter boundary, and either operated on as ciphertext (where FHE semantics apply) or held encrypted until a policy-approved, Providence-logged decryption event. The gate is a policy enforcement point, not a blanket encryption layer.
 
 ### 2.2 Context classification
 
@@ -162,7 +162,7 @@ New threat paths added for the v2 scope:
 
 | # | Threat | Actor | Control |
 |---|---|---|---|
-| T-12 | Model vendor extracts sensitive context for training or logging | OpenAI as honest-but-curious operator | FHE Context Gate (A1) Mode A/B; Mode C only with explicit policy approval |
+| T-12 | Model vendor extracts sensitive context for training or logging | A model provider as honest-but-curious operator | FHE Context Gate (A1) Mode A/B; Mode C only with explicit policy approval |
 | T-13 | External messaging channel exploitation (Telegram class) | Adversary with access to MCP server backing a messaging provider | MCP Boundary Mediation (A3) with response sanitization and external content tagging |
 | T-14 | Hyperscaler insider access to prompt logs | Privileged operator at model vendor | Mode A/B leave no cleartext for insider to read; Mode C decryptions are Providence-anchored and dual-controlled at regulated and classified-adjacent levels |
 | T-15 | Policy rewrite by attacker with broker write access | Compromised admin or supply-chain implant in broker deployment | Signed Policy Bundles (A10) with ceremony-rooted signing key |
@@ -249,7 +249,7 @@ Additions for v2 scope:
 | VectorShield-FHE composition introduces double-encryption performance cost | Low | Medium | VectorShield operates on FHE ciphertext; validate composition semantics in Phase 3 |
 | Signed policy bundle key ceremony delays delivery | Medium | High | Manual key in v1 with ceremony in follow-on; bundle verification logic ships complete |
 | XEI baseline insufficient at launch (no history) | High | Low | Ship with conservative default baseline and bootstrap period; escalation disabled for first 72 hours of any new session subject pair, deny-on-anomaly afterward |
-| OpenAI-owned OpenClaw changes API in ways that break adapter | Medium | Medium | Adapter isolation is already a design principle; version-pin against a known OpenClaw release; document upgrade path |
+| Upstream OpenClaw changes its API in ways that break the adapter | Medium | Medium | Adapter isolation is already a design principle; version-pin against a known OpenClaw release; document upgrade path |
 
 ---
 
@@ -282,6 +282,6 @@ Target: full Tier A delivery in 15 working days. First demo-ready milestone at d
 
 ## 10. Closing
 
-The v1 plan produced a strong security layer. The v2 plan produces a strategic asset. The difference is scope, posture, and publication path. FHE in production is the lever that moves this from "a POC" to "the reference implementation the market will cite," and the OpenAI-owned OpenClaw context is the moment that makes that argument land without effort.
+The v1 plan produced a strong security layer. The v2 plan produces a strategic asset. The difference is scope, posture, and publication path. FHE in production is the lever that moves this from a POC to a reference implementation.
 
 The single highest-leverage lever in v2 remains A1 (FHE Context Gate). If any single item determines whether this POC lands as a market-defining artifact or a well-engineered side project, it is that one. Everything else in Tier A supports it.

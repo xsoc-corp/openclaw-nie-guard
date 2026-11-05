@@ -145,8 +145,7 @@ DOI and repository in prior posts. Open to technical conversations.
   numbers and independent validations
 - For buyer inquiries, move to direct message quickly; do not publish pricing
   or customer names in public thread
-- For journalist inquiries, refer to XSOC comms; do not comment on OpenAI
-  relationship status publicly regardless of whether engagement is active
+- For journalist inquiries, refer to XSOC comms
 
 ## Visual assets
 
