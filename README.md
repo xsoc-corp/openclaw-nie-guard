@@ -13,6 +13,16 @@ override.
 
 A working reference implementation. The broker admits sessions, tracks context provenance, mediates operations through the OpenClaw adapter, gates sensitive context through the FHE gate, and records every decision on a Providence chain (record encoding v3), with anchors signed by Ed25519 here and by ML-DSA-65 in the production deployment. NIE and FHE run on mock bindings in this repository; the production repository substitutes the production primitives. Six `TODO(xsoc-openclaw-poc)` markers remain open.
 
+## AIDA-Guard v3: the Guard for MCP
+
+AIDA-Guard v3 adds the Guard: AIDA-Guard's binding to MCP, an enforcement point in front of the tool servers an agent reaches. The agent carries a capability token that names the tools it may call and the constraints on their arguments. The Guard decides every `tools/call` against that token and records each decision before it forwards anything. A persuaded agent acts only within its grant.
+
+What this repository publishes for v3:
+- **The Guard, at the level of its capabilities and properties:** its checks, with the canonical names of XSOC-MCP-DN-001 v1.3, its record, and its transports, in `docs/aida-guard-mcp.md`.
+- **The record format:** Providence record encoding v3, with known-answer vectors shared byte for byte with the production writer and the offline verifier, in `docs/providence-record-v3.md`.
+- **Evidence you can verify yourself:** two Guard chains from XSOC's hosted deployment, each tied to a TPM by a checkpoint, with the pins and the procedure, in `evidence/aida-guard-hosted-checkpoint-1`.
+- **What stays private, and why,** in `docs/what-stays-private.md`.
+
 ## Quickstart (reviewers, 3-5 minutes)
 
 ```bash
@@ -105,7 +115,8 @@ This repository is the **public** reference architecture. The following are **ne
 - XSOC FHE SDK internals
 - Actual customer policy bundles
 
-See `docs/disclosure-policy.md` for the full boundary. A disclosure lint runs in CI
+See `docs/disclosure-policy.md` for the full boundary, and `docs/what-stays-private.md`
+for the AIDA-Guard v3 items and the reason for each. A disclosure lint runs in CI
 on every push; forbidden terms cause a hard CI failure.
 
 ## Repository layout
@@ -137,7 +148,12 @@ openclaw-nie-guard/
 │   ├── disclosure-lint.mjs  # Forbidden-term lint (CI-enforced)
 │   └── verify-public-boundary.mjs  # Private-import lint (CI-enforced)
 ├── .github/workflows/       # CI: Node, Rust, Disclosure Lint
+├── evidence/
+│   └── aida-guard-hosted-checkpoint-1/  # Guard chains with TPM checkpoints, verify it yourself
 └── docs/
+    ├── aida-guard-mcp.md    # The Guard for MCP: checks, record, transports (v3)
+    ├── providence-record-v3.md
+    ├── what-stays-private.md
     ├── architecture.md
     ├── threat-model.md
     ├── disclosure-policy.md

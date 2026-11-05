@@ -1,0 +1,46 @@
+XSOC AIDA-Guard offline Providence verification
+chain       guard
+records     records/g2
+anchor key  ML-DSA-65 f9bc8d4b1e723cdb
+
+[PASS] record encoding, linkage and sequencing
+       lines read       1
+       records linked   1
+[PASS] chain ends where the head says
+       chain_id         aida-guard/aida-guard-01-mcp-g2
+       head seq         1
+       head digest      e6b45caa013129a7c68cfd6a0ec07dd294c4c8a88a5de9c198c9b1d51c9b58b2
+       head commitment  4d0598e85a91efc757510628ae7586169e0833584a59ece36afe24535f8c5c74
+[PASS] anchor 000000000000-1793431239768.json is signed by the pinned key over the chain
+       head seq 0  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793431239768
+[PASS] anchor 000000000000-1793432507234.json is signed by the pinned key over the chain
+       head seq 0  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793432507234
+[PASS] anchor 000000000000-1793465171021.json is signed by the pinned key over the chain
+       head seq 0  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793465171021
+[PASS] anchor 000000000000-1793465296821.json is signed by the pinned key over the chain
+       head seq 0  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793465296821
+[PASS] anchor 000000000000-1793465623022.json is signed by the pinned key over the chain
+       head seq 0  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793465623022
+[PASS] anchor 000000000000-1793477261074.json is signed by the pinned key over the chain
+       head seq 0  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793477261074
+[PASS] anchor 000000000001-1793478429014.json is signed by the pinned key over the chain
+       head seq 1  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793478429014
+[PASS] anchor 000000000001-1793478813055.json is signed by the pinned key over the chain
+       head seq 1  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793478813055
+[PASS] anchor 000000000001-1793478832243.json is signed by the pinned key over the chain
+       head seq 1  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793478832243
+[PASS] anchor 000000000001-1793506515582.json is signed by the pinned key over the chain
+       head seq 1  ML-DSA-65  key f9bc8d4b1e723cdb  at 1793506515582
+       records after the latest anchor: 0
+[PASS] checkpoint guard-cp-000001.json certifies a head of this chain
+       head seq 1  commitment 4d0598e85a91efc757510628ae7586169e0833584a59ece36afe24535f8c5c74
+[PASS] checkpoint guard-cp-000001.json nonce chains from its predecessor
+       nonce 7707d94e8fc2ab0e4ab22e5d0d5f5067fd82437bd1bd024a150c0a6477da1471
+[PASS] checkpoint guard-cp-000001.json is signed by the pinned TPM
+       tier             certified key rooted in an identified TPM (code 2)
+       part             id:49465800 SLB 9672 TPM2.0
+       issuing CA       Infineon OPTIGA(TM) TPM 2.0 ECC CA 056
+       qualifying data  353d8a545ab1995ea266098fa12c2df084c1dd44e2cd24befff54d9995e74f3a
+
+checks failed: 0    not run: 0
+Verification COMPLETE: every check ran and passed.
