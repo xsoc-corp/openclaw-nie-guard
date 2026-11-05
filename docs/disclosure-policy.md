@@ -48,71 +48,15 @@ in this repository or in any public deliverable.
 - Statistical testing harness methodology and bias evaluation internals
 - Full parameterization detail from the XSOC Executive Validation Report Section 3 and Appendix F
 
-## Citation rules for external validations
+## Citation rules
 
-Three independent validations of XSOC cryptographic primitives may be cited in
-public materials using precise language that does not misrepresent their scope
-or timing. These rules are mandatory for all Zenodo publications, arXiv
-submissions, commercial briefs, LinkedIn posts, and any other public-facing
-XSOC communication.
-
-### Perrin and Biryukov
-
-Confidential cryptographic audits of the **legacy XSOC cryptosystem** conducted
-by Léo Perrin and Alex Biryukov (University of Luxembourg) in **2020 and 2024**.
-These audits **predate the creation of DSKAG**. Mandatory findings from both
-audits were incorporated into the canonical build 2025-10.
-
-**Correct citation form:**
-
-> "Independent cryptographic audits of the legacy XSOC cryptosystem were
-> performed by Léo Perrin and Alex Biryukov of the University of Luxembourg
-> in 2020 and 2024. These audits predate the creation of DSKAG. Mandatory
-> recommendations from both audits were incorporated into the current
-> canonical build (SP-VERSA Canonical Build 2025-10)."
-
-**Incorrect forms that must never be used:**
-
-- "Perrin and Biryukov reviewed DSKAG" (false; audits predate DSKAG)
-- "Perrin and Biryukov peer-reviewed the canonical build" (false; the audits
-  were of the legacy implementation, with findings incorporated into the
-  canonical build rather than re-audited against it)
-- "Perrin and Biryukov validated XSOC-NIE-GUARD" (false; out of scope)
-- "Published peer review by Perrin and Biryukov" (false; the audits are
-  confidential)
-
-### California Polytechnic State University at San Luis Obispo
-
-Department of Computer Science, Faculty Cryptography Laboratory, Dieharder
-v3.31.1 statistical validation of the XSOC entropy subsystem.
-
-**Citable facts:**
-
-- Tool: Dieharder v3.31.1
-- Dataset identifier: "XSOC Dieharder Output 20220104A," available under
-  controlled access (Appendix F of the Executive Validation Report)
-- Methodology: 50 test batches, each exceeding 64 Mbits of output, produced
-  via the generateInitialKeyVector() method on the canonical XSOC RNG
-- Test matrices: Diehard, NIST SP 800-22 STS, RGB, DAB
-- Results: 98 tests total, 97 passed, 1 weak (within tolerance 0.01 <= p <= 0.99), 0 failed
-- Aggregate: **99.4 percent** pass rate
-
-**Always Cal Poly San Luis Obispo. Never Pomona.**
-
-### George Mason University SENTINEL FP5223
-
-GMU SENTINEL laboratory audit of the XSOC cryptographic stack with finding
-reference FP5223. **The full public report is scheduled for publication in
-June 2026.** Until publication, the audit may be cited as a forthcoming
-public report.
-
-**Correct citation form (pre-publication):**
-
-> "George Mason University SENTINEL laboratory audit, finding reference
-> FP5223, with the full report scheduled for public release in June 2026."
-
-**Post-June-2026 citation** will cite the published report directly with
-authors, title, and publication venue.
+This repository cites no external evaluation of XSOC primitives. The
+evaluations to date covered components AIDA-Guard does not contain, so
+AIDA-Guard's assurance rests on what this repository lets a reader reproduce:
+the known-answer vectors, the record format, the offline verifier and a
+published evidence set. The rule below is mandatory for all Zenodo
+publications, arXiv submissions, commercial briefs, LinkedIn posts, and any
+other public-facing XSOC communication made from this repository.
 
 ### XSOC Executive Validation Report
 

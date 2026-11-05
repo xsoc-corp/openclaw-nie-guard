@@ -24,7 +24,7 @@ The Guard terminates MCP from the client and re-originates to the servers. One G
 - the epoch registry, whose increment revokes every outstanding token of a tenant at once;
 - Providence, which seals every decision.
 
-**What is not trusted:** the host, the agent and every MCP server. A server is untrusted because a malicious server is a live attack path in MCP: it can return content designed to steer the agent's next action.
+**Outside the trust boundary:** the host, the agent and every MCP server. A server is untrusted because a malicious server is a live attack path in MCP: it can return content designed to steer the agent's next action.
 
 **Where the key lives:** the Guard runs apart from the agent and from each server. Its key is out of their reach. The key a Guard holds serves that Guard alone, so the loss of one Guard's key is the loss of one Guard.
 
@@ -57,9 +57,9 @@ Each grant names a `(server, tool)` and the constraints its arguments must satis
 - lexical path containment;
 - absence.
 
-**The line the Guard does not cross.** It does not judge whether an argument is semantically dangerous:
-- A path within `/srv/reports` is in scope. Whether an email body looks like exfiltration is not, and never will be.
-- Path containment resolves `.` and `..` against a fixed root, as a pure function of the string. It does not follow symbolic links, so the server's own root confinement remains the second line for that case.
+**Where the constraints stop.**
+- A path within `/srv/reports` is in scope. Whether an email body amounts to exfiltration is a judgment for the output boundary, which EXIOM governs.
+- Path containment is lexical: it resolves `.` and `..` against a fixed root as a pure function of the string. Symbolic links are resolved by the server's own root confinement, which is the second line for that case.
 
 ## The decision path
 
@@ -143,11 +143,11 @@ The verifier, `xsoc-audit-verify`, is published as binaries in XSOC AIDA-Guard's
 
 Each tenant has an epoch. Advancing it revokes every outstanding token of that tenant at once: their next call is refused at `epoch`. The Guard holds the current epoch and refreshes it, and it refuses every call when the epoch it holds is older than its bound allows.
 
-## What this does not do
+## Where the Guard's responsibility ends
 
-- **No judgment of the agent:** it does not judge intent, inspect responses, score behavior or alert.
-- **No protection inside a grant:** it does not stop an agent doing damage within a grant that was too wide. Writing grants is the operator's real work.
-- **No filtering of the tool list:** the agent sees every tool its servers offer, and is refused at the call.
-- **Not a platform:** it is the enforcement layer underneath one.
+- The Guard decides authority. Judging intent, inspecting responses and scoring behavior belong to other layers: EXIOM governs the output boundary, and XEI scores exposure.
+- A grant is the operator's statement of what the agent may do, and the Guard enforces it exactly; writing grants well is the operator's real work.
+- The agent sees every tool its servers offer and is answered at the call.
+- The Guard is the enforcement layer a platform stands on.
 
 XSOC Corp. Cryptography in AIDA-Guard runs through AWS-LC in FIPS-approved mode, and the XSOC cryptographic module is in CMVP validation with Leidos.

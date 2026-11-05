@@ -173,15 +173,10 @@ Apache 2.0. See LICENSE.
 
 XSOC Corp designs and builds cryptographic infrastructure for high-trust environments,
 including post-quantum key agreement, policy-bound encryption, homomorphic evaluation,
-software-defined diode transport, and continuity-bound audit.
-
-Independent evaluations:
-- Cal Poly San Luis Obispo, Dieharder v3.31.1 on the XSOC entropy subsystem: 99.4 percent
-  aggregate across 98 tests.
-- GMU SENTINEL laboratory audit FP5223 (full report publication scheduled June 2026).
-
-Cryptography in AIDA-Guard runs through AWS-LC in FIPS-approved mode, and the XSOC
-cryptographic module is in CMVP validation with Leidos.
+software-defined diode transport, and continuity-bound audit. AIDA-Guard's assurance rests
+on what this repository lets you reproduce: the known-answer vectors, the record format, the
+offline verifier and a published evidence set, with cryptography through AWS-LC in
+FIPS-approved mode today and the XSOC cryptographic module in CMVP validation with Leidos.
 
 - Website: https://xsoccorp.com
 - OWASP AI Exchange: contributor

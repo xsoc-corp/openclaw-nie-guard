@@ -1,6 +1,6 @@
-# What stays private, and why
+# The disclosure boundary: what is published, what is held, and why
 
-This repository publishes AIDA-Guard at the level of its capabilities and the properties it holds. That covers:
+This repository publishes AIDA-Guard at the level of its capabilities and the properties it holds, and this page states the boundary. What it publishes:
 - the Guard's checks and their canonical names (`docs/aida-guard-mcp.md`);
 - the Providence record format with its known-answer vectors (`docs/providence-record-v3.md`);
 - the reference broker and its mock bindings;
