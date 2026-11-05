@@ -108,7 +108,7 @@ An offline verifier checks:
 - every anchor, against a pinned key;
 - every checkpoint, against pinned roots, the endorsement key and the attestation key.
 
-`evidence/aida-guard-hosted-checkpoint-1` is a set you can check yourself.
+The verifier, `xsoc-audit-verify`, is published as binaries in XSOC AIDA-Guard's Zenodo record, https://doi.org/10.5281/zenodo.19685360, beside their license notice. `evidence/aida-guard-hosted-checkpoint-1` is a set you can check with it yourself.
 
 ## Transports
 

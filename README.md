@@ -31,7 +31,7 @@ cd openclaw-nie-guard
 ./scripts/quickstart.sh
 ```
 
-The quickstart script installs dependencies, builds the workspace, runs the test suite, starts the broker with mock bindings, executes the full 25-scenario attack simulation harness, and displays the resulting Providence audit chain. Requires Node 20+, pnpm 9+, and optionally Docker for Redis and the mock OpenClaw transport.
+The quickstart script installs dependencies, builds the workspace, runs the test suite, starts the broker with mock bindings, executes the attack simulation harness (29 scenarios: 20 run, and 9 skeletons report SKIP), and displays the resulting Providence audit chain. Requires Node 20+, pnpm 9+, and optionally Docker for Redis and the mock OpenClaw transport.
 
 ## Quick start (local dev)
 
@@ -126,7 +126,7 @@ openclaw-nie-guard/
 ├── apps/
 │   ├── broker/              # Fastify broker service
 │   ├── demo-client/         # Happy-path demo driver
-│   └── attack-sim/          # Deterministic 23-scenario attack harness
+│   └── attack-sim/          # Deterministic attack harness: 29 scenarios, 20 implemented
 ├── packages/
 │   ├── shared-types/        # Zod schemas and TS types
 │   ├── nie-bindings/        # Stable NIE interface (mock impl; prod via override)

@@ -38,7 +38,7 @@ From this folder:
    - Linux: `sha256sum -c SHA256SUMS`
    - macOS: `shasum -a 256 -c SHA256SUMS`
    - Windows, in PowerShell: `Get-FileHash -Algorithm SHA256 <file>` gives the digest to compare with the file's line in `SHA256SUMS`.
-2. **Check the verifier.** The verifier is `xsoc-audit-verify`, build xsoc-pqc-s3-console-api `84a8df3`. Before you run it, check its SHA-256 against `verify.json`:
+2. **Get the verifier and check it.** The verifier is `xsoc-audit-verify`, build xsoc-pqc-s3-console-api `84a8df3`. Its binaries are files in XSOC AIDA-Guard's Zenodo record, beside their license notice, `LICENSE.txt`: https://doi.org/10.5281/zenodo.19685360. Before you run it, check its SHA-256 against `verify.json`:
    - Linux x86-64, `xsoc-audit-verify`: `8433f7401b3befa0da5b126cc7813c8a226b183827b57cac09e9519f880001c7`
    - Windows x86-64, `xsoc-audit-verify.exe`: `5476682e14274bcfa7b76657018e73d143886f46d1f9ba6f022d5054851e5a3a`
 3. **Run it on each chain.** On Linux, for g1:
@@ -71,8 +71,12 @@ From this folder:
 - **`pin_ek`** is the SHA-256 of the part's endorsement key certificate.
 - **`pin_ak`** is the name of the attestation key. Before any checkpoint was made, XSOC proved the key resident in this part by credential activation, and a credential bound to another key was refused. The pin comes from that proof, not from the checkpoints.
 
-## Nothing here is a secret
+## Nothing here is a secret or an operator token
 
-Every file in this set was checked before publication: the records, the anchors, the keys and the checkpoints carry digests, public keys, signatures and public TPM structures only. Each anchor key is an ML-DSA-65 public key, 1952 bytes. The certificates are public certificates.
+Every file in this set was checked before publication:
+- The records, the anchors, the keys and the checkpoints carry digests, public keys, signatures and public TPM structures only.
+- Each anchor key is an ML-DSA-65 public key, 1952 bytes. The certificates are public certificates.
+- No string in any file is one of the deployment's operator tokens.
+- No record carries a session handle.
 
 XSOC Corp. Cryptography in AIDA-Guard runs through AWS-LC in FIPS-approved mode, and the XSOC cryptographic module is in CMVP validation with Leidos.
