@@ -260,7 +260,7 @@ Items that block nothing but sharpen the work if answered soon:
 1. **Telegram exploit specifics.** Advisory, internal writeup, or public reference. Needed to attach test case to scenario 16 with real attack shape rather than generic MCP-injection template.
 2. **OpenClaw version target.** Pin against which release. Affects adapter surface.
 3. **Tier B priority.** Of B1 through B4, which is the first post-POC commitment. My recommendation: B4 CAISI alignment first (turns the POC into a government-facing reference), then B1 SDD diode mode for an air-gapped defense deployment.
-4. **Public repo split.** OPENCLAW-NIE-GUARD as public reference architecture (maximum narrative leverage) or xsoc-corp private (preserves commercial differentiation). My recommendation: split. Public reference repo with the broker interface and mock NIE bindings, private production repo with full NIE and FHE integration. This is the same pattern used for xsoc-qsig-cga public release.
+4. **Public repo split.** OPENCLAW-NIE-GUARD as public reference architecture (maximum narrative leverage) or xsoc-corp private (preserves commercial differentiation). My recommendation: split. Public reference repo with the broker interface and mock NIE bindings, private production repo with full NIE and FHE integration. This is the same pattern XSOC used for the QSIG public release.
 5. **Zenodo companion paper authorship.** Solo or co-authored.
 
 ---

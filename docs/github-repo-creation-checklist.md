@@ -22,7 +22,7 @@ in the current tarball. Do not change this unless you have a reason.
 xsoc-corp
 ```
 Rationale: matches `CODEOWNERS`, matches package `repository.url` in package.json,
-matches prior XSOC public repo pattern (xsoc-qsig-cga-release).
+matches the pattern of XSOC's earlier public releases.
 
 **Description (341 char, fits GitHub's 350 limit):**
 ```
