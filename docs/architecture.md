@@ -81,7 +81,7 @@ External channels (Telegram, Slack, Discord, email, WhatsApp) are treated as
 untrusted. MCP responses are sanitized for known prompt-injection patterns and
 tagged with `<external_content>` markers before entering the model context.
 
-## Behavioral Exposure Meter (BEM) integration
+## XEI integration (the XSOC ExposureShield exposure index)
 
 Per-session drift scoring based on intent variance, target dispersion, context
 manifest churn, Mode C decryption frequency, and continuity counter pattern.

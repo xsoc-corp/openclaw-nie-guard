@@ -87,7 +87,7 @@ composes with this path to produce full admin takeover in the common case.
   intent drift detected
 - A4 Context Providence Chain: every MCP-sourced element registered and classified as external
 - A1 FHE Context Gate: MCP content touching sensitive data classified before admission to context
-- A9 BEM: anomalous ingestion patterns escalate session profile
+- A9 XEI: anomalous ingestion patterns escalate session profile
 
 ### T-02 Plaintext credential theft at rest
 
@@ -264,6 +264,6 @@ Adversarial perturbations encoded into legitimate images or audio that a multi-m
   assume the risk.
 - Mode C decryption, even with attestation, leaks cleartext to the attested endpoint.
   This is the release valve and is expected to be rare. Metrics on Mode C frequency
-  per subject drive BEM escalation.
+  per subject drive XEI escalation.
 - Disclosure policy failure is a catastrophic risk (loss of trade secret IP). Mechanical
   CI enforcement is the primary mitigation; advisor review is the secondary.

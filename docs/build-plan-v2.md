@@ -2,7 +2,7 @@
 
 **Revision:** v2, strategic posture update
 **Status:** Approved for execution at supreme-impact scope
-**Changes from v1:** FHE-SDK promoted to Tier A lead primitive. All former Tier B items (CDT, BEM, Signed Policy Bundles, VectorShield, Compliance Map) promoted to Tier A mandatory. Strategic posture updated for post-acquisition landscape. Telegram vector added to threat model as concrete external-channel exploitation case.
+**Changes from v1:** FHE-SDK promoted to Tier A lead primitive. All former Tier B items (CDT, XEI, Signed Policy Bundles, VectorShield, Compliance Map) promoted to Tier A mandatory. Strategic posture updated for post-acquisition landscape. Telegram vector added to threat model as concrete external-channel exploitation case.
 
 ---
 
@@ -34,7 +34,7 @@ Tier A is now the entire delivery scope. Every item below ships in the POC.
 | A6 | Dual-Control for Admin Actions | Co-sign via nie-enrollment ceremony for admin.control and exec.run |
 | A7 | Shadow Mode and Attack Replay | Policy regression detection without production impact |
 | A8 | Capability Derivation Tree | Sub-agent scoping via DSKAG derivation |
-| A9 | BEM-Driven Adaptive Profile Escalation | Behavior-driven profile tightening |
+| A9 | XEI-Driven Adaptive Profile Escalation | Behavior-driven profile tightening |
 | A10 | Signed Policy Bundles | Policies are signed artifacts with ceremony-rooted keys |
 | A11 | VectorShield Integration | RAG chunks through VectorShield, composes with A1 |
 | A12 | Compliance Control Mapping | Named-framework map as first-class artifact |
@@ -97,7 +97,7 @@ This mode is the workhorse for most regulated-data text generation cases. The mo
 - Providence decryption event as the audit anchor
 - Dual-control cosign for regulated or classified-adjacent classifications
 
-Mode C is the release valve. It should be the least-used path. Metrics per session and per subject track Mode C frequency; sustained high Mode C rate is a BEM input (A9) that triggers profile escalation.
+Mode C is the release valve. It should be the least-used path. Metrics per session and per subject track Mode C frequency; sustained high Mode C rate is an XEI input (A9) that triggers profile escalation.
 
 ### 2.4 Package structure
 
@@ -167,7 +167,7 @@ New threat paths added for the v2 scope:
 | T-13 | External messaging channel exploitation (Telegram class) | Adversary with access to MCP server backing a messaging provider | MCP Boundary Mediation (A3) with response sanitization and external content tagging |
 | T-14 | Hyperscaler insider access to prompt logs | Privileged operator at model vendor | Mode A/B leave no cleartext for insider to read; Mode C decryptions are Providence-anchored and dual-controlled at regulated and classified-adjacent levels |
 | T-15 | Policy rewrite by attacker with broker write access | Compromised admin or supply-chain implant in broker deployment | Signed Policy Bundles (A10) with ceremony-rooted signing key |
-| T-16 | Session drift toward exfiltration over long workflow | Prompt-injected agent, slow-burn data exfiltration | BEM (A9) with adaptive escalation; Mode C rate as BEM input |
+| T-16 | Session drift toward exfiltration over long workflow | Prompt-injected agent, slow-burn data exfiltration | XEI (A9) with adaptive escalation; Mode C rate as XEI input |
 | T-17 | Sub-agent scope widening | Multi-agent orchestration with flat capability reuse | Capability Derivation Tree (A8) with strict narrowing |
 
 ### 3.3 Telegram-class external channel threat
@@ -180,7 +180,7 @@ Controls stacked against this class:
 - **A2 Agent Intent Envelope:** the agent's declared intent is bound before the MCP response is fetched, so post-fetch intent drift is detectable
 - **A4 Context Providence Chain:** every MCP-sourced content element has a Providence-anchored ID and is marked with the `provenance` class `external`
 - **A1 FHE Context Gate:** MCP content touching sensitive data surfaces is classified before being admitted to the context, and is not permitted to cross Mode C without approval
-- **A9 BEM:** anomalous MCP ingestion patterns are baseline inputs; a session that suddenly starts pulling large volumes of external-channel content is escalated
+- **A9 XEI:** anomalous MCP ingestion patterns are baseline inputs; a session that suddenly starts pulling large volumes of external-channel content is escalated
 
 Send the specific Telegram advisory or internal writeup and I will map each identified exploitation step to a specific broker deny path with test coverage in the attack sim.
 
@@ -229,10 +229,10 @@ Original 13. Additions for v2:
 |---|---|---|
 | 14 | Regulated-classification context forced into Mode C without dual-control | A1 FHE gate + A6 dual-control composition |
 | 15 | Mode A embedding similarity search on FHE-encrypted RAG chunks | A1 + A11 VectorShield composition |
-| 16 | Telegram-class MCP server delivers prompt-injected content | A3 MCP mediation + A2 intent envelope + A9 BEM |
+| 16 | Telegram-class MCP server delivers prompt-injected content | A3 MCP mediation + A2 intent envelope + A9 XEI |
 | 17 | Sub-agent attempts capability use outside derivation-tree scope | A8 CDT enforcement |
 | 18 | Policy bundle swapped in Redis with forged signature | A10 signed bundle verification |
-| 19 | Long-running session with slow drift toward exfiltration pattern | A9 BEM adaptive escalation across profiles |
+| 19 | Long-running session with slow drift toward exfiltration pattern | A9 XEI adaptive escalation across profiles |
 | 20 | Honest-but-curious model endpoint attempts to log Mode A context | A1 Mode A no-cleartext guarantee; verification via Providence plus model-endpoint attestation check |
 
 Twenty total scenarios. Attack sim runs in under 90 seconds end-to-end.
@@ -249,7 +249,7 @@ Additions for v2 scope:
 | XSOC-FHE-SDK integration surfaces Java gRPC wrapper version drift | Medium | Medium | Pin SDK version; integration test in CI; wrapper is 5-10x faster than JNI so this is the path not an alternative |
 | VectorShield-FHE composition introduces double-encryption performance cost | Low | Medium | VectorShield operates on FHE ciphertext; validate composition semantics in Phase 3 |
 | Signed policy bundle key ceremony delays delivery | Medium | High | Manual key in v1 with ceremony in follow-on; bundle verification logic ships complete |
-| BEM baseline insufficient at launch (no history) | High | Low | Ship with conservative default baseline and bootstrap period; escalation disabled for first 72 hours of any new session subject pair, deny-on-anomaly afterward |
+| XEI baseline insufficient at launch (no history) | High | Low | Ship with conservative default baseline and bootstrap period; escalation disabled for first 72 hours of any new session subject pair, deny-on-anomaly afterward |
 | OpenAI-owned OpenClaw changes API in ways that break adapter | Medium | Medium | Adapter isolation is already a design principle; version-pin against a known OpenClaw release; document upgrade path |
 
 ---

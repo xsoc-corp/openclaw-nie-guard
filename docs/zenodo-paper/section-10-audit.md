@@ -19,7 +19,7 @@ through a three-tier revocation propagation design.
 Providence is a per-broker append-only log of structured events.
 Every admission, every invoke decision (approve or deny), every
 revocation, every bundle rotation, every continuity failure, every
-gate mode decision, every BEM escalation, and every dual-control
+gate mode decision, every XEI escalation, and every dual-control
 interaction produces exactly one Providence event. Events have a
 well-defined schema including the event type, the correlation
 identifier, the session and subject identifiers where applicable,
@@ -55,7 +55,7 @@ admission with attestation floor and policy bundle version, every
 invoke with its envelope, every intent class declaration, every
 classification assignment, every mode selection and its endpoint
 attestation identifier where applicable, every dual-control
-interaction, every continuity failure, every BEM drift score
+interaction, every continuity failure, every XEI drift score
 excursion, and the session termination.
 
 For an incident investigation, this reconstruction answers the

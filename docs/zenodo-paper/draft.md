@@ -304,7 +304,7 @@ skill manifest extension to cover ClawHub-class supply chain threats.)
 
 ## 9. Behavioral Escalation
 
-(Draft: BEM drift scoring, adaptive profile transitions, interaction with
+(Draft: XEI drift scoring, adaptive profile transitions, interaction with
 Mode C frequency metrics.)
 
 ---
@@ -324,7 +324,7 @@ The reference implementation includes a deterministic twenty three scenario
 attack simulation harness. At the time of this draft, fifteen scenarios
 are end-to-end implemented against the broker and pass with the expected
 structured error codes. The remaining eight scenarios require capabilities
-not yet wired in the broker (streaming continuity, BEM drift scoring,
+not yet wired in the broker (streaming continuity, XEI drift scoring,
 shadow policy divergence, policy bundle signature verification, Mode C
 endpoint attestation, and the context-level classified-adjacent test) and
 are scheduled for Phase 2 through Phase 7.
@@ -351,7 +351,7 @@ Table 11.1 summarizes current status:
 | 16 | Telegram-class MCP injection | Implemented | ERR_MCP_RESPONSE_TAINTED |
 | 17 | Pairing escalation (CVE-2026-33579 class) | Implemented | ERR_SCOPE_DENIED |
 | 18 | Policy bundle signature forgery | Skeleton | ERR_POLICY_BUNDLE_INVALID |
-| 19 | Lethal-trifecta drift under BEM | Skeleton | profile_escalated |
+| 19 | Lethal-trifecta drift under XEI | Skeleton | profile_escalated |
 | 20 | Honest-but-curious endpoint Mode A extraction | Skeleton | ERR_ENDPOINT_ATTESTATION_FAILED |
 | 21 | Unsigned skill (ClawHavoc class) | Implemented | ERR_SKILL_UNSIGNED |
 | 21b | Skill signed by untrusted signer | Implemented | ERR_SKILL_BLOCKED |
@@ -507,7 +507,7 @@ repository at `docs/franklin-taxonomy-mapping.md`.
 |---|---|---|---|
 | Content Injection | Web-standard obfuscation, dynamic cloaking, syntactic masking | A3 MCP mediator, A4 CPC | Strong |
 | Content Injection (multi-modal) | Steganographic payloads in images or audio | A4 content hash on binary; perturbation detection not present | Partial |
-| Semantic Manipulation | Biased phrasing, framing, oversight evasion | A2 Intent Envelope, A6 Dual-Control, A9 BEM | Strong |
+| Semantic Manipulation | Biased phrasing, framing, oversight evasion | A2 Intent Envelope, A6 Dual-Control, A9 XEI | Strong |
 | Semantic Manipulation | Persona hyperstition | Out of scope, training-time concern | Not covered |
 | Cognitive State | RAG knowledge poisoning, latent memory poisoning | VectorShield, FHE Mode A, Providence | Strong |
 | Cognitive State | Contextual learning traps | Signed policy bundles, A3 sanitization | Medium |

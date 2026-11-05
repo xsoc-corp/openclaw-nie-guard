@@ -49,18 +49,18 @@ pnpm --filter @xsoc/attack-sim dev
 
 XSOC AIDA-Guard sits in front of OpenClaw (or any compatible agent framework) and enforces:
 
-1. Hardware and context bound admission via NIE device attestation
-2. Role scoped, short-TTL capability derivation via DSKAG
+1. Hardware- and context-bound admission via Nexus Identity Engine (NIE) device attestation
+2. Role-scoped, short-TTL capability derivation via DSKAG
 3. Runtime continuity and per-operation integrity via TSTL envelopes
 4. Context Providence via hash-anchored context manifests
-5. Agent intent binding to prevent prompt-injection-driven misuse
-6. FHE Context Gate for sensitive context that must never reach the model in cleartext
+5. Agent intent binding, which holds an agent to the intent its operator authorized, under prompt injection included
+6. FHE Context Gate: sensitive context reaches the model only under encryption
 7. MCP boundary mediation for external messaging channels (Telegram, Slack, Discord, email)
 8. Signed policy bundles with ceremony-rooted keys
 9. Hash-linked audit chain, anchored and verifiable offline, via Providence
-10. Adaptive profile escalation via BEM
+10. Adaptive profile escalation via XEI, the XSOC ExposureShield exposure index
 
-It governs what an OpenClaw agent may do.
+It governs what an OpenClaw agent may do. It is built for the assume-compromise posture the early-2026 OpenClaw advisories describe.
 
 See `docs/build-plan.md`, `docs/threat-model.md`, and `docs/exploit-mapping-and-disclosure-policy.md`.
 
@@ -173,12 +173,12 @@ Apache 2.0. See LICENSE.
 
 XSOC Corp designs and builds cryptographic infrastructure for high-trust environments,
 including post-quantum key agreement, policy-bound encryption, homomorphic evaluation,
-software-defined diode transport, and continuity-bound audit. Independent validations
-of the broader XSOC cryptographic stack include Perrin and Biryukov audits of the legacy
-cryptosystem at the University of Luxembourg in 2020 and 2024 (with mandatory findings
-incorporated into the current canonical build), Cal Poly San Luis Obispo Dieharder
-v3.31.1 at 99.4 percent aggregate across 98 tests, and GMU SENTINEL laboratory audit
-FP5223 (full report publication scheduled June 2026).
+software-defined diode transport, and continuity-bound audit.
+
+Independent evaluations:
+- Cal Poly San Luis Obispo, Dieharder v3.31.1 on the XSOC entropy subsystem: 99.4 percent
+  aggregate across 98 tests.
+- GMU SENTINEL laboratory audit FP5223 (full report publication scheduled June 2026).
 
 Cryptography in AIDA-Guard runs through AWS-LC in FIPS-approved mode, and the XSOC
 cryptographic module is in CMVP validation with Leidos.

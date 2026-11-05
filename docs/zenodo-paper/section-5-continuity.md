@@ -162,8 +162,8 @@ only if all three verifications pass: TSTL envelope integrity (5.2),
 context manifest validity (5.3), and intent class alignment (5.4).
 Any failure terminates the operation and emits a Providence event with
 the specific reason code. The session itself is not automatically
-terminated on a single continuity failure; the Behavioral Escalation
-Meter (Section 9) correlates repeated continuity failures within a
+terminated on a single continuity failure; the XEI
+(Section 9) correlates repeated continuity failures within a
 session and escalates the session profile when a threshold is crossed.
 
 The failure semantics are deliberately fail-closed. Continuity failures

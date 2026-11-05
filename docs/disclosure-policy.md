@@ -16,7 +16,7 @@ by CI through `scripts/disclosure-lint.mjs` (forbidden-term lint) and
 - MCP Boundary Mediation design and sanitization patterns
 - Capability Derivation Tree concept and narrowing rules
 - FHE Context Gate mode taxonomy (A / B / C) and mode selection criteria
-- BEM integration interface and drift escalation pattern
+- XEI integration interface and drift escalation pattern
 - Signed policy bundle format at the JSON schema level
 - Compliance framework mapping
 - Attack simulation harness (demonstrates defenses, not exploits)

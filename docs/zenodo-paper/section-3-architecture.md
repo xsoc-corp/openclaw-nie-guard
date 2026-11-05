@@ -128,7 +128,7 @@ scoped derivation primitive that produces children strictly narrower than
 parents. Children cannot widen scope, cannot outlive parents, and revoke
 through the parent in sub-millisecond time.
 
-**A9, Behavioral Escalation Meter** (Section 9). Per-session drift scoring
+**A9, XEI, the XSOC ExposureShield exposure index** (Section 9). Per-session drift scoring
 based on intent variance, target dispersion, context manifest churn, Mode
 C frequency, and continuity counter pattern. Score crossing a threshold
 escalates session profile from standard to strict or from strict to
@@ -151,7 +151,7 @@ breaks via envelope counter cycles. Strict admits private data under Mode
 A or Mode B only and requires intent match for external communication.
 Restricted-information separates private data and external communication
 into mutually exclusive sessions. Profile selection is a signed policy
-bundle field and is enforced at admission; escalation via A9 BEM is
+bundle field and is enforced at admission; escalation via A9 XEI is
 audit-recorded. Per-operation downgrade is not permitted without a
 dual-control receipt.
 

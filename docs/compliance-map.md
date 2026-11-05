@@ -8,7 +8,7 @@ is a property of the architecture rather than a configuration option.
 | Function | Categories addressed | NIE-GUARD control |
 |---|---|---|
 | Map | Context, risks, actors | Threat model, classification taxonomy |
-| Measure | Trustworthy AI characteristics | Providence metrics, BEM scoring |
+| Measure | Trustworthy AI characteristics | Providence metrics, XEI scoring |
 | Manage | Risk mitigation, response | Profile escalation, revocation, dual-control |
 | Govern | Accountability, roles | Signed policy bundles, ceremony-rooted keys |
 
@@ -24,7 +24,7 @@ Palo Alto has mapped OpenClaw to every category. XSOC-NIE-GUARD addresses each:
 | Identity spoofing | Nexus Identity Engine (NIE) device attestation at admission |
 | Supply chain and trust | A10 signed bundles for skills and MCP servers |
 | Hallucinated output execution | Intent envelope, operation class allowlist |
-| Runaway autonomy | BEM adaptive profile escalation |
+| Runaway autonomy | XEI adaptive profile escalation |
 | Cascading failures | Short-TTL, CDT containment |
 | Untraceability | Providence hash chain |
 | Prompt injection | A3 MCP mediation, external-content tagging |

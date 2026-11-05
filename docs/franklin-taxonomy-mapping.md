@@ -29,7 +29,7 @@ Franklin et al. identify three vectors: biased phrasing and framing, oversight a
 
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
-| Biased phrasing, framing, contextual priming | A2 Agent Intent Envelope binds the declared intent class into the sealed envelope before action. Framing-induced drift in the agent's plan must manifest as an intent class that does not match the operation class, which the adapter rejects. A9 BEM detects persistent drift patterns across sessions. | Strong |
+| Biased phrasing, framing, contextual priming | A2 Agent Intent Envelope binds the declared intent class into the sealed envelope before action. Framing-induced drift in the agent's plan must manifest as an intent class that does not match the operation class, which the adapter rejects. A9 XEI detects persistent drift patterns across sessions. | Strong |
 | Oversight and critic evasion | A6 Dual-Control requires co-signed receipts from a distinct attested principal. A compromised critic cannot unilaterally approve a high-risk action. A10 Signed policy bundles mean critic models are themselves subject to signed bundle registration. | Strong |
 | Persona hyperstition | Out of scope for runtime mediation. Hyperstition operates through the model's training data and base persona, not through operations the broker can see. Acknowledged as a model-vendor concern. | Gap. Out of scope. |
 
@@ -44,7 +44,7 @@ Franklin et al. identify three vectors: RAG knowledge poisoning, latent memory p
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
 | RAG knowledge poisoning | VectorShield integration (Tier A in our plan) hardens the RAG pipeline with verified benchmarks showing -0.39 percent overhead. A1 FHE Mode A processes RAG chunks as ciphertext so a compromised endpoint cannot read the corpus. A4 CPC registers every retrieved chunk with its classification and `provenance`. | Strong |
-| Latent memory poisoning | Providence hash chain anchors every memory write. Retrieval of a poisoned memory entry produces a Providence event that correlates back to the write timestamp and source, enabling forensic reconstruction. A9 BEM detects anomalous memory reference patterns. | Medium |
+| Latent memory poisoning | Providence hash chain anchors every memory write. Retrieval of a poisoned memory entry produces a Providence event that correlates back to the write timestamp and source, enabling forensic reconstruction. A9 XEI detects anomalous memory reference patterns. | Medium |
 | Contextual learning traps (poisoned few-shot demos, reward signals) | A10 Signed policy bundles restrict which demo sources are permitted. Bundle rotation produces a Providence audit trail. In-context demonstrations sourced from external channels are external-classified and subject to A3 sanitization. | Medium |
 
 **Representative attack scenario:** RAG knowledge poisoning is addressed by the VectorShield evaluation track (scheduled Phase 5), including a Pure Storage DIM use case that demonstrates Mode A operation over encrypted RAG corpora.
@@ -73,7 +73,7 @@ Franklin et al. identify five vectors: congestion traps, interdependence cascade
 
 | Vector | XSOC-NIE-GUARD Control | Strength |
 |---|---|---|
-| Congestion traps (synchronised demand on limited resources) | Ecosystem-level problem. Individual agent rate limiting and BEM correlation detection provide margins; systemic mitigation requires cross-operator coordination. | Gap. Acknowledged future work. |
+| Congestion traps (synchronised demand on limited resources) | Ecosystem-level problem. Individual agent rate limiting and XEI correlation detection provide margins; systemic mitigation requires cross-operator coordination. | Gap. Acknowledged future work. |
 | Interdependence cascades (feedback loop amplification) | Ecosystem-level problem. Our Providence chain provides per-operator forensic reconstruction but not cascade prevention. | Gap. |
 | Tacit collusion (agents synchronising via environmental signals) | Ecosystem-level problem. Signed policy bundles can restrict which signals an agent acts on within a single operator's population; cross-operator collusion requires separate mechanisms. | Gap. |
 | Compositional fragment traps (payload split across sources, reconstitutes on aggregation) | Content manifest hashes individual elements. Aggregation-level semantic analysis that detects reconstituted payloads is not present in current architecture. Interesting research direction. | Gap. Acknowledged as future work. |

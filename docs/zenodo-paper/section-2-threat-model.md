@@ -186,7 +186,7 @@ records every profile selection as a Providence event.
 Mode C decryption, even under endpoint attestation and dual-control, releases
 cleartext to the attested endpoint. This is the architectural release valve
 for operations that genuinely require cleartext reasoning. Mode C frequency
-per subject is a Behavioral Escalation Meter input (Section 9); persistent
+per subject is an XEI input (Section 9); persistent
 elevation triggers session profile escalation.
 
 Disclosure policy failure, the inadvertent public exposure of XSOC
