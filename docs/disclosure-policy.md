@@ -128,7 +128,9 @@ release signing key:
   or on a build host.
 - **Its public half** is published in this repository, in
   `.github/allowed_signers`, and its fingerprint is stated in the Zenodo record
-  of each release. The two come to a reader separately.
+  of each release. The two come to a reader separately. The fingerprint is
+  `SHA256:+M4mwWmePU9ZPTMEovQM+p6ubKaVqKdLH9tbGUs/cNA` (ED25519, 256 bits),
+  for the signer `rblech@xsoccorp.com`.
 - **Where tags are signed:** on the release workstation, and nowhere else.
 
 **Verifying a release tag.** From a clone of this repository:
