@@ -134,11 +134,12 @@ C frequency, and continuity counter pattern. Score crossing a threshold
 escalates session profile from standard to strict or from strict to
 restricted-information.
 
-**A10, Signed Policy Bundles** (Section 8). Every policy change is a
-signed bundle produced by a ceremony-rooted signer. Role matrix, MCP
-server trust table, and skill manifest live in the bundle. Unsigned or
-wrong-signer bundles rejected at load. Bundle rotation is a Providence
-event.
+**A10, Signed Policy Bundles** (Section 8). Role matrix, MCP server
+trust table, and skill manifest live in the policy bundle. The broker
+decides from a built-in role matrix today; loading a bundle from the
+bundle store, verified against XSOC's release-signed root, is the next
+item on the build plan, and from then an unsigned or wrong-signer bundle
+is refused at load and its rotation is a Providence event.
 
 ## 3.4 Profile composition and the lethal trifecta
 

@@ -56,8 +56,8 @@ compromise the broker at runtime.
 
 **Assumptions.** Nexus Identity Engine (NIE) cryptographic primitives are sound at the interface
 level. Device attestation
-is trustworthy up to the stated attestation floor; ceremony-rooted signing
-keys are held in hardware security module or equivalent; Redis is available
+is trustworthy up to the stated attestation floor; the policy bundle
+signing key is a release signing key held by XSOC outside every deployment; Redis is available
 for revocation propagation, with in-process cache fallback under conservative
 time-to-live when unavailable. The OpenClaw instance itself is treated as
 untrusted even when operated by the customer, reflecting both the 138-CVE

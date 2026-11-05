@@ -53,7 +53,7 @@ controls to Franklin categories is in `docs/franklin-taxonomy-mapping.md`.
 
 - Nexus Identity Engine (NIE) cryptographic primitives are sound (interface-level assumption)
 - Device attestation is trustworthy up to the stated attestation floor
-- Ceremony-rooted signing keys are held in HSM or equivalent
+- The policy bundle signing key is a release signing key held by XSOC outside every deployment
 - Redis is available for revocation propagation (fallback to in-process cache
   with conservative TTL if unavailable)
 - OpenClaw instance is treated as untrusted even when operated by the customer
@@ -181,7 +181,7 @@ gateway does not need to be internet-facing to be compromised.
 
 **Controls:**
 
-- A10 Signed policy bundles: bundle swap requires ceremony-rooted co-signed key
+- A10 Signed policy bundles: the build plan item loads the bundle from the bundle store and verifies it against XSOC's release-signed root at startup; from then a swapped or forged bundle is refused and the broker does not start
 - A6 Dual-control on admin.control
 - Providence log: every admin action is tamper-evident; truncation detectable via anchor
 

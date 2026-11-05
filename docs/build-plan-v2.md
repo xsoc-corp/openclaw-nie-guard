@@ -35,7 +35,7 @@ Tier A is now the entire delivery scope. Every item below ships in the POC.
 | A7 | Shadow Mode and Attack Replay | Policy regression detection without production impact |
 | A8 | Capability Derivation Tree | Sub-agent scoping via DSKAG derivation |
 | A9 | XEI-Driven Adaptive Profile Escalation | Behavior-driven profile tightening |
-| A10 | Signed Policy Bundles | Policies are signed artifacts with ceremony-rooted keys |
+| A10 | Signed Policy Bundles (open) | Bundles carry a signature field; loading from the bundle store and verification against XSOC's release-signed root are open, the next build plan item |
 | A11 | VectorShield Integration | RAG chunks through VectorShield, composes with A1 |
 | A12 | Compliance Control Mapping | Named-framework map as first-class artifact |
 
@@ -165,7 +165,7 @@ New threat paths added for the v2 scope:
 | T-12 | Model vendor extracts sensitive context for training or logging | A model provider as honest-but-curious operator | FHE Context Gate (A1) Mode A/B; Mode C only with explicit policy approval |
 | T-13 | External messaging channel exploitation (Telegram class) | Adversary with access to MCP server backing a messaging provider | MCP Boundary Mediation (A3) with response sanitization and external content tagging |
 | T-14 | Hyperscaler insider access to prompt logs | Privileged operator at model vendor | Mode A/B leave no cleartext for insider to read; Mode C decryptions are Providence-anchored and dual-controlled at regulated and classified-adjacent levels |
-| T-15 | Policy rewrite by attacker with broker write access | Compromised admin or supply-chain implant in broker deployment | Signed Policy Bundles (A10) with ceremony-rooted signing key |
+| T-15 | Policy rewrite by attacker with broker write access | Compromised admin or supply-chain implant in broker deployment | Signed Policy Bundles (A10), open: loading and verification against XSOC's release-signed root are the next build plan item |
 | T-16 | Session drift toward exfiltration over long workflow | Prompt-injected agent, slow-burn data exfiltration | XEI (A9) with adaptive escalation; Mode C rate as XEI input |
 | T-17 | Sub-agent scope widening | Multi-agent orchestration with flat capability reuse | Capability Derivation Tree (A8) with strict narrowing |
 

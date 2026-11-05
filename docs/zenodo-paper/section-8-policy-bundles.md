@@ -13,8 +13,7 @@ profile), the classification-to-mode compatibility rules that the FHE
 Context Gate enforces (Section 6.2), the `OPERATION_TO_INTENT` map used
 by the Agent Intent Envelope (Section 5.4), the MCP server trust table
 (Section 7.4), the skill manifest trust table, and the attestation
-floor per profile. The bundle is signed by a ceremony-rooted signing
-key held in hardware security module custody.
+floor per profile. The broker decides from a built-in role matrix whose content is the default policy bundle. Policy bundles carry a signature field; loading a bundle from the bundle store, verified against XSOC's release-signed root, is the next item on the build plan, and the broker will refuse an unverified bundle from that point.
 
 Policy as signed artifact makes two properties explicit. First, policy
 is not a runtime-mutable configuration file; changes are ceremony-
@@ -27,20 +26,13 @@ decisions. This determinism is what makes shadow policy evaluation
 ## 8.2 Bundle rotation ceremony
 
 Rotation is a ceremony: the new bundle is constructed, reviewed by at
-least one cryptographic reviewer and one policy reviewer, signed by the
-ceremony-rooted key, published to the bundle store, and activated via a
-signed activation record. The broker refuses to load a bundle whose
-signature does not verify against the ceremony root public key, which
-is compiled into the broker image at build time. Scenarios 12 and 18 in
+least one cryptographic reviewer and one policy reviewer, signed, published
+to the bundle store, and activated. Loading and verification of a published bundle are the build plan item above; until it lands, the broker decides from the built-in role matrix and does not load a bundle from the store. Scenarios 12 and 18 in
 Section 11 are the skeleton placeholders that exercise the Redis
 tampering and signature forgery paths respectively; both are scheduled
 for wiring in Phase 4.
 
-Bundle activation emits a Providence event of type `bundle_rotation`
-that records the new bundle hash, the ceremony participants, the
-activation timestamp, and the predecessor bundle hash. The audit
-record is sufficient to reconstruct the full policy history for any
-operation.
+Bundle activation will record a Providence event of type `bundle_rotation` when loading lands.
 
 ## 8.3 Dual-control for high-risk operations
 

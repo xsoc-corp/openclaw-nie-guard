@@ -56,7 +56,7 @@ XSOC AIDA-Guard sits in front of OpenClaw (or any compatible agent framework) an
 5. Agent intent binding, which holds an agent to the intent its operator authorized, under prompt injection included
 6. FHE Context Gate: sensitive context reaches the model only under encryption
 7. MCP boundary mediation for external messaging channels (Telegram, Slack, Discord, email)
-8. Signed policy bundles with ceremony-rooted keys
+8. The broker decides from a built-in role matrix whose content is the default policy bundle. Policy bundles carry a signature field; loading a bundle from the bundle store, verified against XSOC's release-signed root, is the next item on the build plan, and the broker will refuse an unverified bundle from that point.
 9. Hash-linked audit chain, anchored and verifiable offline, via Providence
 10. Adaptive profile escalation via XEI, the XSOC ExposureShield exposure index
 

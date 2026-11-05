@@ -10,7 +10,7 @@ is a property of the architecture rather than a configuration option.
 | Map | Context, risks, actors | Threat model, classification taxonomy |
 | Measure | Trustworthy AI characteristics | Providence metrics, XEI scoring |
 | Manage | Risk mitigation, response | Profile escalation, revocation, dual-control |
-| Govern | Accountability, roles | Signed policy bundles, ceremony-rooted keys |
+| Govern | Accountability, roles | Policy bundles with a signature field; verification against XSOC's release-signed root is the next build plan item |
 
 ## OWASP Top 10 for Agentic Applications
 

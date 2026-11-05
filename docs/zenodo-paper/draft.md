@@ -142,8 +142,9 @@ sits between the agent framework and the rest of the world, enforcing:
    context that must never, in part or whole, reach the model in cleartext
 7. MCP boundary mediation for external messaging channels with sanitization
    and external-content tagging
-8. Signed policy bundles with ceremony-rooted keys covering both roles and
-   skill manifests
+8. Policy bundles covering both roles and skill manifests, with a
+   signature field; verification against XSOC's release-signed root is
+   the next build plan item
 9. Adaptive profile escalation based on behavioral drift metrics
 10. Tamper-evident Providence hash chain supporting regulated forensic
     reconstruction
@@ -281,7 +282,8 @@ Providence anchoring, intent binding at the channel boundary.)
 
 ## 8. Policy Bundle Signing and Rotation
 
-(Draft: signed bundle format, ceremony-rooted keys, rotation audit trail,
+(Draft: signed bundle format, verification against XSOC's release-signed
+root as the next build plan item, rotation audit trail,
 skill manifest extension to cover ClawHub-class supply chain threats.)
 
 ---
