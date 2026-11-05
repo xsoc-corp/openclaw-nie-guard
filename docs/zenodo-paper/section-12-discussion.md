@@ -67,7 +67,7 @@ occur; its consequences are bounded.
 We do not claim the XSOC FHE SDK's 40.28 ms encryption latency is a
 universal performance claim. That figure is from published
 validation on reference hardware under specific CKKS parameters
-[42]. Production deployment will see different numbers depending on
+[39]. Production deployment will see different numbers depending on
 hardware, parameter choices, and workload shape. We do claim the
 architecture's mediation overhead is within the operational budget
 for interactive agent flows.
@@ -75,9 +75,9 @@ for interactive agent flows.
 We do not claim end-to-end quantum resistance of the overall system.
 The XSOC FHE SDK's DSKAG layer uses symmetric primitives that
 provide 256-bit post-quantum security under Grover's algorithm
-[42]. The CKKS scheme's underlying Ring Learning With Errors
+[39]. The CKKS scheme's underlying Ring Learning With Errors
 problem is believed quantum-resistant under current analysis [15,
-42]. The non-cryptographic components of the broker (transport,
+39]. The non-cryptographic components of the broker (transport,
 storage, operational logging) use commodity TLS and commodity
 database storage whose quantum posture is not our assertion to
 make. A fully quantum-resistant deployment requires the operator

@@ -19,8 +19,7 @@ Phases:
 - **Phase 6**: adapter wiring, MCP mediator active on all configured servers, attack
   sim scenarios fully implemented
 - **Phase 7**: XEI scoring, profile escalation, shadow mode, attack replay harness
-- **Phase 8**: compliance map validation, Zenodo paper final draft, Cal Poly SLO and
-  GMU SENTINEL citation check
+- **Phase 8**: compliance map validation, Zenodo paper final draft
 - **Phase 9**: public release ceremony, Zenodo DOI publication, LinkedIn narrative arc
 
 Tier A scope is fully in-scope. Tier B items (per-vendor endpoint attestation for

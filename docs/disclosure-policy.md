@@ -50,13 +50,13 @@ in this repository or in any public deliverable.
 
 ## Citation rules
 
-This repository cites no external evaluation of XSOC primitives. The
-evaluations to date covered components AIDA-Guard does not contain, so
-AIDA-Guard's assurance rests on what this repository lets a reader reproduce:
-the known-answer vectors, the record format, the offline verifier and a
-published evidence set. The rule below is mandatory for all Zenodo
-publications, arXiv submissions, commercial briefs, LinkedIn posts, and any
-other public-facing XSOC communication made from this repository.
+AIDA-Guard's assurance in this repository rests on what a reader can
+reproduce: the known-answer vectors, the record format, the offline verifier
+and a published evidence set. External evaluations of other XSOC components
+belong with those components and are cited where they are the subject. The
+rule below is mandatory for all Zenodo publications, arXiv submissions,
+commercial briefs, LinkedIn posts, and any other public-facing XSOC
+communication made from this repository.
 
 ### XSOC Executive Validation Report
 

@@ -91,11 +91,7 @@ oversight map to the classification schema, the Providence chain, and the dual
 control mechanism.
 
 For US federal buyers, attestation floor selection supports IL4 and IL5
-posture. Independent validations of the underlying components come from the
-University of Luxembourg audits by Perrin and Biryukov (2020 and 2024, on the
-legacy cryptosystem predating DSKAG, with mandatory findings incorporated),
-Cal Poly San Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate across
-98 tests, and George Mason University SENTINEL FP5223 (full report June 2026).
+posture.
 
 Full compliance map in the paper appendix. Happy to talk with teams evaluating
 agent frameworks in regulated contexts.
@@ -165,6 +161,5 @@ Optional single-image assets for each post. Suggestions:
 ## Hard constraints reminder
 
 No em-dashes anywhere. No AI-tell phrases. No mention of competitor names in the
-posts themselves. No customer names in public posts. Cal Poly San Luis Obispo,
-never Pomona. EternaX figure cited only when attributed to Dariia Porechna,
+posts themselves. No customer names in public posts. EternaX figure cited only when attributed to Dariia Porechna,
 Dr. Chen Feng, and Paarth Birla together, and not used in these posts by default.

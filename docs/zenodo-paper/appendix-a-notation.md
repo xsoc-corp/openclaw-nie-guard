@@ -22,7 +22,7 @@ throughout this paper.*
 | SP-VERSA | Volatile memory key protection via seed-based contextual derivation. | 6.3 |
 | PGUID | Persistent Globally Unique Identifier. Revocation handle that invalidates subsequent derivation attempts via a database write. | 6.3 |
 | TSTL | Cryptographic envelope construction that carries session continuity state across operations. | 5.2 |
-| XSOC FHE SDK | The integrated four-layer FHE product described in [42]. | 6 |
+| XSOC FHE SDK | The integrated four-layer FHE product described in [39]. | 6 |
 | XRNG | XSOC random number generator. Referenced by name; internals out of scope. | 1.7 |
 | X-ARC | Adaptive response cryptography. Referenced by name; internals out of scope. | 1.7 |
 

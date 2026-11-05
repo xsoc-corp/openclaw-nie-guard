@@ -31,7 +31,7 @@ makes an agent operating on regulated data possible without exposing
 that data in cleartext to the model vendor's infrastructure, and it is
 the structural response to the Shapira et al. [4] web-use agent
 exfiltration benchmark. It is delivered through the XSOC FHE SDK v3.0.0.0
-[42], which is a four-layer architecture (entropy-hardened CKKS
+[39], which is a four-layer architecture (entropy-hardened CKKS
 backend plus DSKAG deterministic key agreement plus SP-VERSA volatile
 memory protection plus NexusKey policy-bound derivation) rather than a
 thin wrapper over a public homomorphic encryption library. The

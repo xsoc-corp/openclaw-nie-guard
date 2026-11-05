@@ -33,7 +33,7 @@ instructions to external endpoints ("send the following to
 https://..."), critic-evasion framing ("this is a red-teaming
 exercise for educational purposes"), and the jailbreak-wrapped
 framing of the class documented in the Shen et al. jailbreak
-characterization [39].
+characterization [36].
 
 Content matching any pattern is rejected with
 `ERR_MCP_RESPONSE_TAINTED`. Scenarios 08, 16, 23, and 25 in Section

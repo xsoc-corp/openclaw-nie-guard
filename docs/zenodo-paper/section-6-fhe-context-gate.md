@@ -30,8 +30,8 @@ honor retention policies). Second, a compromised or prompt-injected agent may
 egress context into adversary-controlled channels under the correctly-scoped
 capability set it legitimately holds; the Franklin et al. taxonomy [1]
 classifies this class under Content Injection and Cognitive State. Third,
-multi-agent and shared-memory architectures surveyed in [37] and the memory
-injection literature [35, 36] can cross contamination boundaries through the
+multi-agent and shared-memory architectures surveyed in [34] and the memory
+injection literature [32, 33] can cross contamination boundaries through the
 reasoning context, with an encrypted context scoped to the deriving role
 demonstrably not recoverable by a sibling agent or a later session under
 different authorization.
@@ -85,13 +85,13 @@ defense in depth at the highest sensitivity tier.
 
 ## 6.3 The underlying FHE SDK: not a SEAL wrapper
 
-The gate delegates cryptographic operations to the XSOC FHE SDK v3.0.0.0 [42].
+The gate delegates cryptographic operations to the XSOC FHE SDK v3.0.0.0 [39].
 A natural assumption is that an FHE-using product is a thin integration over
 Microsoft SEAL or OpenFHE. The XSOC FHE SDK is not such an integration. It is
 a four-layer architecture that composes an entropy-hardened CKKS backend,
 built on SEAL's underlying primitives, with three additional cryptographic
 layers that collectively address the five enterprise adoption barriers
-documented in [42]: performance overhead, key management complexity,
+documented in [39]: performance overhead, key management complexity,
 implementation complexity, deployment friction, and security policy
 enforcement. Each of the three additional layers produces security properties
 orthogonal to CKKS's computational security.
@@ -150,7 +150,7 @@ mediation control rather than a research prototype.
 
 ## 6.4 Performance envelope
 
-Published validation of the SDK [42] establishes the following operational
+Published validation of the SDK [39] establishes the following operational
 characteristics: encryption at 40.28 ms, homomorphic addition at 0.022 ms,
 homomorphic multiplication at 1.29 ms, end-to-end pipeline at 19.43 ms, and
 key rotation at 0.58 ms. The 40.28 ms encryption latency fits within the
@@ -160,7 +160,7 @@ of sensitive features without user-observable latency. Key rotation at 0.58 ms
 permits treating rotation as a per-session operation rather than a
 cost-amortized event, enabling tight revocation response.
 
-Universal Circuit Templates, described in [42], are pre-validated FHE circuits
+Universal Circuit Templates, described in [39], are pre-validated FHE circuits
 for common operations (activation functions, statistical aggregations, linear
 algebra operations, and industry-specific bundles for finance, healthcare,
 and machine learning). Their operational effect for the mediation layer is to
@@ -223,7 +223,7 @@ cryptographically nothing.
 The **Cognitive State** category covers long-term memory manipulation.
 Encrypted memory scoped to the deriving role under NexusKey policy binding is
 not manipulable by an adversary who cannot produce valid policy context.
-Memory injection attacks of the class surveyed in [35, 36] are reduced in
+Memory injection attacks of the class surveyed in [32, 33] are reduced in
 scope to the Franklin **Behavioural Control** category: the adversary may
 still manipulate the agent's current-operation behavior but cannot extend the
 manipulation into persistent-corruption attacks against the encrypted memory
@@ -245,7 +245,7 @@ coverage boundaries of Section 1.4.
 
 The gate's protection is bounded by what the underlying SDK can express
 efficiently. Operations requiring multiplicative depth beyond standard CKKS
-parameters, such as those exceeding ten levels at 256-bit security [42], must
+parameters, such as those exceeding ten levels at 256-bit security [39], must
 be expressed through UCTs that manage depth internally or must downgrade to
 Mode B with structured token substitution. Operations involving free-form
 natural language generation from encrypted context remain outside Mode A's

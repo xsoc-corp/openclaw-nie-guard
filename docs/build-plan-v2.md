@@ -130,7 +130,7 @@ Each bound to a live customer conversation:
 
 ### 2.6 Public narrative
 
-This is the first commercial FHE deployment in an AI agent flow. No other vendor in the AI security space has put FHE into production in this context. The surrounding credibility wall includes Cal Poly San Luis Obispo Dieharder v3.31.1 at 99.4 percent aggregate across 98 tests, Perrin and Biryukov audits of the legacy XSOC cryptosystem at the University of Luxembourg in 2020 and 2024 (predating DSKAG, with mandatory findings incorporated into the canonical build), and GMU SENTINEL FP5223 (full report June 2026). Competitive disambiguation from FHE-washing (DataKrypto's FIPS cert is SafeLogic rebranding of standard algorithms, not FHE; their zero-overhead claim is mathematically impossible) is direct and defensible.
+This is the first commercial FHE deployment in an AI agent flow. No other vendor in the AI security space has put FHE into production in this context. Competitive disambiguation from FHE-washing (DataKrypto's FIPS cert is SafeLogic rebranding of standard algorithms, not FHE; their zero-overhead claim is mathematically impossible) is direct and defensible.
 
 Publication vehicles:
 
@@ -262,7 +262,7 @@ Items that block nothing but sharpen the work if answered soon:
 2. **OpenClaw version target.** Pin against which release. Affects adapter surface.
 3. **Tier B priority.** Of B1 through B4, which is the first post-POC commitment. My recommendation: B4 CAISI alignment first (leverages Carlson/Brown thread and turns the POC into a government-facing reference), then B1 SDD diode mode for 16th AF.
 4. **Public repo split.** OPENCLAW-NIE-GUARD as public reference architecture (maximum narrative leverage) or xsoc-corp private (preserves commercial differentiation). My recommendation: split. Public reference repo with the broker interface and mock NIE bindings, private production repo with full NIE and FHE integration. This is the same pattern used for xsoc-qsig-cga public release.
-5. **Zenodo companion paper authorship.** Solo or co-authored with GMU collaborators who did SENTINEL FP5223. Co-authorship strengthens the credibility wall.
+5. **Zenodo companion paper authorship.** Solo or co-authored.
 
 ---
 
