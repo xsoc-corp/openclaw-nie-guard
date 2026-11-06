@@ -150,4 +150,4 @@ Each tenant has an epoch. Advancing it revokes every outstanding token of that t
 - The agent sees every tool its servers offer and is answered at the call.
 - The Guard is the enforcement layer a platform stands on.
 
-XSOC Corp. Cryptography in AIDA-Guard runs through AWS-LC in FIPS-approved mode, and the XSOC cryptographic module is in CMVP validation with Leidos.
+XSOC Corp. XSOC's approved-algorithm cryptography runs through AWS-LC in FIPS-approved mode today, and the XSOC cryptographic module is in CMVP validation with Leidos.
