@@ -79,4 +79,4 @@ Every file in this set was checked before publication:
 - No string in any file is one of the deployment's operator tokens.
 - No record carries a session handle.
 
-XSOC Corp. Cryptography in AIDA-Guard runs through AWS-LC in FIPS-approved mode, and the XSOC cryptographic module is in CMVP validation with Leidos.
+XSOC Corp. XSOC's approved-algorithm cryptography runs through AWS-LC in FIPS-approved mode today, and the XSOC cryptographic module is in CMVP validation with Leidos.
